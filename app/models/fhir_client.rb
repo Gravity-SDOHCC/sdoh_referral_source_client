@@ -12,10 +12,29 @@ class FhirClient < FHIR::Client
     client
   end
 
-  # This method fetches the FHIR capability statement using the FHIR client object
-  # def fetch_capability_statement
-  #   @client.capability_statement
-  # end
+  def self.fetch_practitioner(client, practitioner_id)
+    client.read(FHIR::Practitioner, practitioner_id)
+  end
+
+  def self.fetch_condition(client, patient_id)
+    client.search(FHIR::Condition, search: { parameters: { patient: patient_id } })
+  end
+
+  def self.fetch_observation(client, patient_id)
+    client.search(FHIR::Observation, search: { parameters: { patient: patient_id } })
+  end
+
+  def self.fetch_procedure(client, patient_id)
+    client.search(FHIR::Procedure, search: { parameters: { patient: patient_id } })
+  end
+
+  def self.fetch_organization(client, organization_id)
+    client.read(FHIR::Organization, organization_id)
+  end
+
+  def self.fetch_organization_by_name(client, organization_name)
+    client.search(FHIR::Organization, search: { parameters: { name: organization_name } })
+  end
 
 end
 

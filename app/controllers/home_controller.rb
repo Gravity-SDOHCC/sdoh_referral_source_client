@@ -1,12 +1,10 @@
 class HomeController < ApplicationController
   def index
     if client_connected?
-      flash[:notice] = "You are already connected to a FHIR server (#{session[:fhir_server_base_url]})"
-      puts "CHECK CHECK I am connected. HomeController#index FLASH : #{flash.count}"
+      flash[:notice] = "You are already connected to a FHIR server (#{get_server_base_url})"
       redirect_to dashboard_path
     else
-      clean_session
-      puts "CHECK CHECK I am NOT connected. HomeController#index. SESSION[:CLIENT]: #{session[:client] || 'nil'}}"
+      # clean_session
       @fhir_servers = FhirServer.all
     end
   end
@@ -22,13 +20,14 @@ class HomeController < ApplicationController
 
       if capability_statement.present?
         save_client(@fhir_client)
-        puts "CHECK CHECK I am connected. HomeController#connect. SESSION[:CLIENT]: #{session[:client] || 'nil'}}"
         fhir_server = FhirServer.find_or_create_by(base_url: base_url) do |server|
           server.name = server_name
         end
-        session[:fhir_server_base_url] = fhir_server.base_url
+        save_server_base_url(fhir_server.base_url)
+        save_patient_id(TEST_PATIENT_ID)
+        save_practitioner_id(TEST_PRACTITIONER_ID)
+
         flash[:success] = "Successfully connected to #{fhir_server.name}"
-        puts "CHECK CHECK I am connected. HomeController#connect FLASH : #{flash.count}"
         redirect_to dashboard_path
       else
         flash[:error] = "Failed to connect to the provided server, verify the URL provided is correct."
