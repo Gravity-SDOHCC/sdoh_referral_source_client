@@ -1,0 +1,65 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h1 class="mb-4">
+        <i class="bi bi-file-medical bg-primary"></i>
+        Gravity Referral Source Client
+      </h1>
+      <p>Welcome to the Gravity Referral Source Client! Connect to an EHR FHIR server to get started.</p>
+    </div>
+    <div class="col-md-6">
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="card-front">
+            <%= form_tag connect_path, method: :post, class: "form-inline justify-content-center" do %>
+              <%= hidden_field_tag :fhir_server_name, '', id: 'fhir_server_name' %>
+              <%= select_tag :fhir_server_base_url, options_from_collection_for_select(@fhir_servers, "base_url", "name"), prompt: "Select a server", class: "form-control mb-2 mr-sm-2", id: 'fhir_server_base_url' %>
+              <%= submit_tag "Connect", class: "btn btn-primary mb-2" %>
+            <% end %>
+
+            <div class="text-center mt-2">
+              <%= link_to "Don't see your server?", "#", class: "flip-card" %>
+            </div>
+          </div>
+
+          <div class="card-back d-none">
+            <h5>Add your FHIR Server</h5>
+            <%= form_tag connect_path, method: :post, class: "form" do %>
+              <div class="form-group">
+                <%= label_tag :fhir_server_name, "Server Name" %>
+                <%= text_field_tag :fhir_server_name, '', class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= label_tag :fhir_server_base_url, "Server Base URL" %>
+                <%= text_field_tag :fhir_server_base_url, '', class: "form-control" %>
+              </div>
+              <%= submit_tag "Connect", class: "btn btn-primary mt-3" %>
+            <% end %>
+
+            <div class="text-center mt-2">
+              <%= link_to "Go back", "#", class: "flip-card" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("fhir_server_base_url").addEventListener("change", function () {
+    if (this.value) {
+      const selectedServerName = this.options[this.selectedIndex].text;
+      document.getElementById("fhir_server_name").value = selectedServerName;
+    }
+  });
+
+  document.querySelectorAll(".flip-card").forEach((element) => {
+    element.addEventListener("click", (event) => {
+      event.preventDefault();
+      document.querySelector(".card-front").classList.toggle("d-none");
+      document.querySelector(".card-back").classList.toggle("d-none");
+    });
+  });
+</script>
+
