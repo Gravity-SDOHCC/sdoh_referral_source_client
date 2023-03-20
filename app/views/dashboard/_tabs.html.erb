@@ -1,0 +1,10 @@
+<!-- app/views/dashboard/_tabs.html.erb -->
+
+<div>
+  <div class="tab-content mt-2">
+    <%= render partial: 'dashboard/patients', locals: {id: 'patients', active: true} %>
+    <%= render partial: 'dashboard/surveys', locals: {id: 'surveys', active: false} %>
+    <%= render partial: 'dashboard/referral_organizations', locals: {id: 'referral', active: false} %>
+    <%= render partial: 'dashboard/payers', locals: {id: 'payers', active: false} %>
+  </div>
+</div>

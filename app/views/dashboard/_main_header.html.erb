@@ -1,0 +1,26 @@
+<!-- app/views/dashboard/_main_header.html.erb -->
+
+<header class="main-header py-2">
+  <div class="container-fluid">
+    <div class="row align-items-center justify-content-between">
+      <div class="col-auto">
+        <div class="logo-container">
+          <%= image_tag 'logo.svg', class: 'image', alt: 'logo' %>
+          <span class="name">Referral Source Client Application</span>
+        </div>
+      </div>
+      <div class="col-auto">
+        <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+          <%= render partial: 'dashboard/tab', locals: {id: 'patients', label: 'Patients', active: true} %>
+          <%= render partial: 'dashboard/tab', locals: {id: 'surveys', label: 'SDOH Surveys', active: false} %>
+          <%= render partial: 'dashboard/tab', locals: {id: 'referral', label: 'Referral Organizations', active: false} %>
+          <%= render partial: 'dashboard/tab', locals: {id: 'payers', label: 'Payers', active: false} %>
+        </ul>
+      </div>
+      <div class="col-auto">
+        <%= render 'practitioner_info' %>
+      </div>
+    </div>
+  </div>
+</header>
+

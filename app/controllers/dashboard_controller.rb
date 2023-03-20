@@ -3,6 +3,8 @@ class DashboardController < ApplicationController
 
   def main
     puts "CHECK CHECK I AM IN DashboardController#main. Can I access the client? #{client_connected?}. who is the patient? #{@patient.name}"
+    @user_name = "John Doe" # Replace with the actual user name
+    @user_type = "Admin" # Replace with the actual user type
   end
 
   private
