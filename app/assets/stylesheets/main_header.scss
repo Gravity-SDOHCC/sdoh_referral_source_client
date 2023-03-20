@@ -1,0 +1,33 @@
+@import "variables";
+
+.main-header {
+  border-bottom: 1px solid $global-base-border-color;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 155px;
+  padding-right: 20px;
+
+  .name {
+    font-size: $global-font-size;
+    font-weight: $global-font-weight-bold;
+  }
+
+  .image {
+    width: 56px;
+    height: 38px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-header {
+    .logo-container {
+      min-width: 0;
+    }
+  }
+}
