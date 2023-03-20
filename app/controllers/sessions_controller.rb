@@ -1,4 +1,5 @@
-class HomeController < ApplicationController
+class SessionsController < ApplicationController
+  # Get /home
   def index
     if client_connected?
       flash[:notice] = "You are already connected to a FHIR server (#{get_server_base_url})"
@@ -10,7 +11,7 @@ class HomeController < ApplicationController
   end
 
   # POST /connect
-  def connect
+  def create
     base_url = params[:fhir_server_base_url]
     server_name = params[:fhir_server_name]
     @fhir_client = FhirClient.setup_client(base_url)
@@ -40,4 +41,12 @@ class HomeController < ApplicationController
       redirect_to home_path
     end
   end
+
+  # delete /disconnect
+  def destroy
+    clean_session
+    flash[:success] = "Successfully disconnected from the FHIR server"
+    redirect_to root_path
+  end
+
 end
