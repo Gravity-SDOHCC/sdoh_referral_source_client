@@ -1,0 +1,8 @@
+<div class="tab-pane fade <%= 'show active' if active %>" id="<%= id %>" role="tabpanel" aria-labelledby="<%= id %>-tab">
+  This is the Patients tab where all patients will be listed: name, dob, contact, address , fhir_resource(popover to display the json).
+  This page will have two div. The first div will have a table with all patients. The second div will be the selected patient dashboard.
+  The first div is displayed if there's no current patient. The second div is displayed if there's a current patient.
+  when the user clicks on a patient in the table, the current patient is set to that patient and the second div is displayed.
+  The second div will have sort of a breadcrum menu (All patients link > patient name dashboard).
+  if the user clicks on the All patients link, the current patient is set to nil and the first div is displayed.
+</div>
