@@ -1,30 +1,33 @@
 module PatientHelper
   include SessionHelper
 
-  def fetch_current_patient
-    current_patient = get_current_patient
-    if current_patient
-      return [true, current_patient]
+  def fetch_patients
+    patients = get_patients
+    if patients
+      return [true, patients]
     end
 
     client = get_client
-
     begin
-      response = client.read(FHIR::Patient, patient_id)
-
+      response = client.read_feed(FHIR::Patient)
       if response.response[:code] == 200
-        patient = Patient.new(response.resource.entry.map(&:resource).first)
-        return [false, "No patient found"] unless patient
-        save_patient(patient)
-        [true, patient]
+        entries = response.resource.entry
+        patients = entries.map do |entry|
+                    Patient.new(entry.resource)
+                  end
+        save_patients(patients)
+        [true, patients]
       else
-        [false, "Failed to fetch patient, please retry. Status: #{response.response[:code]} - #{response.response[:body]}"]
+        [false, "Failed to fetch patient list, please retry. Status: #{response.response[:code]} - #{response.response[:body]}"]
       end
     rescue Errno::ECONNREFUSED => e
-      [false, "Connection refused. Please check the FHIR server's URL #{get_server_base_url} and try again. #{e.message}"]
+      [false, "Connection refused. Please check FHIR server's URL #{get_server_base_url} is up and try again. #{e.message}"]
     # rescue Rack::Timeout::RequestTimeoutException => e
     #   [false, "Request timeout. Please try again later. #{e.message}"]
     end
+  end
 
+  def current_patient
+    @current_patient = get_patients&.find { |patient| patient.id == patient_id }
   end
 end

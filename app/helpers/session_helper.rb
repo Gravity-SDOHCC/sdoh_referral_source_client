@@ -26,12 +26,12 @@ module SessionHelper
     session[:fhir_server_base_url]
   end
 
-  def get_current_patient
-    @current_patient = decompress_object(session[:patient])
+  def save_patients(patient_list)
+    session[:patients] = compress_object(patient_list)
   end
 
-  def save_patient(patient)
-    session[:patient] = compress_object(patient)
+  def get_patients
+    decompress_object(session[:patients])
   end
 
   def save_patient_id(patient_id)

@@ -1,8 +1,9 @@
 # Patient Model
 class Patient
-  attr_reader :fhir_resource, :name, :dob, :medical_record_number, :gender, :address,
+  attr_reader :id, :fhir_resource, :name, :dob, :medical_record_number, :gender, :address,
               :phone, :email, :race, :ethnicity, :marital_status, :birthsex
   def initialize(fhir_patient)
+    @id = fhir_patient.id
     @fhir_resource = fhir_patient
     @name = format_name(fhir_patient.name)
     @dob = fhir_patient.birthDate
