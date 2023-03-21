@@ -42,20 +42,4 @@ module SessionHelper
     session[:patient_id]
   end
 
-  def save_current_practitioner(practitioner)
-    session[:practitioner] = compress_object(practitioner)
-  end
-
-  def save_practitioner_id(practitioner_id)
-    session[:practitioner_id] = practitioner_id
-  end
-
-  def get_current_practitioner
-    @current_practitioner = decompress_object(session[:practitioner])
-  end
-
-  def practitioner_id
-    session[:practitioner_id]
-  end
-
 end
