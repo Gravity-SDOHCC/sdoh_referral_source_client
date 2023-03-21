@@ -2,6 +2,8 @@ module ApplicationHelper
   include SessionHelper
   include PatientHelper
 
+  TEST_PATIENT_ID = "smart-1288992"
+  TEST_PRACTITIONER_ID = "Smart-Practitioner-71482713"
   #### Flash helpers ####
 
   def bootstrap_class_for(flash_type)
