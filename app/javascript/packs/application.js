@@ -10,6 +10,9 @@ import "channels";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import "@popperjs/core";
+import 'prismjs';
+import 'prismjs/themes/prism.css';
+import './prism_initializer';
 import '../../assets/stylesheets/application.scss';
 
 Rails.start()
