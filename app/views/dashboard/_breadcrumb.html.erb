@@ -1,0 +1,10 @@
+<!-- dashboard/_breadcrumb.html.erb -->
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><%= link_to 'All Patients', dashboard_path(patient_id: "nil") %></li>
+    <% unless current_patient.nil? %>
+      <li class="breadcrumb-item active" aria-current="page"><%= @current_patient.name %></li>
+    <% end %>
+  </ol>
+</nav>

@@ -1,0 +1,42 @@
+<!-- dashboard/_personal_characteristics.html.erb -->
+
+<div class="card mt-3">
+  <div class="card-header">
+    Personal Characteristics
+    <button class="btn btn-primary float-end">Add Personal Characteristic</button>
+  </div>
+  <div class="card-body">
+    <% if personal_characteristics.empty? %>
+      <p>No personal characteristics found.</p>
+    <% else %>
+      <div class="table-responsive">
+        <table class="table table-centered">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Performer</th>
+              <th>Method</th>
+              <th>Value</th>
+              <th>Resources</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% personal_characteristics.each do |pc| %>
+              <tr>
+                <td><%= pc.type %></td>
+                <td><%= pc.performer_name %></td>
+                <td><%= pc.reported_method %></td>
+                <td><%= pc.value %></td>
+                <td>
+                  <%= link_to 'FHIR Resource', '#', data: { bs_toggle: 'modal', bs_target: "#fhir-resource-modal-#{pc.id}" } %>
+                  <%= render 'dashboard/fhir_resource_modal', resource: pc %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+</div>
+

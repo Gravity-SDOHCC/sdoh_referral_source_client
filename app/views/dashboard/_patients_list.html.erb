@@ -1,0 +1,34 @@
+<!-- dashboard/_patients_list.html.erb -->
+
+<% if patients.empty? %>
+  <p>No patients found.</p>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>DOB</th>
+        <th>Gender</th>
+        <th>Contact</th>
+        <th>Address</th>
+        <th>FHIR Resource</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% patients.each do |patient| %>
+        <tr>
+          <td><%= link_to patient.name, dashboard_path(patient_id: patient.id) %></td>
+          <td><%= patient.dob %></td>
+          <td><%= patient.gender %></td>
+          <td><%= patient.phone %></td>
+          <td><%= patient.address %></td>
+          <td>
+            <%= link_to 'FHIR Resource', '#', data: { bs_toggle: 'modal', bs_target: "#fhir-resource-modal-#{patient.id}" } %>
+            <%= render 'fhir_resource_modal', resource: patient %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+

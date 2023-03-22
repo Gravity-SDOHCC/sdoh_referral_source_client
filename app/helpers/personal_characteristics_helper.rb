@@ -20,7 +20,7 @@ module PersonalCharacteristicsHelper
     begin
       search_params = {
         parameters: {
-          category: "personal-characteristics",
+          category: "personal-characteristic",
           subject: patient_id
         }
       }

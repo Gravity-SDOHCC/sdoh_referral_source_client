@@ -1,6 +1,6 @@
 # Personal characteristic model
 class PersonalCharacteristic
-  attr_reader :id, :subject_name, :subject_reference, :performer_name, :performer_reference :fhir_resource,
+  attr_reader :id, :subject_name, :subject_reference, :performer_name, :performer_reference, :fhir_resource,
               :reported_method, :type, :value
 
   def initialize(fhir_observation)
@@ -8,9 +8,9 @@ class PersonalCharacteristic
     @fhir_resource = fhir_observation
     @subject_name = fhir_observation.subject&.display
     @subject_reference = fhir_observation.subject&.reference
-    @performer_name = fhir_observation.performer&.display
-    @performer_reference = fhir_observation.performer&.reference
-    @reported_method = read_method(fhir_observation.method)
+    @performer_name = fhir_observation.performer&.map(&:display).join(', ')
+    @performer_reference = fhir_observation.performer.map(&:reference).join(', ')
+    @reported_method = read_method(fhir_observation.local_method)
     @type = read_type(fhir_observation.code)
     @value = fhir_observation.component ? read_component(fhir_observation.component) : read_value(fhir_observation.valueCodeableConcept)
   end

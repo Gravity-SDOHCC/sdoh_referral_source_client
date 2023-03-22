@@ -1,0 +1,36 @@
+<!-- dashboard/_patient_info.html.erb -->
+
+<div class="card">
+  <div class="card-header">
+    <%= patient.name %>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Date of Birth:</strong> <%= patient.dob %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Gender:</strong> <%= patient.gender %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Phone:</strong> <%= patient.phone %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Email:</strong> <%= patient.email %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Medical Record Number:</strong> <%= patient.medical_record_number %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Race:</strong> <%= patient.race %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Ethnicity:</strong> <%= patient.ethnicity %></p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Marital Status:</strong> <%= patient.marital_status %></p>
+      </div>
+    </div>
+  </div>
+</div>
+

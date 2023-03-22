@@ -1,0 +1,15 @@
+<!-- dashboard/_single_patient.html.erb -->
+
+<div class="row">
+  <div class="col-md-6">
+    <!-- Patient info partial -->
+    <%= render 'patient_info', patient: patient %>
+  </div>
+  <div class="col-md-6">
+    <!-- Patient statistics partial -->
+    <%= render 'patient_statistics' %>
+  </div>
+</div>
+
+<!-- Patient tabs partial -->
+<%= render 'patient_tabs' %>
