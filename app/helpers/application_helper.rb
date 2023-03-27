@@ -3,7 +3,7 @@ module ApplicationHelper
   include PatientHelper
   include PractitionerHelper
   include PersonalCharacteristicsHelper
-  include PersonalCharacteristicsValuesetsHelper
+  include PersonalCharacteristicsDefinitionsHelper
 
   TEST_PATIENT_ID = "smart-1288992"
   TEST_PRACTITIONER_ID = "Smart-Practitioner-71482713"
