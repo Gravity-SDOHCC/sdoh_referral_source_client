@@ -17,14 +17,16 @@
     <tbody>
       <% patients.each do |patient| %>
         <tr>
-          <td><%= link_to patient.name, dashboard_path(patient_id: patient.id) %></td>
+          <td><%= link_to patient.name, patient_path(patient.id) %></td>
           <td><%= patient.dob %></td>
           <td><%= patient.gender %></td>
           <td><%= patient.phone %></td>
           <td><%= patient.address %></td>
           <td>
             <%= link_to 'FHIR Resource', '#', data: { bs_toggle: 'modal', bs_target: "#fhir-resource-modal-#{patient.id}" } %>
-            <%= render 'fhir_resource_modal', resource: patient %>
+            <% content_for :modals do %>
+              <%= render 'shared/fhir_resource_modal', resource: patient %>
+            <% end %>
           </td>
         </tr>
       <% end %>

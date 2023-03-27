@@ -12,7 +12,7 @@ class PersonalCharacteristic
     @performer_reference = fhir_observation.performer.map(&:reference).join(', ')
     @reported_method = read_method(fhir_observation.local_method)
     @type = read_type(fhir_observation.code)
-    @value = fhir_observation.component ? read_component(fhir_observation.component) : read_value(fhir_observation.valueCodeableConcept)
+    @value = fhir_observation.component.present? ? read_component(fhir_observation.component) : read_value(fhir_observation.valueCodeableConcept)
   end
 
   private

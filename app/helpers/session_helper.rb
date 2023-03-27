@@ -8,6 +8,7 @@ module SessionHelper
 
   def get_client
     @fhir_client = session[:client]
+    FHIR::Model.client = @fhir_client
   end
 
   def client_connected?

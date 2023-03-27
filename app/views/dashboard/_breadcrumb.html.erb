@@ -2,7 +2,7 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><%= link_to 'All Patients', dashboard_path(patient_id: "nil") %></li>
+    <li class="breadcrumb-item"><%= link_to 'All Patients', patients_path %></li>
     <% unless current_patient.nil? %>
       <li class="breadcrumb-item active" aria-current="page"><%= @current_patient.name %></li>
     <% end %>

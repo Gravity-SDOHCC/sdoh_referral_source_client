@@ -30,6 +30,7 @@ module PersonalCharacteristicsHelper
         personal_characteristics = entries.map do |entry|
           PersonalCharacteristic.new(entry.resource)
         end
+        save_personal_characteristics(personal_characteristics)
         [true, personal_characteristics]
       else
         [false, "Failed to fetch patient's personal characteristics. Status: #{response.response[:code]} - #{response.response[:body]}"]

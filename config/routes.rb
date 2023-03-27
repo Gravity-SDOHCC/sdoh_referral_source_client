@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   root 'sessions#index'
+  resources :personal_characteristics, only: [:create, :destroy]
+  resources :patients, only: [:index, :show]
   get 'home', to: 'sessions#index'
   post 'connect', to: 'sessions#create'
   get 'disconnect', to: 'sessions#destroy'

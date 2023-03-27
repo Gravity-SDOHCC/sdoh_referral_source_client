@@ -1,5 +1,5 @@
 class DashboardController < ApplicationController
-  before_action :require_client, :set_patients, :set_current_practitioner, :set_patient_id,
+  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_referrences,
 
   # GET /dashboard
   def main
@@ -8,14 +8,9 @@ class DashboardController < ApplicationController
   end
 
   private
-
-  def set_patient_id
-    if params[:patient_id].present?
-      puts "CHECK CHECK I AM IN DashboardController#set_patient_id. params[:patient_id]: #{params[:patient_id]}."
-      save_patient_id(params[:patient_id])
-    end
-
-    if patient_id.present? && patient_id != "nil"
+  # Getting all resources associated with the given patient
+  def get_patient_referrences
+    if patient_id.present?
       set_personal_characteristics
     else
       session[:personal_characteristics] = nil
