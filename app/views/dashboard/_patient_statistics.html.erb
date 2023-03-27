@@ -1,0 +1,28 @@
+<!-- dashboard/_patient_statistics.html.erb -->
+
+<div class="card">
+  <div class="card-header">
+    Patient Statistics
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col text-center">
+        <p class="fs-4 text-primary"><%= @health_concerns&.count || 0 %></p>
+        <p>Number of Health Concerns</p>
+      </div>
+      <div class="col text-center">
+        <p class="fs-4 text-primary"><%= @problems&.count || 0 %></p>
+        <p>Active Problems</p>
+      </div>
+      <div class="col text-center">
+        <p class="fs-4 text-primary"><%= @goals&.count || 0 %></p>
+        <p>Active Goals</p>
+      </div>
+      <div class="col text-center">
+        <p class="fs-4 text-primary"><%= @action_steps&.count || 0 %></p>
+        <p>Active Action Steps</p>
+      </div>
+    </div>
+  </div>
+</div>
+
