@@ -1,5 +1,4 @@
 module PersonalCharacteristicsHelper
-  include PersonalCharacteristicsConstants
   include SessionHelper
 
   def save_personal_characteristics(personal_characteristics)
