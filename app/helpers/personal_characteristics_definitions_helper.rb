@@ -17,9 +17,9 @@ module PersonalCharacteristicsDefinitionsHelper
   ].freeze
 
   REPORTED_METHODS = {
-    self_reported: {display: "Self Reported",  code: "self-reported"},
-    derived: {display: "Derived", code: "derived"},
-    other: {display: "Other", code: "other"}
+    "self-reported": {display: "Self Reported",  code: "self-reported"},
+    "derived": {display: "Derived", code: "derived"},
+    "other": {display: "Other", code: "other"}
   }.freeze
 
   PERSONAL_CHARACTERISTICS_PROFILES = {
@@ -28,7 +28,7 @@ module PersonalCharacteristicsDefinitionsHelper
     gender_identity: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationGenderIdentity",
     recorded_sex_gender: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationRecordedSexGender",
     sexual_orientation: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationSexualOrientation",
-    personal_pronoun: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationPersonalPronouns"
+    personal_pronouns: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationPersonalPronouns"
   }.freeze
 
   PERSONAL_PRONOUNS = [
@@ -90,10 +90,10 @@ module PersonalCharacteristicsDefinitionsHelper
 
   RACE = [
     { code: "1002-5", display: "American Indian or Alaska Native" },
-	{ code: "2028-9", display: "Asian" },
-	{ code: "2054-5", display: "Black or African American" },
-	{ code: "2076-8", display: "Native Hawaiian or Other Pacific Islander" },
-	{ code: "2106-3", display: "White" }
+    { code: "2028-9", display: "Asian" },
+    { code: "2054-5", display: "Black or African American" },
+    { code: "2076-8", display: "Native Hawaiian or Other Pacific Islander" },
+    { code: "2106-3", display: "White" }
   ].freeze
 
   SEX_GENDER = [

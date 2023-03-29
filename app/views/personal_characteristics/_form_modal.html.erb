@@ -1,0 +1,105 @@
+<!-- app/views/personal_characteristics/_form_modal.html.erb -->
+
+<div id="add-personal-characteristics-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Personal Characteristic</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%=form_with url: personal_characteristics_path, method: :post, id: "personal-characteristic-form", class: "form" do |f| %>
+
+          <div class="form-group">
+            <%= f.label :type, "Type" %>
+            <%= f.select :type, options_for_select(PersonalCharacteristicsDefinitionsHelper::PERSONAL_CHARACTERISTIC_TYPES.map { |type| [type[:display], type[:code]] }), {}, { class: "form-control", id: "type-select" } %>
+          </div>
+          <!-- Add fields based on the type and conditionally render them using JavaScript or Rails helpers -->
+          <div class="form-group">
+            <%= f.label :value, "Value" %>
+            <%= f.select :value, [], {}, { id: "value-select", class: "form-select" } %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :reported_method, "Reported Method" %>
+            <% PersonalCharacteristicsDefinitionsHelper::REPORTED_METHODS.values.each do |method_type| %>
+              <div class="form-check">
+                <%= f.radio_button :reported_method, method_type[:code], class: "form-check-input method-field"  %>
+                <%= f.label "method_#{method_type[:code]}", method_type[:display], class: "form-check-label" %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="modal-footer">
+            <%= button_tag "Cancel", type: "button", class: "btn btn-secondary", data: { bs_dismiss: "modal" } %>
+            <%= f.submit "Save", class: "btn btn-primary", id: "save-button" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const typeOptions = <%= raw PersonalCharacteristicsDefinitionsHelper::PERSONAL_CHARACTERISTIC_TYPES.map { |t| [t[:code], PersonalCharacteristicsHelper.options_for_type(t[:code])] }.to_h.to_json %>;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    let typeSelect = document.getElementById('type-select');
+    let valueSelect = document.getElementById('value-select');
+
+    function setValueSelect(options){
+      // Clear the existing options
+        valueSelect.innerHTML = '';
+
+        // Add new options
+        options.forEach(function(option) {
+          let opt = document.createElement('option');
+          opt.value = option.code;
+          opt.text = option.display;
+          valueSelect.add(opt);
+        });
+    };
+
+    if (typeSelect && valueSelect) {
+      let selectedType = typeSelect.value;
+      let options = typeOptions[selectedType] || [];
+      setValueSelect(options);
+
+      typeSelect.addEventListener('change', function() {
+        selectedType = typeSelect.value;
+        options = typeOptions[selectedType] || [];
+
+        setValueSelect(options)
+      });
+    }
+  });
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('personal-characteristic-form');
+    const typeField = document.getElementById('type-select');
+    const methodFields = document.querySelectorAll('.method-field');
+    const valueSelect = document.getElementById('value-select');
+    const saveButton = document.getElementById('save-button');
+
+      function isFormValid() {
+        const typeValid = typeField.value !== '';
+        const valueValid = valueSelect.value !== '';
+        const methodValid = Array.from(methodFields).some(field => field.checked);
+        // Add validation logic for other fields based on the type
+        return typeValid && methodValid && valueValid;
+      }
+
+      function updateSaveButtonState() {
+        saveButton.disabled = !isFormValid();
+      }
+
+      typeField.addEventListener('change', updateSaveButtonState);
+      methodFields.forEach(field => field.addEventListener('change', updateSaveButtonState));
+
+      updateSaveButtonState();
+    });
+</script>
+
+
+
