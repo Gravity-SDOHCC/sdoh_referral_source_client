@@ -1,22 +1,18 @@
 module SessionHelper
-  include UtilsHelper
 
   def save_client(client)
-    # DO NOT compress client object because you will get an error when trying to decompress it (kuz of http client)
-    session[:client] = client
+    @fhir_client = Rails.cache.fetch('client', expires_in: 30.minutes) do
+      client
+    end
   end
 
   def get_client
-    @fhir_client = session[:client]
+    @fhir_client = Rails.cache.read('client')
     FHIR::Model.client = @fhir_client
   end
 
   def client_connected?
-    !!session[:client]
-  end
-
-  def clean_session
-    reset_session
+    !!Rails.cache.read('client')
   end
 
   def save_server_base_url(base_url)
@@ -28,11 +24,11 @@ module SessionHelper
   end
 
   def save_patients(patient_list)
-    session[:patients] = compress_object(patient_list)
+    Rails.cache.write('patients', patient_list, expires_in: 1.day)
   end
 
   def get_patients
-    decompress_object(session[:patients])
+    Rails.cache.read('patients')
   end
 
   def save_patient_id(patient_id)

@@ -2,7 +2,7 @@ module PractitionerHelper
   include SessionHelper
 
   def save_current_practitioner(practitioner)
-    session[:practitioner] = compress_object(practitioner)
+    Rails.cache.write('practitioner', practitioner, expires_in: 1.day)
   end
 
   def save_practitioner_id(practitioner_id)
@@ -10,7 +10,7 @@ module PractitionerHelper
   end
 
   def get_current_practitioner
-    @current_practitioner = decompress_object(session[:practitioner])
+    @current_practitioner = Rails.cache.read('practitioner')
   end
 
   def practitioner_id

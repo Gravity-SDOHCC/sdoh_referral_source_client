@@ -3,8 +3,7 @@ class DashboardController < ApplicationController
 
   # GET /dashboard
   def main
-    puts "CHECK CHECK I AM IN DashboardController#main. Can I access the client? #{client_connected?}. patient_id: #{patient_id}. practitioner_id: #{practitioner_id}."
-    # byebug
+
   end
 
   private
@@ -12,8 +11,6 @@ class DashboardController < ApplicationController
   def get_patient_referrences
     if patient_id.present?
       set_personal_characteristics
-    else
-      session[:personal_characteristics] = nil
     end
   end
 
@@ -22,9 +19,8 @@ class DashboardController < ApplicationController
     if success
       @patients = result
     else
-      clean_session
+      reset_session
       flash[:error] = result
-      redirect_to home_path
     end
   end
 
@@ -33,7 +29,8 @@ class DashboardController < ApplicationController
     if success
       @current_practitioner = result
     else
-      clean_session
+      reset_session
+      Rails.cache.clear
       flash[:error] = result
       redirect_to home_path
     end

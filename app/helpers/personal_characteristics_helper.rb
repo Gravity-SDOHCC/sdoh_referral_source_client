@@ -1,26 +1,17 @@
 module PersonalCharacteristicsHelper
   include SessionHelper
-
-  def save_personal_characteristics(personal_characteristics)
-    session[:personal_characteristics] = compress_object(personal_characteristics)
-  end
-
-  def get_personal_characteristics
-    decompress_object(session[:personal_characteristics])
-  end
+  include PersonalCharacteristicsDefinitionsHelper
 
   def fetch_personal_characteristics
-    personal_characteristics = get_personal_characteristics
-    if personal_characteristics
-      return [true, personal_characteristics]
-    end
-
     client = get_client
     begin
       search_params = {
         parameters: {
           category: "personal-characteristic",
-          subject: patient_id
+          subject: patient_id,
+          # _maxresults: 5,
+          # _count: 5
+          _sort: "-date"
         }
       }
       response = client.search(FHIR::Observation, search: search_params)
@@ -29,7 +20,7 @@ module PersonalCharacteristicsHelper
         personal_characteristics = entries.map do |entry|
           PersonalCharacteristic.new(entry.resource)
         end
-        save_personal_characteristics(personal_characteristics)
+
         [true, personal_characteristics]
       else
         [false, "Failed to fetch patient's personal characteristics. Status: #{response.response[:code]} - #{response.response[:body]}"]
@@ -40,4 +31,25 @@ module PersonalCharacteristicsHelper
     #   [false, "Request timeout. Please try again later. #{e.message}"]
     end
   end
+
+  # This is used to populate the select options for the personal characteristic form
+  def self.options_for_type(type)
+    case type
+    when 'personal_pronouns'
+      PERSONAL_PRONOUNS
+    when 'ethnicity'
+      ETHNICITY
+    when 'race'
+      RACE
+    when 'sex_gender'
+      SEX_GENDER
+    when 'sexual_orientation'
+      SEXUAL_ORIENTATION
+    when 'gender_identity'
+      GENDER_IDENTITY
+    else
+      []
+    end
+  end
+
 end

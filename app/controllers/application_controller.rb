@@ -6,7 +6,9 @@ class ApplicationController < ActionController::Base
     if client_connected?
       get_client
     else
-      flash[:error] = "You are not connected to a FHIR server"
+      reset_session
+      Rails.cache.clear
+      flash[:error] = "Your session has expired. Plesase connect to a FHIR server"
       redirect_to home_path
     end
   end

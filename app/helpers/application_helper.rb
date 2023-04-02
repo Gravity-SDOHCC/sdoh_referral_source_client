@@ -6,7 +6,7 @@ module ApplicationHelper
   include PersonalCharacteristicsDefinitionsHelper
 
   TEST_PATIENT_ID = "smart-1288992"
-  TEST_PRACTITIONER_ID = "Smart-Practitioner-71482713"
+  TEST_PRACTITIONER_ID = "SDOHCC-PractitionerDrJanWaterExample"
   #### Flash helpers ####
 
   def bootstrap_class_for(flash_type)
