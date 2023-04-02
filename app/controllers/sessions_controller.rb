@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
       flash[:notice] = "You are already connected to a FHIR server (#{get_server_base_url})"
       redirect_to dashboard_path
     else
-      # clean_session
       @fhir_servers = FhirServer.all
     end
   end
@@ -44,7 +43,8 @@ class SessionsController < ApplicationController
 
   # delete /disconnect
   def destroy
-    clean_session
+    reset_session
+    Rails.cache.clear
     flash[:success] = "Successfully disconnected from the FHIR server"
     redirect_to root_path
   end

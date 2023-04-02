@@ -7,9 +7,6 @@ class PersonalCharacteristicsController < ApplicationController
   end
 
   def create
-    # Rails.cache.clear
-    pcs = get_personal_characteristics
-    # byebug
     begin
       obs = FHIR::Observation.new
       obs.meta = obs_meta
@@ -21,33 +18,23 @@ class PersonalCharacteristicsController < ApplicationController
       obs.performer = [obs_subject] if params[:reported_method] == "self-reported"
       obs.derivedFrom = [FHIR::Reference.new(reference: params[:derived_from])] if params[:derived_from].present?
       set_fields_base_on_type(obs)
-      result = @fhir_client.create(obs) #obs.create
-      pcs << PersonalCharacteristic.new(result)
-      # byebug
-      save_personal_characteristics(pcs)
 
+      obs.create
       flash[:success] = "Personal characteristic created"
-      expires_now
     rescue StandardError => e
       flash[:error] = "Unable to create personal characteristic. #{e.message}"
     end
+    Rails.cache.delete('personal_characteristics')
     redirect_to dashboard_path
   end
 
   def destroy
-    pcs = get_personal_characteristics
-    pc = pcs&.find { |pc| pc.id == params[:id] }
-    if pc.nil?
-      flash[:error] = "Personal characteristic not found"
-    else
-      begin
-        pc.fhir_resource.destroy
-        pcs.delete(pc)
-        save_personal_characteristics(pcs)
-        flash[:success] = "Personal characteristic deleted"
-      rescue StandardError => e
-        flash[:error] = "Unable to delete personal characteristics. #{e.message}"
-      end
+    begin
+      @fhir_client.destroy(FHIR::Observation, params[:id])
+      Rails.cache.delete('personal_characteristics')
+      flash[:success] = "Personal characteristic deleted"
+    rescue StandardError => e
+      flash[:error] = "Unable to delete personal characteristics. #{e.message}"
     end
     redirect_to dashboard_path
   end
