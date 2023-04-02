@@ -1,9 +1,11 @@
 <!-- dashboard/_patients_list.html.erb -->
 
-<% if patients.empty? %>
+<% if patients.nil? %>
+  <p>Unable to fetch patients.</p>
+<% elsif patients.empty? %>
   <p>No patients found.</p>
 <% else %>
-  <table class="table">
+  <table class="table table-sm">
     <thead>
       <tr>
         <th>Name</th>
