@@ -34,9 +34,9 @@
                       <td><%= pc.performer_name %></td>
                       <td><%= pc.reported_method %></td>
                       <td><%= pc.value %></td>
-                      <td class="d-flex justify-content-between align-items-center">
-                        <%= link_to 'FHIR Resource', "#fhir-resource-modal-#{pc.id}", data: { bs_toggle: 'modal'}, class: 'btn btn-primary btn-sm' %>
-                        <%= link_to "Delete", personal_characteristic_path(pc.id), method: :delete, data: { confirm: "Delete personal characteristics #{pc.type}?" }, class: "btn btn-danger btn-sm" %>
+                      <td class="d-flex flex-lg-row flex-sm-column justify-content-between align-items-center">
+                        <%= link_to 'FHIR Resource', "#fhir-resource-modal-#{pc.id}", data: { bs_toggle: 'modal'}, class: 'btn btn-primary btn-sm m-1' %>
+                        <%= link_to "Delete", personal_characteristic_path(pc.id), method: :delete, data: { confirm: "Delete personal characteristics #{pc.type}?" }, class: "btn btn-danger btn-sm m-1" %>
                         <% content_for :modals do %>
                           <%= render 'shared/fhir_resource_modal', resource: pc %>
                         <% end %>
