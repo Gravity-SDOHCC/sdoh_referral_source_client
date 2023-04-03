@@ -19,6 +19,11 @@
             <%= f.label :value, "Value" %>
             <%= f.select :value, [], {}, { id: "value-select", class: "form-select" } %>
           </div>
+          <!-- Add fields based on the type/value and conditionally render them using JavaScript -->
+          <div class="form-group" id="ethnicity-description-group" style="display: none;">
+            <%= f.label :ethnicity_description, "Ethnicity Description" %>
+            <%= f.text_field :ethnicity_description, class: "form-control" %>
+          </div>
 
           <div class="form-group">
             <%= f.label :reported_method, "Reported Method" %>
@@ -46,6 +51,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     let typeSelect = document.getElementById('type-select');
     let valueSelect = document.getElementById('value-select');
+    let ethnicityDescriptionGroup = document.getElementById('ethnicity-description-group');
 
     function setValueSelect(options){
       // Clear the existing options
@@ -60,7 +66,7 @@
         });
     };
 
-    if (typeSelect && valueSelect) {
+    if (typeSelect && valueSelect && ethnicityDescriptionGroup) {
       let selectedType = typeSelect.value;
       let options = typeOptions[selectedType] || [];
       setValueSelect(options);
@@ -69,8 +75,30 @@
         selectedType = typeSelect.value;
         options = typeOptions[selectedType] || [];
 
-        setValueSelect(options)
+        setValueSelect(options);
+
+         // Handle the ethnicity description field visibility
+        if (selectedType === 'ethnicity' && valueSelect.value === '2135-2') {
+          ethnicityDescriptionGroup.style.display = 'block';
+        } else {
+          ethnicityDescriptionGroup.style.display = 'none';
+        }
       });
+
+      valueSelect.addEventListener('change', function() {
+        let selectedType = typeSelect.value;
+        let selectedValue = valueSelect.value;
+
+        // Handle the ethnicity description field visibility
+        if (selectedType === 'ethnicity' && selectedValue === '2135-2') {
+          ethnicityDescriptionGroup.style.display = 'block';
+        } else {
+          ethnicityDescriptionGroup.style.display = 'none';
+        }
+      });
+
+      // Trigger the change event initially to set the correct options and field visibility
+      typeSelect.dispatchEvent(new Event('change'));
     }
   });
 

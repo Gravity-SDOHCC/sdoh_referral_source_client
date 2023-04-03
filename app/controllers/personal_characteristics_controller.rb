@@ -45,6 +45,16 @@ class PersonalCharacteristicsController < ApplicationController
     case params[:type]
     when "personal_pronouns"
      add_personal_pronoun_attr(obs)
+    when "ethnicity"
+      add_ethnicity_attr(obs)
+    when "race"
+      # TODO
+    when "sex_gender"
+      # TODO
+    when "sexual_orientation"
+      # TODO
+    when "gender_identity"
+      # TODO
     end
   end
 
@@ -76,6 +86,47 @@ class PersonalCharacteristicsController < ApplicationController
         }
       ]
     }
+  end
+
+  #### Ethnicity type ####
+  def add_ethnicity_attr(obs)
+    obs.code = ethnicity_code
+    obs.component = ethnicity_component
+  end
+
+  def ethnicity_code
+    {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "69490-1",
+          "display": "Ethnicity OMB.1997"
+        }
+      ]
+    }
+  end
+
+  def ethnicity_component
+    [
+      {
+        "code": ethnicity_code,
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "urn:oid:2.16.840.1.113883.6.238",
+              "code": params[:value],
+              "display": ETHNICITY.find { |e| e[:code] == params[:value] }[:display]
+            }
+          ]
+        }
+      },
+      if params[:ethnicity_description]
+        {
+          "code": ethnicity_code,
+          "valueString": params[:ethnicity_description]
+        }
+      end
+    ]
   end
 
   #### ALL Types ####
