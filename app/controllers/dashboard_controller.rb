@@ -11,6 +11,7 @@ class DashboardController < ApplicationController
   def get_patient_referrences
     if patient_id.present?
       set_personal_characteristics
+      set_health_concerns
     end
   end
 
@@ -40,6 +41,16 @@ class DashboardController < ApplicationController
     success, result = fetch_personal_characteristics
     if success
       @personal_characteristics = result
+    else
+      flash[:warning] = result
+    end
+  end
+
+  def set_health_concerns
+    success, result = fetch_health_concerns
+    if success
+      @active_health_concerns = result["active"] || []
+      @resolved_health_concerns = result["resolved"] || []
     else
       flash[:warning] = result
     end

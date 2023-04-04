@@ -7,10 +7,10 @@
       <a class="nav-link active" id="personal-characteristics-tab" data-bs-toggle="tab" href="#personal-characteristics" role="tab" aria-controls="personal-characteristics" aria-selected="true">Personal Characteristics</a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link" id="health-concerns-tab" data-bs-toggle="tab" href="#health-concerns" role="tab" aria-controls="health-concerns" aria-selected="false">Observations</a>
+      <a class="nav-link" id="health-concerns-tab" data-bs-toggle="tab" href="#health-concerns" role="tab" aria-controls="health-concerns" aria-selected="false">Health Concerns</a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link" id="problems-tab" data-bs-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">Health Concerns</a>
+      <a class="nav-link" id="problems-tab" data-bs-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">Problems</a>
     </li>
     <li class="nav-item" role="presentation">
       <a class="nav-link" id="goals-tab" data-bs-toggle="tab" href="#goals" role="tab" aria-controls="goals" aria-selected="false">Goals</a>
@@ -31,10 +31,10 @@
       <%= render 'personal_characteristics', personal_characteristics: @personal_characteristics %>
     </div>
     <div class="tab-pane fade" id="health-concerns" role="tabpanel" aria-labelledby="health-concerns-tab">
-      <%= render 'observations', health_concerns: @health_concerns %>
+      <%= render 'health_concerns/health_concerns' %>
     </div>
     <div class="tab-pane fade" id="problems" role="tabpanel" aria-labelledby="problems-tab">
-      <%= render 'health_concerns', problems: @problems %>
+      <%= render 'problems', problems: @problems %>
     </div>
     <div class="tab-pane fade" id="goals" role="tabpanel" aria-labelledby="goals-tab">
       <%= render 'goals', goals: @goals %>

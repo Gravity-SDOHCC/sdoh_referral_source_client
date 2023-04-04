@@ -1,0 +1,35 @@
+<div id="health-concern-evidence-modal-<%= resource.id %>" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> Evidence Source</h5></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title"><%= resource.evidence_reference %></h6>
+          </div>
+          <div class="card-body">
+            <div class="label-value">
+              <span class="fw-semibold">Code:</span>
+              <span class="small-text"><%= resource.evidence_source.code %></span>
+            </div>
+            <div class="label-value">
+              <span class="fw-semibold">Category:</span>
+              <span class="small-text"><%= resource.evidence_source.category%></span>
+            </div>
+            <div class="label-value">
+              <span class="fw-semibold">Value:</span>
+              <span class="small-text"><%= resource.evidence_source.value %></span>
+            </div>
+            <div class="label-value">
+              <span class="fw-semibold">Recorded Date:</span>
+              <span class="small-text"><%= resource.evidence_source&.effective_date_time&.to_date %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
