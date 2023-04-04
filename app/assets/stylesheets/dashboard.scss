@@ -1,3 +1,30 @@
 // Place all the styles related to the Dashboard controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.small-text {
+  font-size: 14px;
+}
+
+.label-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 5px;
+}
+
+.label-value:last-child {
+  border-bottom: none;
+}
+
+.label-value span {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+}
+
+.label-value .fw-bold {
+  margin-right: 10px;
+}
