@@ -1,0 +1,54 @@
+  <div class="table-responsive small-text">
+  <table class="table table-sm text-center fw-semibold">
+      <thead>
+        <tr>
+          <th scope="col">Health Concern</th>
+          <th scope="col">Category</th>
+          <th scope="col">Based On</th>
+          <th scope="col">Assessment Date</th>
+          <% if type == "resolved" %>
+            <th scope="col">Resolution Date</th>
+          <% end %>
+          <% if type == "active" %>
+            <th scope="col">Actions</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% health_concerns.each do |concern| %>
+          <tr>
+            <td>
+              <%= link_to concern.code, "#fhir-resource-modal-#{concern.id}", data: { bs_toggle: 'modal'} %>
+              <% content_for :modals do %>
+                <%= render 'shared/fhir_resource_modal', resource: concern %>
+              <% end %>
+            </td>
+            <td><%= concern.category %></td>
+            <td>
+              <% if concern.evidence_reference %>
+                <span class="btn btn-sm btn-primary cursor-pointer" data-bs-toggle="modal" data-bs-target="#health-concern-evidence-modal-<%= concern.id %>">
+                  <i class="bi bi-window"></i> source
+                </span>
+                <% content_for :modals do %>
+                  <%= render 'health_concerns/evidence_modal', resource: concern %>
+                <% end %>
+              <% else %>
+                Conversation with patient
+              <% end %>
+            </td>
+            <td><%= concern.onset_period ? concern.onset_period.strftime("%Y-%m-%d %H:%M:%S") : "N/A" %></td>
+            <% if type == "resolved" %>
+              <td><%= concern.resolution_period ? concern.resolution_period.strftime("%Y-%m-%d %H:%M:%S") : "N/A" %></td>
+            <% end %>
+            <% if type == "active" %>
+              <td class="d-flex justify-content-between text-nowrap">
+                <%= link_to "Promote to Problem", "promote_to_problem_path(concern)", class: "btn btn-sm btn-primary flex-fill me-2" %>
+                <%= link_to "Mark as Resolved", "/health-concerns/#{concern.id}/resolved", class: "btn btn-sm btn-primary flex-fill me-2" %>
+                <%= link_to "Remove", "/health-concerns/#{concern.id}/inactive", class: "btn btn-sm btn-primary flex-fill" %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+  </table>
+</div>
