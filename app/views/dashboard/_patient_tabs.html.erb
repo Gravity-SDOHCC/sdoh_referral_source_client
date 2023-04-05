@@ -37,7 +37,7 @@
       <%= render 'conditions/problems' %>
     </div>
     <div class="tab-pane fade <%= 'show active' if @active_tab == 'goals' %>" id="goals" role="tabpanel" aria-labelledby="goals-tab">
-      <%= render 'goals', goals: @goals %>
+      <%= render 'goals/goals', goals: @goals %>
     </div>
     <div class="tab-pane fade <%= 'show active' if @active_tab == 'action-steps' %>" id="action-steps" role="tabpanel" aria-labelledby="action-steps-tab">
       <%= render 'action_steps', action_steps: @action_steps %>

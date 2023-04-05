@@ -6,6 +6,8 @@ module ApplicationHelper
   include PersonalCharacteristicsDefinitionsHelper
   include ConditionsHelper
   include ConditionDefinitionsHelper
+  include GoalsHelper
+  include GoalDefinitionsHelper
 
   TEST_PATIENT_ID = "smart-1288992"
   TEST_PRACTITIONER_ID = "SDOHCC-PractitionerDrJanWaterExample"

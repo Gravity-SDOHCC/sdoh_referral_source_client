@@ -1,0 +1,39 @@
+<div class="container">
+
+  <% if @active_goals.nil? && @completed_goals.nil? %>
+    <h3 class="text-muted text-center my-3">Unable to fetch goals from server</h3>
+  <% else %>
+    <div class="table-wrapper my-3">
+      <div class="d-flex justify-content-between text-nowrap">
+        <div class="title">
+          <h3>Active Goals</h3>
+        </div>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-goal-modal">Add Goal</button>
+      </div>
+
+      <% if @active_goals.empty? %>
+        <h3 class="text-muted text-center mb-3">Patient has no active goals</h3>
+      <% else %>
+        <%= render "goals/table", goals: @active_goals, type: "active" %>
+      <% end %>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="header">
+        <div class="title">
+          <h3>Completed Goals</h3>
+        </div>
+      </div>
+      <% if @completed_goals.empty? %>
+        <h3 class="text-muted text-center">Patient has no completed goals</h3>
+      <% else %>
+        <%= render "goals/table", goals: @completed_goals, type: "completed" %>
+      <% end %>
+    </div>
+
+    <% content_for :modals do %>
+      <%= render "goals/form_modal", type: "health-concern" %>
+    <% end %>
+  <% end %>
+
+</div>

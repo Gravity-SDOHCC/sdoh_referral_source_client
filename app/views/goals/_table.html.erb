@@ -1,0 +1,69 @@
+<!--views/goals/_table.html.erb-->
+<div class="table-responsive small-text">
+  <table class="table table-sm text-center fw-semibold">
+      <thead>
+        <tr>
+          <th scope="col">Goal</th>
+          <th scope="col">Problem(s)</th>
+          <th scope="col">Start Date</th>
+          <th scope="col">Targets</th>
+          <th scope="col">Achievement Status</th>
+          <% if type == "active" %>
+            <th scope="col">Actions</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% goals.each do |goal| %>
+          <tr>
+            <td>
+              <%= link_to goal.description, "#fhir-resource-modal-#{goal.id}", data: { bs_toggle: 'modal'} %>
+              <% content_for :modals do %>
+                <%= render 'shared/fhir_resource_modal', resource: goal %>
+              <% end %>
+            </td>
+            <td>
+              <% pb_count = goal&.problems&.count || 0 %>
+              <% if pb_count > 0 %>
+                <%= link_to pb_count, "#goal-problem-modal-#{goal.id}", data: { bs_toggle: 'modal'} %>
+                <% content_for :modals do %>
+                  <%= render 'goals/problem_modal', resource: goal %>
+                <% end %>
+                <% else %>
+                <%= pb_count %>
+              <% end %>
+            </td>
+            <td><%= goal.start_date&.to_date %></td>
+            <td>
+              <% targ_count = goal&.targets&.count || 0 %>
+              <% if targ_count > 0 %>
+                <%= link_to targ_count, "#goal-target-modal-#{goal.id}", data: { bs_toggle: 'modal'} %>
+                <% content_for :modals do %>
+                  <%= render 'goals/target_modal', resource: goal %>
+                <% end %>
+                <% else %>
+                <%= targ_count %>
+              <% end %>
+            </td>
+            <td><%= goal.achievement_status %></td>
+            <% if type == "active" %>
+              <td class="">
+                <%= link_to "#", class: 'action-button' do %>
+                  <span class="icon"><i class="bi bi-plus"></i></span>
+                  <span class="label">Add Target</span>
+                <% end %>
+                <%= link_to "#", class: 'action-button' do %>
+                  <span class="icon"><i class="bi bi-check"></i></span>
+                  <span class="label">Mark as Completed</span>
+                <% end %>
+                <%= link_to "#", class: 'action-button' do %>
+                  <span class="icon"><i class="bi bi-trash"></i></span>
+                  <span class="label">Remove</span>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+  </table>
+</div>

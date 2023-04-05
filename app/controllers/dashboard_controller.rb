@@ -11,7 +11,8 @@ class DashboardController < ApplicationController
   def get_patient_referrences
     if patient_id.present?
       set_personal_characteristics
-      set_health_concerns
+      set_conditions
+      set_goals
     end
   end
 
@@ -46,13 +47,23 @@ class DashboardController < ApplicationController
     end
   end
 
-  def set_health_concerns
+  def set_conditions
     success, result = fetch_health_concerns
     if success
       @active_problems =  result["problem-list-item"]&.dig("active") || []
       @resolved_problems = result["problem-list-item"]&.dig("resolved") || []
       @active_health_concerns = result["health-concern"]&.dig("active") || []
       @resolved_health_concerns = result["health-concern"]&.dig("resolved") || []
+    else
+      flash[:warning] = result
+    end
+  end
+
+  def set_goals
+    success, result = fetch_goals
+    if success
+      @active_goals = result["active"] || []
+      @completed_goals = result["completed"] || []
     else
       flash[:warning] = result
     end
