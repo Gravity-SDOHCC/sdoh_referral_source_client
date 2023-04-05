@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#main'
   post 'conditions', to: 'conditions#create'
   get 'conditions/:id/:status', to: 'conditions#update_condition'
+  post 'tasks', to: 'tasks#create'
+  get 'tasks/:id/:status', to: 'tasks#update_task'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

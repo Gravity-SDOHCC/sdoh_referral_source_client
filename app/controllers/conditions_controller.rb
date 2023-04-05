@@ -20,6 +20,7 @@ class ConditionsController < ApplicationController
     end
     tab = params[:type] == "health-concern" ? "health-concerns" : "problems"
     set_active_tab(tab)
+    Rails.cache.delete("conditions_#{patient_id}")
     redirect_to dashboard_path(active_tab: "health-concerns")
   end
 
@@ -40,6 +41,7 @@ class ConditionsController < ApplicationController
       flash[:error] = "Unable to update health concern: #{e.message}"
     end
     set_active_tab("health-concerns")
+    Rails.cache.delete("conditions_#{patient_id}")
     redirect_to dashboard_path
   end
 

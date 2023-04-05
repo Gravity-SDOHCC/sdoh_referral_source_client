@@ -6,7 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <%= form_with url: "tasks_path", method: :post, id: "task-form", class: "form" do |f| %>
+        <%= form_with url: tasks_path, method: :post, id: "task-form", class: "form" do |f| %>
           <div class="mb-3">
             <%= f.label :category, "Category/Domain", class: "form-label" %>
             <%= f.select :category, category_options, { prompt: 'Select Category/Domain' }, { class: "form-select form-select-sm", id: "category-select" } %>
@@ -22,9 +22,9 @@
           <hr>
           <div class="form-group mb-3">
             <%= f.label :priority, "Priority", class: "form-label" %>
-            <%= f.radio_button :priority, "Routine", {class: "form-check-input"} %> Routine
-            <%= f.radio_button :priority, "Urgent", {class: "form-check-input"} %> Urgent
-            <%= f.radio_button :priority, "ASAP", {class: "form-check-input"} %> ASAP
+            <%= f.radio_button :priority, "routine", {class: "form-check-input"} %> Routine
+            <%= f.radio_button :priority, "urgent", {class: "form-check-input"} %> Urgent
+            <%= f.radio_button :priority, "asap", {class: "form-check-input"} %> ASAP
           </div>
           <div class="mb-3">
             <%= f.label :occurrence, "Occurrence", class: "form-label" %>
