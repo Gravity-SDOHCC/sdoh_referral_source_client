@@ -3,7 +3,7 @@ class DashboardController < ApplicationController
 
   # GET /dashboard
   def main
-
+    @active_tab = active_tab
   end
 
   private
@@ -49,8 +49,10 @@ class DashboardController < ApplicationController
   def set_health_concerns
     success, result = fetch_health_concerns
     if success
-      @active_health_concerns = result["active"] || []
-      @resolved_health_concerns = result["resolved"] || []
+      @active_problems =  result["problem-list-item"]&.dig("active") || []
+      @resolved_problems = result["problem-list-item"]&.dig("resolved") || []
+      @active_health_concerns = result["health-concern"]&.dig("active") || []
+      @resolved_health_concerns = result["health-concern"]&.dig("resolved") || []
     else
       flash[:warning] = result
     end

@@ -4,7 +4,8 @@ module ApplicationHelper
   include PractitionerHelper
   include PersonalCharacteristicsHelper
   include PersonalCharacteristicsDefinitionsHelper
-  include HealthConcernsHelper
+  include ConditionsHelper
+  include ConditionDefinitionsHelper
 
   TEST_PATIENT_ID = "smart-1288992"
   TEST_PRACTITIONER_ID = "SDOHCC-PractitionerDrJanWaterExample"

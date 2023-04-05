@@ -39,4 +39,11 @@ module SessionHelper
     session[:patient_id]
   end
 
+  def set_active_tab(tab)
+    session[:active_tab] = tab
+  end
+
+  def active_tab
+    session[:active_tab] || "personal-characteristics"
+  end
 end

@@ -25,6 +25,7 @@ class PersonalCharacteristicsController < ApplicationController
       flash[:error] = "Unable to create personal characteristic. #{e.message}"
     end
     Rails.cache.delete('personal_characteristics')
+    set_active_tab("personal-characteristics")
     redirect_to dashboard_path
   end
 

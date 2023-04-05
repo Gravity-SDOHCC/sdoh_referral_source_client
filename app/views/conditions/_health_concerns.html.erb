@@ -1,0 +1,39 @@
+<div class="container">
+
+  <% if @active_health_concerns.nil? && @resolved_health_concerns.nil? %>
+    <h3 class="text-muted text-center my-3">Unable to fetch health concerns from server</h3>
+  <% else %>
+    <div class="table-wrapper my-3">
+      <div class="d-flex justify-content-between text-nowrap">
+        <div class="title">
+          <h3>Active Health Concerns</h3>
+        </div>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-condition-modal">Add Health Concern</button>
+      </div>
+
+      <% if @active_health_concerns.empty? %>
+        <h3 class="text-muted text-center mb-3">Patient has no active health concerns</h3>
+      <% else %>
+        <%= render "conditions/table", conditions: @active_health_concerns, type: "active", problem: false %>
+      <% end %>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="header">
+        <div class="title">
+          <h3>Resolved Health Concerns</h3>
+        </div>
+      </div>
+      <% if @resolved_health_concerns.empty? %>
+        <h3 class="text-muted text-center">Patient has no resolved health concerns</h3>
+      <% else %>
+        <%= render "conditions/table", conditions: @resolved_health_concerns, type: "resolved" %>
+      <% end %>
+    </div>
+
+    <% content_for :modals do %>
+      <%= render "conditions/form_modal", type: "health-concern" %>
+    <% end %>
+  <% end %>
+
+</div>

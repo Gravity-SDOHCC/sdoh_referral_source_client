@@ -1,0 +1,58 @@
+  <div class="table-responsive small-text">
+  <table class="table table-sm text-center fw-semibold">
+      <thead>
+        <tr>
+          <th scope="col">Health Concern</th>
+          <th scope="col">Category</th>
+          <th scope="col">Based On</th>
+          <th scope="col">Assessment Date</th>
+          <% if type == "resolved" %>
+            <th scope="col">Resolution Date</th>
+          <% end %>
+          <% if type == "active" %>
+            <th scope="col">Actions</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% conditions.each do |condition| %>
+          <tr>
+            <td>
+              <%= link_to condition.code, "#fhir-resource-modal-#{condition.id}", data: { bs_toggle: 'modal'} %>
+              <% content_for :modals do %>
+                <%= render 'shared/fhir_resource_modal', resource: condition %>
+              <% end %>
+            </td>
+            <td><%= condition.category %></td>
+            <td>
+              <% if condition.evidence_reference.present? %>
+                <span class="btn btn-sm btn-primary cursor-pointer" data-bs-toggle="modal" data-bs-target="#condition-evidence-modal-<%= condition.id %>">
+                  <i class="bi bi-window"></i> source
+                </span>
+                <% content_for :modals do %>
+                  <%= render 'conditions/evidence_modal', resource: condition %>
+                <% end %>
+              <% else %>
+                Conversation with patient
+              <% end %>
+            </td>
+            <td><%= condition.onset_period ? condition.onset_period.strftime("%Y-%m-%d %H:%M:%S") : "N/A" %></td>
+            <% if type == "resolved" %>
+              <td><%= condition.resolution_period ? condition.resolution_period.strftime("%Y-%m-%d %H:%M:%S") : "N/A" %></td>
+            <% end %>
+            <% if type == "active" %>
+              <td class="d-flex justify-content-between text-nowrap">
+
+                <% if !problem %>
+                  <%= link_to "Promote to Problem", "/conditions/#{condition.id}/problem", class: "btn btn-sm btn-primary flex-fill me-2" %>
+                <% end %>
+
+                <%= link_to "Mark as Resolved", "/conditions/#{condition.id}/resolved", class: "btn btn-sm btn-primary flex-fill me-2" %>
+                <%= link_to "Remove", "/conditions/#{condition.id}/inactive", class: "btn btn-sm btn-primary flex-fill" %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+  </table>
+</div>

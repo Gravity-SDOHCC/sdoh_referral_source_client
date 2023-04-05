@@ -1,0 +1,39 @@
+<div class="container">
+
+  <% if @active_problems.nil? && @resolved_problems.nil? %>
+    <h3 class="text-muted text-center my-3">Unable to fetch problems from server</h3>
+  <% else %>
+    <div class="table-wrapper my-3">
+      <div class="d-flex justify-content-between text-nowrap">
+        <div class="title">
+          <h3>Active Problems</h3>
+        </div>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-condition-modal">Add Problem</button>
+      </div>
+
+      <% if @active_problems.empty? %>
+        <h3 class="text-muted text-center mb-3">Patient has no active problems</h3>
+      <% else %>
+        <%= render "conditions/table", conditions: @active_problems, type: "active", problem: true %>
+      <% end %>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="header">
+        <div class="title">
+          <h3>Resolved Problems</h3>
+        </div>
+      </div>
+      <% if @resolved_problems.empty? %>
+        <h3 class="text-muted text-center">Patient has no resolved problems</h3>
+      <% else %>
+        <%= render "conditions/table", conditions: @resolved_problems, type: "resolved" %>
+      <% end %>
+    </div>
+
+    <% content_for :modals do %>
+      <%= render "conditions/form_modal", type: "problem-list-item" %>
+    <% end %>
+  <% end %>
+
+</div>

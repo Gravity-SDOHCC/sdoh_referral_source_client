@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   post 'connect', to: 'sessions#create'
   get 'disconnect', to: 'sessions#destroy'
   get 'dashboard', to: 'dashboard#main'
+  post 'conditions', to: 'conditions#create'
+  get 'conditions/:id/:status', to: 'conditions#update_condition'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

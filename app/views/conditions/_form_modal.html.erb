@@ -1,0 +1,43 @@
+<!-- app/views/conditions/_form_modal.html.erb -->
+<div id="add-condition-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Health Concern/ Problem</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with url: conditions_path, method: :post, id: "condition-form", class: "form" do |f| %>
+
+          <div class="mb-3">
+            <%= f.label :category, "Category", class: "form-label" %>
+            <%= f.select :category, options_for_select([["Select category", ""]] + ConditionDefinitionsHelper::CONDITION_CATEGORY.map { |type| [type[:display], type[:code]] }), {}, { class: "form-select", id: "type-select", required: true } %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :icd_code, "ICD-10 Code", class: "form-label" %>
+            <%= f.text_field :icd_code, class: "form-control", placeholder: "Enter ICD-10 code", required: true %>
+            <%= f.text_field :icd_display, class: "form-control mt-2", placeholder: "Enter ICD-10 code description", required: true %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :snomed_code, "SNOMED-CT Code", class: "form-label" %>
+            <%= f.text_field :snomed_code, class: "form-control", placeholder: "Enter SNOMED-CT code", required: true %>
+            <%= f.text_field :snomed_display, class: "form-control mt-2", placeholder: "Enter SNOMED-CT code description", required: true %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :effective_date, "Effective Date", class: "form-label" %>
+            <%= f.date_field :effective_date, class: "form-control", required: true %>
+          </div>
+
+          <%= f.hidden_field :type, value: type %>
+
+          <div class="modal-footer">
+            <%= button_tag "Cancel", type: "button", class: "btn btn-secondary", data: { bs_dismiss: "modal" } %>
+            <%= f.submit "Save", class: "btn btn-primary", id: "save-button" %>
+          </div>
+        <% end %>
+
+
+      </div>
+    </div>
+  </div>
+</div>

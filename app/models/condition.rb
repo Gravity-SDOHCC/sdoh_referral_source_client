@@ -1,6 +1,6 @@
-# HealthConcern model
-class HealthConcern
-  attr_reader :id, :clinical_status, :verification_status, :category, :code, :subject_name, :subject_reference,
+# Condition model for Health concerns and Problems
+class Condition
+  attr_reader :id, :clinical_status, :verification_status, :category, :type, :code, :subject_name, :subject_reference,
               :resolution_period, :onset_period, :asserter_name, :asserter_reference, :evidence_reference,
               :evidence_source, :fhir_resource
 
@@ -10,6 +10,7 @@ class HealthConcern
     @clinical_status = get_code_from_complex(fhir_condition.clinicalStatus)
     @verification_status = get_code_from_complex(fhir_condition.verificationStatus)
     @category = get_category_display(fhir_condition.category)
+    @type = get_type(fhir_condition.category) # health-concern or problem-list-item
     @code = get_condition_code(fhir_condition.code)
     @subject_name = fhir_condition.subject&.display
     @subject_reference = fhir_condition.subject&.reference
@@ -19,7 +20,10 @@ class HealthConcern
     @asserter_reference = fhir_condition.asserter&.reference
     @evidence_reference = get_evidence_references(fhir_condition.evidence)
     evidence_ref_id = @evidence_reference&.split("/")&.last
-    @evidence_source = Observation.new(FHIR::Observation.read(evidence_ref_id)) if @evidence_reference
+    obs = FHIR::Observation.read(evidence_ref_id) if evidence_ref_id
+    # For some reason, sometimes a read retuns a FHIR::Bundle instead of a FHIR::Observation
+    obs = obs&.resource&.entry&.first&.resource if obs.is_a?(FHIR::Bundle)
+    @evidence_source = Observation.new(obs) if obs
   end
 
   private
@@ -31,6 +35,11 @@ class HealthConcern
   def get_category_display(category)
     type = category&.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes" }&.coding&.first
     display = type&.display || type&.code&.gsub("-", " ")&.titleize
+  end
+
+  def get_type(category)
+    type = category&.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/core/CodeSystem/condition-category" }&.coding&.first
+    type&.code
   end
 
   def get_evidence_references(evidence)
