@@ -23,7 +23,7 @@ module TasksHelper
 
         grp = {"active" => [], "completed" => []}
         tasks.each do |task|
-          grp["active"] << task if task.status != "completed"
+          grp["active"] << task if task.status != "completed" && task.status != "cancelled"
           grp["completed"] << task if task.status == "completed"
         end
 

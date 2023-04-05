@@ -39,7 +39,28 @@ class TasksController < ApplicationController
   end
 
   def update_task
+    begin
+      task = FHIR::Task.read(params[:id])
+      if task.present?
+        task.status = params[:status]
+        task.update
 
+        if params[:status] == "cancelled"
+          sr_id = task.focus&.reference&.split("/")&.last
+          service_request = FHIR::ServiceRequest.read(sr_id)
+          service_request.status = "revoked"
+          service_request.update
+        end
+        flash[:success] = "Task has been marked as #{params[:status]}"
+      else
+        flash[:error] = "Unable to update task: task not found"
+      end
+    rescue => e
+      flash[:error] = "Unable to update task: #{e.message}"
+    end
+
+    set_active_tab("action-steps")
+    redirect_to dashboard_path
   end
 
   private

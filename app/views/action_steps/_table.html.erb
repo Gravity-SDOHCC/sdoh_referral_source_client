@@ -79,18 +79,23 @@
               <% end %>
             </td>
             <% if type == "active" %>
-              <td class="">
-                <button class="action-button" data-bs-toggle="modal" data-bs-target="#add-referral-modal">
-                  <span class="icon"><i class="bi bi-pencil"></i></span>
-                  <span class="label">Edit</span>
-                </button>
+              <td class="p-3">
+                <%= link_to "/tasks/#{referral.id}/cancelled", class: 'action-button text-nowrap text-muted' do %>
+                  <span class="icon"><i class="bi bi-trash"></i></span>
+                  <span class="label">Cancel Task</span>
+                <% end %>
+
+
+                <% if referral.status == "draft" %>
+                  <%= link_to "/tasks/#{referral.id}/requested", class: 'action-button text-nowrap text-muted' do %>
+                    <span class="icon"><i class="bi bi-arrow"></i></span>
+                    <span class="label d-none">Mark as Requested</span>
+                  <% end %>
+                <% end %>
               </td>
             <% end %>
           </tr>
         <% end %>
       </tbody>
   </table>
-  <% content_for :modals do %>
-    <%= render "action_steps/form_modal", type: "edit" %>
-  <% end %>
 </div>
