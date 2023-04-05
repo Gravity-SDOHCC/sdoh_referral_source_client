@@ -4,6 +4,13 @@
 @import "variables";
 @import "mixins";
 
+.action-steps-switcher {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
 .small-text {
   font-size: 14px;
 }

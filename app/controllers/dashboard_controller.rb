@@ -10,9 +10,12 @@ class DashboardController < ApplicationController
   # Getting all resources associated with the given patient
   def get_patient_referrences
     if patient_id.present?
+      set_consents
       set_personal_characteristics
       set_conditions
       set_goals
+      set_referrals
+      set_service_requests
     end
   end
 
@@ -66,6 +69,46 @@ class DashboardController < ApplicationController
       @completed_goals = result["completed"] || []
     else
       flash[:warning] = result
+    end
+  end
+
+  def set_referrals
+    success, result = fetch_tasks
+    if success
+      @active_referrals = result["active"] || []
+      @completed_referrals = result["completed"] || []
+    else
+      flash[:warning] = result
+    end
+  end
+
+  def set_service_requests
+    success, result = fetch_service_requests
+    if success
+      @service_requests = result
+    else
+      flash[:warning] = result
+    end
+  end
+
+  def set_consents
+    search_params = {
+      parameters: {
+        patient: patient_id
+      }
+    }
+
+    consents = Rails.cache.read("consents_#{patient_id}")
+    @consents = consents and return if consents.present?
+    begin
+      response = @fhir_client.search(FHIR::Consent, search_params)
+      if response.response[:code] == 200
+        entries = response.resource.entry
+        @consents = entries.map { |entry| Consent.new(entry.resource) }
+        Rails.cache.write("consents_#{patient_id}", @consents, expires_in: 1.hour)
+      end
+    rescue => e
+      Rails.logger.error "Error fetching consents: #{e.message}"
     end
   end
 end

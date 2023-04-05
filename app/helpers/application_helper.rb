@@ -8,6 +8,8 @@ module ApplicationHelper
   include ConditionDefinitionsHelper
   include GoalsHelper
   include GoalDefinitionsHelper
+  include TasksHelper
+  include ServiceRequestsHelper
 
   TEST_PATIENT_ID = "smart-1288992"
   TEST_PRACTITIONER_ID = "SDOHCC-PractitionerDrJanWaterExample"

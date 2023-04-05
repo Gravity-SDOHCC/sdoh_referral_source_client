@@ -1,6 +1,10 @@
 module GoalsHelper
   include SessionHelper
 
+  def save_goals(goals)
+    Rails.cache.write("goals_#{patient_id}", goals, expires_in: 1.hour)
+  end
+
   def fetch_goals
     client = get_client
     search_params = {
@@ -17,9 +21,9 @@ module GoalsHelper
         goals = entries.map do |entry|
           Goal.new(entry.resource)
         end
-
         # Grouping by active and completed
         grp = goals.group_by { |goal| goal.status }
+        save_goals(grp["active"])
         [true, grp]
       else
         [false, "Failed to fetch patient's goals. Status: #{response.response[:code]} - #{response.response[:body]}"]

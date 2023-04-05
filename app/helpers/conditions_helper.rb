@@ -1,6 +1,10 @@
 module ConditionsHelper
   include SessionHelper
 
+  def save_conditions(conditions)
+    Rails.cache.write("conditions_#{patient_id}", conditions, expires_in: 1.hour)
+  end
+
   def fetch_health_concerns
     client = get_client
     search_params = {
@@ -18,6 +22,7 @@ module ConditionsHelper
         conditions = entries.map do |entry|
           Condition.new(entry.resource)
         end
+
         # Grouping by category(health concerns vs problems) then by clinical status (active, inactive, resolved)
         grp = conditions.group_by do |condition|
           condition.type
@@ -27,6 +32,7 @@ module ConditionsHelper
           end
         end
 
+        save_conditions(grp["problem-list-item"]&.dig("active"))
         [true, grp]
       else
         [false, "Failed to fetch patient's health concerns. Status: #{response.response[:code]} - #{response.response[:body]}"]
