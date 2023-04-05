@@ -27,12 +27,6 @@ module ConditionsHelper
           end
         end
 
-        # grp.each do |category, category_conditions|
-        #   category_conditions.group_by do |condition|
-        #     condition.clinical_status
-        #   end
-        # end
-
         [true, grp]
       else
         [false, "Failed to fetch patient's health concerns. Status: #{response.response[:code]} - #{response.response[:body]}"]
