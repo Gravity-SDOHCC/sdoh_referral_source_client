@@ -1,6 +1,10 @@
 module TasksHelper
   include SessionHelper
 
+  def save_active_tasks(tasks)
+    Rails.cache.write("tasks_#{patient_id}", tasks, expires_in: 30.minutes)
+  end
+
   def fetch_tasks
     client = get_client
     # TODO: requester is hard coded. Need to get the practitioner role id from the session
@@ -26,7 +30,7 @@ module TasksHelper
           grp["active"] << task if task.status != "completed" && task.status != "cancelled"
           grp["completed"] << task if task.status == "completed"
         end
-
+        save_active_tasks(grp["active"])
         [true, grp]
       else
         [false, "Failed to fetch patient's referral tasks. Status: #{response.response[:code]} - #{response.response[:body]}"]

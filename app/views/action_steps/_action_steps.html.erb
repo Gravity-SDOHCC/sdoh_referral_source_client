@@ -17,7 +17,9 @@
       <% if @active_referrals.empty? %>
         <h3 class="text-muted text-center mb-3">Patient has no active referrals</h3>
       <% else %>
-        <%= render "action_steps/table", referrals: @active_referrals, type: "active" %>
+        <div id="active-tasks-table">
+          <%= render "action_steps/table", referrals: @active_referrals, type: "active" %>
+        </div>
       <% end %>
     </div>
 
@@ -40,3 +42,15 @@
   <% end %>
 
 </div>
+
+<script>
+  const pollTasks = () => {
+    fetch("<%= poll_tasks_path %>")
+      .then(response => response.text())
+      .then(response => {
+        document.getElementById("active-tasks-table").innerHTML = response;
+      });
+  };
+
+  setInterval(pollTasks, 300000);
+</script>

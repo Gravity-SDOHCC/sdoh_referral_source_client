@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get 'conditions/:id/:status', to: 'conditions#update_condition'
   post 'tasks', to: 'tasks#create'
   get 'tasks/:id/:status', to: 'tasks#update_task'
+  get 'poll_tasks', to: 'tasks#poll_tasks'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

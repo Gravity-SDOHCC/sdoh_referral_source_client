@@ -34,6 +34,7 @@ class TasksController < ApplicationController
     rescue => e
       flash[:error] = "Unable to create task: #{e.message}"
     end
+    Rails.cache.delete("tasks_#{patient_id}")
     set_active_tab("action-steps")
     redirect_to dashboard_path
   end
@@ -58,9 +59,34 @@ class TasksController < ApplicationController
     rescue => e
       flash[:error] = "Unable to update task: #{e.message}"
     end
-
+    Rails.cache.delete("tasks_#{patient_id}")
     set_active_tab("action-steps")
     redirect_to dashboard_path
+  end
+
+  def poll_tasks
+    saved_active_tasks = Rails.cache.read("tasks_#{patient_id}") || []
+    Rails.cache.delete("tasks_#{patient_id}")
+    success, result = fetch_tasks
+    if success
+      @active_referrals = result["active"] || []
+      @completed_referrals = result["completed"] || []
+      # check if any active tasks have changed status
+      updated_tasks = @active_referrals.map do |referral|
+        saved_task = saved_active_tasks.find { |task| task.id == referral.id }
+        if saved_task && saved_task.status != referral.status
+          referral
+        else
+          nil
+        end
+      end.compact
+      task_names = updated_tasks.map { |t| t.focus.description}.join(", ")
+      task_status = updated_tasks.map { |t| t.status}.join(", ")
+      flash[:success] = "#{task_names} status has been updated to #{task_status}" if updated_tasks.present?
+    else
+      flash[:warning] = result
+    end
+    render partial: "action_steps/table", locals: { referrals: @active_referrals, type: "active" }
   end
 
   private
