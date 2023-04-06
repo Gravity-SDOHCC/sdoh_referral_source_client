@@ -7,19 +7,19 @@
   <div class="card-body">
     <div class="row">
       <div class="col text-center">
-        <p class="fs-4 text-primary"><%= @health_concerns&.count || 0 %></p>
+        <p class="fs-4 text-primary"><%=  @active_health_concerns&.count || 0 %></p>
         <p>Active Health Concerns</p>
       </div>
       <div class="col text-center">
-        <p class="fs-4 text-primary"><%= @problems&.count || 0 %></p>
+        <p class="fs-4 text-primary"><%= @active_problems&.count || 0 %></p>
         <p>Active Problems</p>
       </div>
       <div class="col text-center">
-        <p class="fs-4 text-primary"><%= @goals&.count || 0 %></p>
+        <p class="fs-4 text-primary"><%= @active_goals &.count || 0 %></p>
         <p>Active Goals</p>
       </div>
       <div class="col text-center">
-        <p class="fs-4 text-primary"><%= @action_steps&.count || 0 %></p>
+        <p class="fs-4 text-primary"><%= @active_referrals&.count || 0 %></p>
         <p>Active Action Steps</p>
       </div>
     </div>
