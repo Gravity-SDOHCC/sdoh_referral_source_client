@@ -16,6 +16,11 @@
             <%= form_tag connect_path, method: :post, class: "form-inline justify-content-center" do %>
               <%= hidden_field_tag :fhir_server_name, '', id: 'fhir_server_name' %>
               <%= select_tag :fhir_server_base_url, options_from_collection_for_select(@fhir_servers, "base_url", "name"), prompt: "Select a server", class: "form-control mb-2 mr-sm-2", id: 'fhir_server_base_url' %>
+              <div class="form-group">
+                <%= label_tag :cp_url, "CP Server base URL to use" %>
+                <%= text_field_tag :cp_url, '', class: "form-control" %>
+                <small class="form-text text-danger text-muted">Provide the CP base URL to connect for demo. The default CP server will be used for interactions otherwise.</small>
+              </div>
               <%= submit_tag "Connect", class: "btn btn-primary mb-2" %>
             <% end %>
 
@@ -34,6 +39,11 @@
               <div class="form-group">
                 <%= label_tag :fhir_server_base_url, "Server Base URL" %>
                 <%= text_field_tag :fhir_server_base_url, '', class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= label_tag :cp_url, "CP Server base URL to use" %>
+                <%= text_field_tag :cp_url, '', class: "form-control" %>
+                <small class="form-text text-danger text-muted">Provide the CP base URL to connect for demo. The default CP server will be used for interactions otherwise.</small>
               </div>
               <%= submit_tag "Connect", class: "btn btn-primary mt-3" %>
             <% end %>
