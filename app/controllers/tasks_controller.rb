@@ -46,7 +46,7 @@ class TasksController < ApplicationController
         task.status = params[:status]
         task.update
 
-        if params[:status] == "cancelled"
+        if params[:status] == "canceled"
           sr_id = task.focus&.reference&.split("/")&.last
           service_request = FHIR::ServiceRequest.read(sr_id)
           service_request.status = "revoked"

@@ -1,63 +1,67 @@
 <!--views/action_steps/_table.html.erb-->
-<div class="table-responsive small-text">
-  <table class="table table-sm text-center fw-semibold">
-      <thead>
-        <tr>
-          <th scope="col">Task</th>
-          <th scope="col">Status</th>
-          <th scope="col">Category</th>
-          <th scope="col">Problems</th>
-          <th scope="col">Performer</th>
-          <th scope="col">Consent</th>
 
-          <% if type == "completed" %>
-            <th scope="col">Outcomes</th>
-          <% end %>
-
-          <% if type == "active" %>
-            <th scope="col">Actions</th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% referrals.each do |referral| %>
+<% if referrals.empty? %>
+  <h3 class="text-muted text-center">Patient has no <%= type %> referrals</h3>
+<% else %>
+  <div class="table-responsive small-text">
+    <table class="table table-sm text-center fw-semibold">
+        <thead>
           <tr>
-            <td>
-              <%= link_to referral.focus&.description, "#fhir-resource-modal-#{referral.id}", data: { bs_toggle: 'modal'} %>
-              <% content_for :modals do %>
-                <%= render 'shared/fhir_resource_modal', resource: referral %>
-              <% end %>
-            </td>
-            <td>
-              <% status = referral.status %>
+            <th scope="col">Task</th>
+            <th scope="col">Status</th>
+            <th scope="col">Category</th>
+            <th scope="col">Problems</th>
+            <th scope="col">Performer</th>
+            <th scope="col">Consent</th>
 
-              <% if status == "requested" %>
-                <span class="bi bi-check2-circle"></span> Requested
-              <% end %>
-              <% if status == "in-progress" %>
-                <span class="bi bi-arrow-repeat"></span> In Progress
-              <% end %>
-              <% if status == "completed" %>
-                <span class="bi bi-check-lg"></span> Completed
-              <% end %>
-              <% if status == "cancelled" || status == "rejected" %>
-                <span class="bi bi-x-circle"></span><%= status %>
-              <% end %>
+            <% if type == "completed" %>
+              <th scope="col">Outcomes</th>
+            <% end %>
 
-              <% if status == "accepted" %>
-                <span class="bi bi-check-circle"></span> Accepted
-              <% end %>
-
-
-            </td>
-            <td><%= referral.focus&.category %></td>
-            <td>
-
-              <% if referral.focus&.problem.present? %>
-                <%= link_to referral.focus&.problem&.code, "#fhir-resource-modal-#{referral.focus&.problem&.id}", data: { bs_toggle: 'modal'} %>
+            <% if type == "active" %>
+              <th scope="col">Actions</th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% referrals.each do |referral| %>
+            <tr>
+              <td>
+                <%= link_to referral.focus&.description, "#fhir-resource-modal-#{referral.id}", data: { bs_toggle: 'modal'} %>
                 <% content_for :modals do %>
-                  <%= render 'shared/fhir_resource_modal', resource: referral.focus&.problem %>
+                  <%= render 'shared/fhir_resource_modal', resource: referral %>
                 <% end %>
+              </td>
+              <td>
+                <% status = referral.status %>
+
+                <% if status == "requested" %>
+                  <span class="bi bi-check2-circle"></span> Requested
+                <% end %>
+                <% if status == "in-progress" %>
+                  <span class="bi bi-arrow-repeat"></span> In Progress
+                <% end %>
+                <% if status == "completed" %>
+                  <span class="bi bi-check-lg"></span> Completed
+                <% end %>
+                <% if status == "canceled" || status == "rejected" %>
+                  <span class="bi bi-x-circle"></span><%= status %>
+                <% end %>
+
+                <% if status == "accepted" %>
+                  <span class="bi bi-check-circle"></span> Accepted
+                <% end %>
+
+
+              </td>
+              <td><%= referral.focus&.category %></td>
+              <td>
+
+                <% if referral.focus&.problem.present? %>
+                  <%= link_to referral.focus&.problem&.code, "#fhir-resource-modal-#{referral.focus&.problem&.id}", data: { bs_toggle: 'modal'} %>
+                  <% content_for :modals do %>
+                    <%= render 'shared/fhir_resource_modal', resource: referral.focus&.problem %>
+                  <% end %>
               <% end %>
 
             </td>
@@ -80,7 +84,7 @@
             </td>
             <% if type == "active" %>
               <td class="p-3">
-                <%= link_to "/tasks/#{referral.id}/cancelled", class: 'action-button text-nowrap text-muted' do %>
+                <%= link_to "/tasks/#{referral.id}/canceled", class: 'action-button text-nowrap text-muted' do %>
                   <span class="icon"><i class="bi bi-trash"></i></span>
                   <span class="label">Cancel Task</span>
                 <% end %>
@@ -97,5 +101,6 @@
           </tr>
         <% end %>
       </tbody>
-  </table>
-</div>
+    </table>
+  </div>
+<% end %>
