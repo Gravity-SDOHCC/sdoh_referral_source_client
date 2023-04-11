@@ -1,5 +1,5 @@
 module SessionHelper
-
+  DEFAULT_CP_URL = "http://localhost:8082/fhir".freeze
   def save_client(client)
     @fhir_client = Rails.cache.fetch('client', expires_in: 30.minutes) do
       client
@@ -19,8 +19,16 @@ module SessionHelper
     session[:fhir_server_base_url] = base_url
   end
 
+  def save_cp_url(cp_url)
+    session[:cp_url]
+  end
+
   def get_server_base_url
     session[:fhir_server_base_url]
+  end
+
+  def get_cp_url
+    session[:cp_url] || DEFAULT_CP_URL
   end
 
   def save_patients(patient_list)

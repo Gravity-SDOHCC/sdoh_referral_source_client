@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
           server.name = server_name
         end
         save_server_base_url(fhir_server.base_url)
-        # save_patient_id(TEST_PATIENT_ID)
+        save_cp_url(params[:cp_url] || SessionHelper::DEFAULT_CP_URL)
         save_practitioner_id(TEST_PRACTITIONER_ID)
 
         flash[:success] = "Successfully connected to #{fhir_server.name}"
