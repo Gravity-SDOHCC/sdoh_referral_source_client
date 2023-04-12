@@ -1,7 +1,7 @@
 module TasksHelper
   include SessionHelper
 
-  def save_active_tasks(tasks)
+  def save_tasks(tasks)
     Rails.cache.write("tasks_#{patient_id}", tasks, expires_in: 30.minutes)
   end
 
@@ -27,10 +27,10 @@ module TasksHelper
 
         grp = {"active" => [], "completed" => []}
         tasks.each do |task|
-          grp["active"] << task if task.status != "completed" && task.status != "cancelled"
+          grp["active"] << task if (task.status != "completed" && task.status != "canceled" && task.status != "rejected")
           grp["completed"] << task if task.status == "completed"
         end
-        save_active_tasks(grp["active"])
+        save_tasks([grp["active"], grp["completed"]].flatten)
         [true, grp]
       else
         [false, "Failed to fetch patient's referral tasks. Status: #{response.response[:code]} - #{response.response[:body]}"]
