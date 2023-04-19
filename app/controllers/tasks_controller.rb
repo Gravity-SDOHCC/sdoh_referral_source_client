@@ -13,7 +13,7 @@ class TasksController < ApplicationController
         priority: params[:priority],
         subject: service_req_subject,
         reasonReference: service_req_reason_reference,
-        supportingInfo: service_req_supporting_info
+        supportingInfo: service_req_supporting_info,
       )
       sr_result = service_request.create
 
@@ -23,11 +23,11 @@ class TasksController < ApplicationController
         status: params[:status],
         intent: "order",
         code: task_code,
-        focus: {reference: "ServiceRequest/#{sr_result.id}"},
+        focus: { reference: "ServiceRequest/#{sr_result.id}" },
         for: service_req_subject,
-        authoredOn: Time.now.utc.strftime('%Y-%m-%dT%H:%M:%S.%3NZ'),
+        authoredOn: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S.%3NZ"),
         requester: task_requester,
-        owner: task_owner
+        owner: task_owner,
       )
       task.create
       flash[:success] = "Task has been created"
@@ -46,7 +46,7 @@ class TasksController < ApplicationController
         task.status = params[:status]
         task.update
 
-        if params[:status] == "canceled"
+        if params[:status] == "cancelled"
           sr_id = task.focus&.reference&.split("/")&.last
           service_request = FHIR::ServiceRequest.read(sr_id)
           service_request.status = "revoked"
@@ -81,28 +81,29 @@ class TasksController < ApplicationController
           nil
         end
       end.compact
-      task_names = updated_tasks.map { |t| t.focus.description}.join(", ")
-      task_status = updated_tasks.map { |t| t.status}.join(", ")
+      task_names = updated_tasks.map { |t| t.focus.description }.join(", ")
+      task_status = updated_tasks.map { |t| t.status }.join(", ")
       flash[:success] = "#{task_names} status has been updated to #{task_status}" if updated_tasks.present?
     else
-      Rails.logger.warn { 'message' => 'Unable to fetch tasks for update', 'result' => result }
-      # flash[:warning] = result
+      # Rails.logger.warn { 'message' => 'Unable to fetch tasks for update', 'result' => result }
+      flash[:warning] = result
     end
     render json: {
       active_table: render_to_string(partial: "action_steps/table", locals: { referrals: @active_referrals, type: "active" }),
       completed_table: render_to_string(partial: "action_steps/table", locals: { referrals: @completed_referrals, type: "completed" }),
-      flash: flash[:success]
+      flash: flash[:success],
     }
     # render partial: "action_steps/table", locals: { referrals: @active_referrals, type: "active" }
   end
 
   private
+
   ### Task Attributes ###
   def task_meta
     {
       "profile": [
-        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement"
-      ]
+        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement",
+      ],
     }
   end
 
@@ -112,9 +113,9 @@ class TasksController < ApplicationController
         {
           "system": "http://hl7.org/fhir/CodeSystem/task-code",
           "code": "fulfill",
-          "display": "Fulfill the focal request"
-        }
-      ]
+          "display": "Fulfill the focal request",
+        },
+      ],
     }
   end
 
@@ -122,14 +123,14 @@ class TasksController < ApplicationController
     # TODO: Get the practioner role from the server and save it in the session when querying the practioner
     {
       "reference": "PractitionerRole/SDOHCC-PractitionerRoleDrJanWaterExample",
-      "display": "Dr Jan Water Family Medicine Physician"
+      "display": "Dr Jan Water Family Medicine Physician",
     }
   end
 
   def task_owner
     {
-      "reference": "Organization/#{params[:performer_id]}",
-      "display": performer_options.find {|arr| arr[1] == params[:performer_id]}&.first
+      "reference": "#{get_cp_url}/Organization/#{params[:performer_id]}",
+      "display": performer_options.find { |arr| arr[1] == params[:performer_id] }&.first,
     }
   end
 
@@ -137,8 +138,8 @@ class TasksController < ApplicationController
   def service_req_meta
     {
       "profile": [
-        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ServiceRequest"
-      ]
+        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ServiceRequest",
+      ],
     }
   end
 
@@ -149,19 +150,19 @@ class TasksController < ApplicationController
           {
             "system": "http://snomed.info/sct",
             "code": "410606002",
-            "display": "Social service procedure"
-          }
-        ]
+            "display": "Social service procedure",
+          },
+        ],
       },
       {
         "coding": [
           {
             "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
             "code": params[:category],
-            "display": params[:category].titleize
-          }
-        ]
-      }
+            "display": params[:category].titleize,
+          },
+        ],
+      },
     ]
   end
 
@@ -171,33 +172,32 @@ class TasksController < ApplicationController
         {
           "system": "http://snomed.info/sct",
           "code": params[:request_code],
-          "display": request_options[params[:category]]&.find {|arr| arr[1] == params[:request_code]}&.first
-        }
-      ]
+          "display": request_options[params[:category]]&.find { |arr| arr[1] == params[:request_code] }&.first,
+        },
+      ],
     }
   end
 
   def service_req_subject
     {
       "reference": "Patient/#{patient_id}",
-      "display": current_patient&.name
+      "display": current_patient&.name,
     }
   end
 
   def service_req_reason_reference
     [
       {
-        "reference": "Condition/#{params[:condition_ids]}"
-      }
+        "reference": "Condition/#{params[:condition_ids]}",
+      },
     ]
   end
 
   def service_req_supporting_info
     [
       {
-        "reference": "Consent/#{params[:consent]}"
-      }
+        "reference": "Consent/#{params[:consent]}",
+      },
     ]
-
   end
 end

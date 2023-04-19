@@ -27,7 +27,7 @@ module TasksHelper
 
         grp = {"active" => [], "completed" => []}
         tasks.each do |task|
-          grp["active"] << task if (task.status != "completed" && task.status != "canceled" && task.status != "rejected")
+          grp["active"] << task if (task.status != "completed" && task.status != "cancelled" && task.status != "rejected")
           grp["completed"] << task if task.status == "completed"
         end
         save_tasks([grp["active"], grp["completed"]].flatten)
