@@ -1,4 +1,4 @@
-<div class="modal fade" id="add-referral-modal" tabindex="-1" role="dialog" aria-labelledby="newRequestDialogTitle" aria-hidden="true">
+<div class="modal fade" id="add-referral-modal" tabindex="-1" role="dialog" aria-labelledby="newRequestDialogTitle" aria-hidden="true" data-controller="taskform" data-taskform-request-options='<%= raw(request_options.to_json) %>'>
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -9,86 +9,55 @@
         <%= form_with url: tasks_path, method: :post, id: "task-form", class: "form" do |f| %>
           <div class="mb-3">
             <%= f.label :category, "Category/Domain", class: "form-label" %>
-            <%= f.select :category, category_options, { prompt: 'Select Category/Domain' }, { class: "form-select form-select-sm", id: "category-select" } %>
+            <%= f.select :category, category_options, { prompt: 'Select Category/Domain' }, { class: "form-select form-select-sm", id: "category-select", data: { taskform_target: "categorySelect" } } %>
           </div>
           <div class="mb-3">
             <%= f.label :code, "Request", class: "form-label" %>
-            <%= f.select :request_code, {}, { prompt: 'Select Request' }, { class: "form-select form-select-sm", id: "request-select", disabled: true } %>
+            <%= f.select :request_code, {}, { prompt: 'Select Request' }, { class: "form-select form-select-sm", id: "request-select", disabled: true, data: { taskform_target: "requestSelect" } } %>
           </div>
           <div class="mb-3">
             <%= f.label :status, "Status", class: "form-label" %>
-            <%= f.select :status, [["Draft", "draft"], ["Requested", "requested"]], {}, { class: "form-select form-select-sm"} %>
+            <%= f.select :status, [["Draft", "draft"], ["Requested", "requested"]], {}, { class: "form-select form-select-sm", data: { taskform_target: "status" }} %>
           </div>
           <hr>
           <div class="form-group mb-3">
             <%= f.label :priority, "Priority", class: "form-label" %>
-            <%= f.radio_button :priority, "routine", {class: "form-check-input"} %> Routine
-            <%= f.radio_button :priority, "urgent", {class: "form-check-input"} %> Urgent
-            <%= f.radio_button :priority, "asap", {class: "form-check-input"} %> ASAP
+            <%= f.radio_button :priority, "routine", {class: "form-check-input", data: { taskform_target: "priority" }} %> Routine
+            <%= f.radio_button :priority, "urgent", {class: "form-check-input", data: { taskform_target: "priority" }} %> Urgent
+            <%= f.radio_button :priority, "asap", {class: "form-check-input", data: { taskform_target: "priority" }} %> ASAP
           </div>
           <div class="mb-3">
             <%= f.label :occurrence, "Occurrence", class: "form-label" %>
-            <%= f.select :occurrence, [["Until", "until"], ["From...to", "range"]], {}, { class: "form-select form-select-sm" } %>
-            <%= f.date_field :occurrence, class: "form-control" %>
+            <%= f.select :occurrence, [["Until", "until"], ["From...to", "range"]], {}, { class: "form-select form-select-sm", data: { taskform_target: "occurrence" } } %>
+            <%= f.date_field :occurrence, class: "form-control", data: { taskform_target: "occurrenceDate" } %>
           </div>
           <div class="mb-3">
             <%= f.label :condition_ids, "Problem(s)", class: "form-label" %>
-            <%= f.select :condition_ids, condition_options,  { prompt: 'Select Problem' }, { class: "form-select form-select-sm"} %>
+            <%= f.select :condition_ids, condition_options,  { prompt: 'Select Problem' }, { class: "form-select form-select-sm", data: { taskform_target: "condition" }} %>
           </div>
           <div class="mb-3">
             <%= f.label :goal_ids, "Goal(s)", class: "form-label" %>
-            <%= f.select :goal_ids, goal_options,  { prompt: 'Select Goal' }, { class: "form-select" } %>
+            <%= f.select :goal_ids, goal_options,  { prompt: 'Select Goal' }, { class: "form-select", data: { taskform_target: "goal" } } %>
           </div>
                     <hr>
           <div class="mb-3">
             <%= f.label :performer_id, "Performer(s)", class: "form-label" %>
-            <%= f.select :performer_id, performer_options,  { prompt: 'Select Performer' }, { class: "form-select" } %>
+            <%= f.select :performer_id, performer_options,  { prompt: 'Select Performer' }, { class: "form-select", data: { taskform_target: "performer" } } %>
           </div>
           <div class="mb-3">
             <%= f.label :consent, "Consent", class: "form-label" %>
-            <%= f.select :consent, consent_options,  { prompt: 'Select Consent' }, { class: "form-select" } %>
+            <%= f.select :consent, consent_options,  { prompt: 'Select Consent' }, { class: "form-select", data: { taskform_target: "consent" } } %>
           </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <%= f.submit "Create & Send", class: "btn btn-primary" %>
+        <%= f.submit "Create & Send", class: "btn btn-primary",  data: { taskform_target: "submitButton" } %>
       </div>
       <% end %>
     </div>
   </div>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const categorySelect = document.getElementById("category-select");
-    const requestSelect = document.getElementById("request-select");
-
-    // Render request_options directly into JavaScript as JSON
-    const requestOptionsJSON = <%= raw(request_options.to_json) %>;
-
-    categorySelect.addEventListener("change", function() {
-      const selectedCategory = this.value;
-      updateRequestOptions(selectedCategory);
-    });
-
-    function updateRequestOptions(selectedCategory) {
-      requestSelect.innerHTML = "";
-      requestSelect.disabled = true;
-
-      if (!selectedCategory) return;
-
-      const requestOptions = requestOptionsJSON[selectedCategory] || [];
-
-      requestOptions.forEach(requestOption => {
-        const opt = document.createElement("option");
-        opt.value = requestOption[1];
-        opt.text = requestOption[0];
-        requestSelect.add(opt);
-        requestSelect.disabled = false;
-      });
-    }
-  });
-</script>
 
 
 

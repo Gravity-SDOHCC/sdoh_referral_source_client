@@ -8,16 +8,30 @@ export default class extends Controller {
     "status",
     "priority",
     "occurrence",
+    "occurrenceDate",
     "condition",
     "goal",
     "performer",
     "consent",
+    "submitButton",
   ];
 
   connect() {
+    this.requestOptionsJSON = JSON.parse(this.data.get("requestOptions"));
     this.categorySelectTarget.addEventListener(
       "change",
       this.handleCategoryChange.bind(this)
+    );
+
+    // Add event listener for modal show event
+    const modalElement = document.getElementById("add-referral-modal");
+    modalElement.addEventListener("shown.bs.modal", () => {
+      this.populateFieldsRandomly();
+    });
+    // Add event listener for the submit button
+    this.submitButtonTarget.addEventListener(
+      "click",
+      this.handleSubmit.bind(this)
     );
   }
 
@@ -25,6 +39,12 @@ export default class extends Controller {
     const selectedCategory = this.categorySelectTarget.value;
     this.updateRequestOptions(selectedCategory);
     this.populateFieldsRandomly();
+  }
+
+  handleSubmit(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const formElement = document.getElementById("task-form");
+    formElement.submit(); // Manually submit the form
   }
 
   updateRequestOptions(selectedCategory) {
@@ -45,28 +65,31 @@ export default class extends Controller {
   }
 
   populateFieldsRandomly() {
-    this.setRandomValue(this.statusTarget);
-    this.setRandomValue(this.priorityTarget, true);
+    // this.setRandomValue(this.statusTarget);
+    this.statusTarget.selectedIndex = 1;
+    this.setRandomValue(this.priorityTarget.parentNode, true); // Pass the parentNode for radio buttons
     this.setRandomValue(this.occurrenceTarget);
     this.setRandomValue(this.conditionTarget);
     this.setRandomValue(this.goalTarget);
     this.setRandomValue(this.performerTarget);
     this.setRandomValue(this.consentTarget);
 
-    this.setRandomFutureDate(this.occurrenceTarget);
+    this.setRandomFutureDate(this.occurrenceDateTarget);
   }
 
-  setRandomValue(selectElement, isRadio = false) {
-    const options = isRadio
-      ? selectElement.querySelectorAll("input[type=radio]")
-      : selectElement.options;
-    const randomIndex = Math.floor(Math.random() * options.length);
+
+  setRandomValue(element, isRadio = false) {
     if (isRadio) {
-      options[randomIndex].checked = true;
+      const radios = Array.from(element.querySelectorAll("input[type=radio]"));
+      const randomIndex = Math.floor(Math.random() * radios.length);
+      radios[randomIndex].checked = true;
     } else {
-      selectElement.selectedIndex = randomIndex;
+      const options = element.options;
+      const randomIndex = Math.floor(Math.random() * options.length);
+      element.selectedIndex = randomIndex;
     }
   }
+
 
   setRandomFutureDate(dateElement) {
     const date = new Date();

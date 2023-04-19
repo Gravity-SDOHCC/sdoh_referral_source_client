@@ -14,6 +14,7 @@ import 'prismjs';
 import 'prismjs/themes/prism.css';
 import './prism_initializer';
 import '../../assets/stylesheets/application.scss';
+import 'controllers'
 
 Rails.start()
 Turbolinks.start()

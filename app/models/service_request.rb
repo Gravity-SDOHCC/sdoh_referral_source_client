@@ -33,5 +33,7 @@ class ServiceRequest
     # sometimes for some reason read returns FHIR::Bundle
     fhir_resource = fhir_resource&.resource&.entry&.first&.resource if fhir_resource.is_a?(FHIR::Bundle)
     klass.new(fhir_resource) if fhir_resource
+  rescue => e
+    puts e.message
   end
 end
