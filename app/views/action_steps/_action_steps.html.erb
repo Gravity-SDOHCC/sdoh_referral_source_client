@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" data-controller="polltasks" data-poll-url="<%= client_connected? ? poll_tasks_path : '' %>">
 
   <% if @active_referrals.nil? && @completed_referrals.nil? %>
     <h3 class="text-muted text-center my-3">Unable to fetch referrals from server</h3>
@@ -13,18 +13,18 @@
           <span class="label">Add Referral</span>
         </button>
       </div>
-      <div id="active-tasks-table">
+      <div id="active-tasks-table" data-polltasks-target="activeTable">
         <%= render "action_steps/table", referrals: @active_referrals, type: "active" %>
       </div>
     </div>
 
-    <div class="table-wrapper">
+    <div class="table-wrapper mt-3">
       <div class="header">
         <div class="title">
           <h3>Completed Referrals</h3>
         </div>
       </div>
-      <div id="completed-tasks-table">
+      <div id="completed-tasks-table" data-polltasks-target="completedTable">
         <%= render "action_steps/table", referrals: @completed_referrals, type: "completed" %>
       </div>
     </div>
@@ -33,40 +33,5 @@
       <%= render "action_steps/form_modal" %>
     <% end %>
   <% end %>
-
+  <div id="flash-container" data-target="polltasks.flashContainer"></div>
 </div>
-
-
-<% if client_connected? && @active_tab == "action-steps" %>
-  <script>
-    const pollTasks = () => {
-      fetch("<%= poll_tasks_path %>")
-        .then(response => {
-          if (!client_connected?) {
-            // Stop the polling when the session has expired
-            clearInterval(pollingInterval);
-            // Reload when the session has expired
-            window.location.reload();
-          } else {
-            return response.json();
-          }
-        })
-        .then(response => {
-          if (response) {
-            if (response.active_table) {
-              document.getElementById("active-tasks-table").innerHTML = response.active_table;
-              document.getElementById("completed-tasks-table").innerHTML = response.completed_table;
-            }
-
-            if (response.flash) {
-              const flashContainer = document.getElementById("flash-container");
-            flashContainer.innerHTML = `<div class="alert alert-notice alert-dismissible fade show" role="alert">${response.flash} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
-            }
-          }
-        });
-    };
-
-    setInterval(pollTasks, 300000);
-  </script>
-<% end %>
-
