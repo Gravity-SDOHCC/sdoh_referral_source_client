@@ -72,14 +72,18 @@
                 <% content_for :modals do %>
                   <%= render "shared/fhir_resource_modal", resource: referral.focus.consent %>
                 <% end %>
+                <% else %>
+                --
               <% end %>
             </td>
             <td>
-              <% if type == "completed" %>
+              <% if type == "completed" && referral&.outcome&.id.present? %>
                 <%= link_to referral.outcome_type, "#referral-procedure-modal-#{referral.outcome&.id}", data: { bs_toggle: "modal" } %>
                 <% content_for :modals do %>
                   <%= render "action_steps/procedure_modal", resource: referral.outcome %>
                 <% end %>
+              <% else %>
+                --
               <% end %>
             </td>
             <% if type == "active" %>
