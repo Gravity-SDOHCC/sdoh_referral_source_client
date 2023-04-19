@@ -1,18 +1,19 @@
 module SessionHelper
   DEFAULT_CP_URL = "http://localhost:8082/fhir".freeze
+
   def save_client(client)
-    @fhir_client = Rails.cache.fetch('client', expires_in: 30.minutes) do
+    @fhir_client = Rails.cache.fetch("client", expires_in: 1.day) do
       client
     end
   end
 
   def get_client
-    @fhir_client = Rails.cache.read('client')
+    @fhir_client = Rails.cache.read("client")
     FHIR::Model.client = @fhir_client
   end
 
   def client_connected?
-    !!Rails.cache.read('client')
+    !!Rails.cache.read("client")
   end
 
   def save_server_base_url(base_url)
@@ -32,11 +33,11 @@ module SessionHelper
   end
 
   def save_patients(patient_list)
-    Rails.cache.write('patients', patient_list, expires_in: 1.day)
+    Rails.cache.write("patients", patient_list, expires_in: 1.day)
   end
 
   def get_patients
-    Rails.cache.read('patients')
+    Rails.cache.read("patients")
   end
 
   def save_patient_id(patient_id)
