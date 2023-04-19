@@ -1,10 +1,18 @@
 <!--views/action_steps/_table.html.erb-->
 
-<% if referrals.empty? %>
-  <h3 class="text-muted text-center">Patient has no <%= type %> referrals</h3>
-<% else %>
+
   <div class="table-responsive small-text">
-    <table class="table table-sm text-center fw-semibold">
+    <table class="table table-sm text-center fw-semibold caption-top">
+        <div class="d-flex justify-content-between text-nowrap">
+          <h3 class="text-secondary"><%= type.capitalize %> Tasks</h3>
+          <% if type == "active" %>
+            <button class="action-button btn btn-sm" data-bs-toggle="modal" data-bs-target="#add-referral-modal">
+              <span class="icon"><i class="bi bi-plus-lg text-primary"></i></span>
+              <span class="label">Add Referral</span>
+            </button>
+          <% end %>
+
+        </div>
         <thead>
           <tr>
             <th scope="col">Task</th>
@@ -37,6 +45,9 @@
 
                 <% if status == "requested" %>
                   <span class="bi bi-check2-circle"></span> Requested
+                <% end %>
+                <% if status == "received" %>
+                  <span class="bi bi-arrow-bar-down text-primary"></span> Received
                 <% end %>
                 <% if status == "in-progress" %>
                   <span class="bi bi-arrow-repeat"></span> In Progress
@@ -76,16 +87,19 @@
                 --
               <% end %>
             </td>
-            <td>
-              <% if type == "completed" && referral&.outcome&.id.present? %>
-                <%= link_to referral.outcome_type, "#referral-procedure-modal-#{referral.outcome&.id}", data: { bs_toggle: "modal" } %>
-                <% content_for :modals do %>
-                  <%= render "action_steps/procedure_modal", resource: referral.outcome %>
+
+            <% if type == "completed" %>
+              <td>
+                <% if referral&.outcome&.id.present? %>
+                  <%= link_to referral.outcome_type, "#referral-procedure-modal-#{referral.outcome&.id}", data: { bs_toggle: "modal" } %>
+                  <% content_for :modals do %>
+                    <%= render "action_steps/procedure_modal", resource: referral.outcome %>
+                  <% end %>
+                <% else %>
+                  --
                 <% end %>
-              <% else %>
-                --
-              <% end %>
-            </td>
+              </td>
+            <% end %>
             <% if type == "active" %>
               <td class="p-3">
                 <%= link_to "/tasks/#{referral.id}/cancelled", class: "action-button text-nowrap text-muted" do %>
@@ -107,4 +121,4 @@
       </tbody>
     </table>
   </div>
-<% end %>
+

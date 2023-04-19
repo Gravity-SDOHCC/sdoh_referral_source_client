@@ -4,26 +4,12 @@
     <h3 class="text-muted text-center my-3">Unable to fetch referrals from server</h3>
   <% else %>
     <div class="table-wrapper my-3">
-      <div class="d-flex justify-content-between text-nowrap">
-        <div class="title">
-          <h3>Active Referrals</h3>
-        </div>
-        <button class="action-button btn btn-sm" data-bs-toggle="modal" data-bs-target="#add-referral-modal">
-          <span class="icon"><i class="bi bi-plus-lg text-primary"></i></span>
-          <span class="label">Add Referral</span>
-        </button>
-      </div>
       <div id="active-tasks-table" data-polltasks-target="activeTable">
         <%= render "action_steps/table", referrals: @active_referrals, type: "active" %>
       </div>
     </div>
 
     <div class="table-wrapper mt-3">
-      <div class="header">
-        <div class="title">
-          <h3>Completed Referrals</h3>
-        </div>
-      </div>
       <div id="completed-tasks-table" data-polltasks-target="completedTable">
         <%= render "action_steps/table", referrals: @completed_referrals, type: "completed" %>
       </div>
