@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          <% referrals.each do |referral| %>
+          <% referrals&.each do |referral| %>
             <tr>
               <td>
                 <%= link_to referral.focus&.description, "#fhir-resource-modal-#{referral.id}", data: { bs_toggle: "modal" } %>
