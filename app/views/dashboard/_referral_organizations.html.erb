@@ -1,3 +1,51 @@
+<!-- dashboard/_referral_organizations.html.erb -->
 <div class="tab-pane fade <%= 'show active' if active %>" id="<%= id %>" role="tabpanel" aria-labelledby="<%= id %>-tab">
-  This is the Referral Organizations tab where all referral org will be listed: name, contact, address , fhir_resource(json in popover)
+  <div class="position-relative shadow overflow-x-auto rounded-lg-custom mx-3 my-4">
+    <div class="d-flex align-items-center justify-content-between pb-4 mt-4 mx-4">
+      <h6 class="text-left fw-semibold text-secondary">Organizations</h6>
+      <button class="action-button btn btn-sm" data-bs-toggle="modal" data-bs-target="#add-organization-modal">
+        <span class="icon"><i class="bi bi-plus-lg text-primary"></i></span>
+        <span class="label">Add Organization</span>
+      </button>
+    </div>
+    <% if organizations.nil? %>
+      <p>Unable to fetch organizations.</p>
+    <% elsif organizations.empty? %>
+      <p>No organization found.</p>
+    <% else %>
+      <table class="table table-sm text-center text-xs-custom fw-semibold">
+        <thead class="text-xs-custom text-gray-700-custom text-uppercase bg-gray-50-custom">
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>URL</th>
+            <th>FHIR Resource</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% organizations.each do |organization| %>
+            <tr>
+              <td><%= organization.name %></td>
+              <td><%= organization.address %></td>
+              <td><%= organization.phone %></td>
+              <td><%= organization.email %></td>
+              <td><%= organization.url %></td>
+              <td>
+                <%= link_to 'FHIR Resource', '#', data: { bs_toggle: 'modal', bs_target: "#fhir-resource-modal-#{organization.id}" } %>
+                <% content_for :modals do %>
+                  <%= render 'shared/fhir_resource_modal', resource: organization %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <% content_for :modals do %>
+        <%= render "dashboard/add_organization_modal" %>
+      <% end %>
+    <% end %>
+  </div>
+
 </div>
