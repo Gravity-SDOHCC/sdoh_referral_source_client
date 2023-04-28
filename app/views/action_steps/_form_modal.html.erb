@@ -32,21 +32,21 @@
             <%= f.date_field :occurrence, class: "form-control", data: { taskform_target: "occurrenceDate" } %>
           </div>
           <div class="mb-3">
-            <%= f.label :condition_ids, "Problem(s)", class: "form-label" %>
+            <%= f.label :condition_ids, "Problem", class: "form-label" %>
             <%= f.select :condition_ids, condition_options,  { prompt: 'Select Problem' }, { class: "form-select form-select-sm", data: { taskform_target: "condition" }} %>
           </div>
           <div class="mb-3">
-            <%= f.label :goal_ids, "Goal(s)", class: "form-label" %>
+            <%= f.label :goal_ids, "Goal", class: "form-label" %>
             <%= f.select :goal_ids, goal_options,  { prompt: 'Select Goal' }, { class: "form-select", data: { taskform_target: "goal" } } %>
           </div>
                     <hr>
           <div class="mb-3">
-            <%= f.label :performer_id, "Performer(s)", class: "form-label" %>
-            <%= f.select :performer_id, performer_options,  { prompt: 'Select Performer' }, { class: "form-select", data: { taskform_target: "performer" } } %>
+            <%= f.label :performer_id, "Performer", class: "form-label" %>
+            <%= f.collection_select :performer_id, organizations, :id, :name, { prompt: 'Select Performer' }, { class: "form-select", data: { taskform_target: "performer" } } %>
           </div>
           <div class="mb-3">
             <%= f.label :consent, "Consent", class: "form-label" %>
-            <%= f.select :consent, consent_options,  { prompt: 'Select Consent' }, { class: "form-select", data: { taskform_target: "consent" } } %>
+            <%= f.collection_select :consent, consents, :id, :code, { prompt: 'Select Consent' }, { class: "form-select", data: { taskform_target: "consent" } } %>
           </div>
       </div>
       <div class="modal-footer">

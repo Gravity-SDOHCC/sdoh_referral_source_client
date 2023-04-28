@@ -11,7 +11,6 @@ module ApplicationHelper
   include TasksHelper
   include ServiceRequestsHelper
 
-  TEST_PATIENT_ID = "smart-1288992"
   TEST_PRACTITIONER_ID = "SDOHCC-PractitionerDrJanWaterExample"
 
   def organizations
@@ -21,6 +20,19 @@ module ApplicationHelper
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)
         entries.map { |entry| Organization.new(entry) }
+      end
+    end
+  end
+
+  def consents
+    Rails.cache.fetch("consents_#{patient_id}", expires_in: 1.day) do
+      response = FHIR::Consent.search(patient: patient_id)
+
+      if response.is_a?(FHIR::Bundle)
+        entries = response.entry.map(&:resource)
+        entries.map { |entry| Consent.new(entry) }
+      else
+        Rails.logger.error "Error fetching consents"
       end
     end
   end
