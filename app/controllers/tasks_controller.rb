@@ -129,8 +129,8 @@ class TasksController < ApplicationController
 
   def task_owner
     {
-      "reference": "#{get_cp_url}/Organization/#{params[:performer_id]}",
-      "display": performer_options.find { |arr| arr[1] == params[:performer_id] }&.first,
+      "reference": "Organization/#{params[:performer_id]}",
+      "display": organizations.find { |org| org.id == params[:performer_id] }&.name,
     }
   end
 
