@@ -7,8 +7,9 @@ class Organization < Resource
     @fhir_resource = fhir_organization
     @name = fhir_organization.name
     @address = format_address(fhir_organization.address)
-    @phone = format_phone(fhir_organization.telecom)
-    @email = format_email(fhir_organization.telecom)
-    @url = format_url(fhir_organization.telecom)
+    telecom = fhir_organization.contact.first&.telecom || fhir_organization.telecom
+    @phone = format_phone(telecom)
+    @email = format_email(telecom)
+    @url = format_url(telecom)
   end
 end

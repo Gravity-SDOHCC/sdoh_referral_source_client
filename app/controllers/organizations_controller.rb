@@ -5,7 +5,7 @@ class OrganizationsController < ApplicationController
     org = FHIR::Organization.new(
       active: true,
       name: params[:name],
-      telecom: org_telecom,
+      contact: org_contact,
       address: org_address,
     )
     org.create
@@ -13,25 +13,29 @@ class OrganizationsController < ApplicationController
     Rails.cache.delete("organizations")
   rescue => e
     flash[:error] = "Unable to create organization"
-
+  ensure
     redirect_to dashboard_path
   end
 
   private
 
-  def org_telecom
+  def org_contact
     [
       {
-        system: "phone",
-        value: params[:phone],
-      },
-      {
-        system: "email",
-        value: params[:email],
-      },
-      {
-        system: "url",
-        value: params[:url],
+        telecom: [
+          {
+            system: "phone",
+            value: params[:phone],
+          },
+          {
+            system: "email",
+            value: params[:email],
+          },
+          {
+            system: "url",
+            value: params[:url],
+          },
+        ],
       },
     ]
   end
