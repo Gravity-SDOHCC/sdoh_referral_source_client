@@ -58,6 +58,7 @@ class SessionsController < ApplicationController
   # Post /set_current_practitioner
   def set_current_practitioner
     save_practitioner_id(params[:provider_id])
+    flash[:success] = "successfully signed in!"
     redirect_to dashboard_path
   end
 
