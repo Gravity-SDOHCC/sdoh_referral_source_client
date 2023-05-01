@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  before_action :require_client, except: %i[index create]
   # Get /home
   def index
     if client_connected?
