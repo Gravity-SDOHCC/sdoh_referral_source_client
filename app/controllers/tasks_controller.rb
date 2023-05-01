@@ -120,10 +120,9 @@ class TasksController < ApplicationController
   end
 
   def task_requester
-    # TODO: Get the practioner role from the server and save it in the session when querying the practioner
     {
-      "reference": "PractitionerRole/SDOHCC-PractitionerRoleDrJanWaterExample",
-      "display": "Dr Jan Water Family Medicine Physician",
+      "reference": "PractitionerRole/#{fetch_and_cache_practitionerRoleId}",
+      "display": get_current_practitioner&.name,
     }
   end
 

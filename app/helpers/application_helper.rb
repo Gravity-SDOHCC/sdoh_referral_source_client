@@ -11,8 +11,6 @@ module ApplicationHelper
   include TasksHelper
   include ServiceRequestsHelper
 
-  TEST_PRACTITIONER_ID = "SDOHCC-PractitionerDrJanWaterExample"
-
   def organizations
     Rails.cache.fetch("organizations", expires_in: 1.day) do
       response = FHIR::Organization.search(_sort: "-_lastUpdated")

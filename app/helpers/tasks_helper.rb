@@ -7,12 +7,11 @@ module TasksHelper
 
   def fetch_tasks
     client = get_client
-    # TODO: requester is hard coded. Need to get the practitioner role id from the session
     search_params = {
       parameters: {
         subject: patient_id,
         _profile: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement",
-        requester: "PractitionerRole/SDOHCC-PractitionerRoleDrJanWaterExample",
+        requester: "PractitionerRole/#{fetch_and_cache_practitionerRoleId}",
         _sort: "-_lastUpdated",
       },
     }

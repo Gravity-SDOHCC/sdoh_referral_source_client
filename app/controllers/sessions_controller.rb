@@ -24,10 +24,9 @@ class SessionsController < ApplicationController
           server.name = server_name
         end
         save_server_base_url(fhir_server.base_url)
-        save_practitioner_id(TEST_PRACTITIONER_ID)
 
         flash[:success] = "Successfully connected to #{fhir_server.name}"
-        redirect_to dashboard_path
+        redirect_to select_test_practitioner_path
       else
         flash[:error] = "Failed to connect to the provided server, verify the URL provided is correct."
         redirect_to home_path
@@ -37,6 +36,28 @@ class SessionsController < ApplicationController
       flash[:error] = "Failed to connect to the provided server, verify the URL provided is correct. Error: #{e.message}"
       redirect_to home_path
     end
+  end
+
+  # Get /select_test_practitioner
+  def select_test_practitioner
+    @practitioners = fetch_and_cache_practitioners
+    if @practitioners&.empty?
+      reset_session
+      Rails.cache.clear
+      flash[:warning] = "There are no providers on the server. You need a test provider to see patients data."
+      redirect_to root_path
+    end
+  rescue => e
+    reset_session
+    Rails.cache.clear
+    flash[:error] = e.message
+    redirect_to root_path
+  end
+
+  # Post /set_current_practitioner
+  def set_current_practitioner
+    save_practitioner_id(params[:provider_id])
+    redirect_to dashboard_path
   end
 
   # delete /disconnect

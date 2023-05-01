@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get "home", to: "sessions#index"
   post "connect", to: "sessions#create"
   get "disconnect", to: "sessions#destroy"
+  get "select_test_practitioner", to: "sessions#select_test_practitioner"
+  post "set_current_practitioner", to: "sessions#set_current_practitioner"
   get "dashboard", to: "dashboard#main"
   post "conditions", to: "conditions#create"
   get "conditions/:id/:status", to: "conditions#update_condition"
