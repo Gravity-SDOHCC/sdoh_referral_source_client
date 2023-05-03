@@ -7,7 +7,7 @@ export default class extends Controller {
     const pollUrl = this.element.dataset.pollUrl;
     if (pollUrl) {
       this.pollTasks(pollUrl);
-      // this.pollingInterval = setInterval(() => this.pollTasks(pollUrl), 10000);
+      this.pollingInterval = setInterval(() => this.pollTasks(pollUrl), 2000);
     }
   }
 
@@ -32,14 +32,12 @@ export default class extends Controller {
           }
 
           if (response.flash) {
-            this.flashContainerTarget.innerHTML = `<div class="alert alert-notice alert-dismissible fade show" role="alert">${response.flash} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+            this.flashContainerTarget.innerHTML = `<div class="alert alert-info alert-dismissible fade show" data-controller="toasts" role="alert">${response.flash} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
           }
         }
-        setTimeout(() => this.pollTasks(pollUrl), 10000);
       })
       .catch((error) => {
         console.error(error);
-        setTimeout(() => this.pollTasks(pollUrl), 10000);
       });;
   }
 }

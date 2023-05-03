@@ -1,0 +1,32 @@
+<div class="min-vh-100 bg-light d-flex align-items-center justify-content-center">
+  <div class="container px-4 mx-auto">
+    <div class="bg-white shadow-lg rounded-lg p-5 d-flex flex-column flex-md-row">
+      <div class="flex-grow-1 mb-4 md:mb-0">
+        <div class="mb-4 text-center">
+          <%= image_tag "logo.svg", alt: "Logo", class: "w-50" %>
+        </div>
+        <h1 class="h4 font-bold text-center mb-3">Referral Source Client App</h1>
+        <p class="text-muted text-center">
+          You have successfully connected to the FHIR server <%= get_server_base_url %>. Please select a test provider
+          to see patients' data.
+        </p>
+      </div>
+      <div class="flex-grow-1 md:ms-4">
+        <%= form_with(url: set_current_practitioner_path, method: :post, local: true, class: "space-y-4") do |form| %>
+          <h2 class="h5 font-bold mb-2">Select a test provider to continue</h2>
+          <div class="my-3">
+            <% @practitioners.each do |practitioner| %>
+              <div class="form-check mb-2">
+                <%= form.radio_button :provider_id, practitioner.id, class: 'form-check-input', required: true %>
+                <i class="bi bi-person-badge ms-2 text-danger"></i>
+                <%= form.label "provider_id_#{practitioner.id}", practitioner.name, class: 'form-check-label' %>
+              </div>
+            <% end %>
+          </div>
+          <%= form.submit "Connect", class: "btn btn-primary w-100 font-bold py-2 px-4 rounded-pill mb-2", id: 'submit-button' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

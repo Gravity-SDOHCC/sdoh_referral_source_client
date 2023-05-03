@@ -1,5 +1,5 @@
 class DashboardController < ApplicationController
-  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_referrences,
+  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_referrences
 
   # GET /dashboard
   def main
@@ -7,10 +7,10 @@ class DashboardController < ApplicationController
   end
 
   private
+
   # Getting all resources associated with the given patient
   def get_patient_referrences
     if patient_id.present?
-      set_consents
       set_personal_characteristics
       set_conditions
       set_goals
@@ -53,7 +53,7 @@ class DashboardController < ApplicationController
   def set_conditions
     success, result = fetch_health_concerns
     if success
-      @active_problems =  result["problem-list-item"]&.dig("active") || []
+      @active_problems = result["problem-list-item"]&.dig("active") || []
       @resolved_problems = result["problem-list-item"]&.dig("resolved") || []
       @active_health_concerns = result["health-concern"]&.dig("active") || []
       @resolved_health_concerns = result["health-concern"]&.dig("resolved") || []
@@ -88,27 +88,6 @@ class DashboardController < ApplicationController
       @service_requests = result
     else
       flash[:warning] = result
-    end
-  end
-
-  def set_consents
-    search_params = {
-      parameters: {
-        patient: patient_id
-      }
-    }
-
-    consents = Rails.cache.read("consents_#{patient_id}")
-    @consents = consents and return if consents.present?
-    begin
-      response = @fhir_client.search(FHIR::Consent, search_params)
-      if response.response[:code] == 200
-        entries = response.resource.entry
-        @consents = entries.map { |entry| Consent.new(entry.resource) }
-        Rails.cache.write("consents_#{patient_id}", @consents, expires_in: 1.hour)
-      end
-    rescue => e
-      Rails.logger.error "Error fetching consents: #{e.message}"
     end
   end
 end

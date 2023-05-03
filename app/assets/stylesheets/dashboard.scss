@@ -89,3 +89,41 @@
     }
   }
 }
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.text-xs-custom {
+  font-size: 0.75rem;
+}
+
+.text-gray-700-custom {
+  color: #4B5563;
+}
+
+.bg-gray-50-custom {
+  background-color: #F9FAFB;
+}
+
+.floating-label {
+  position: relative;
+}
+
+.floating-input:focus,
+.floating-input:not(:placeholder-shown) {
+  font-size: 0.75rem;
+  top: -0.5rem;
+}
+
+@media (min-width: 576px) {
+  .rounded-lg-custom {
+      border-radius: 3rem;
+  }
+}
+
+@media (min-width: 600px) {
+  .rounded-lg-custom {
+      border-radius: 1rem;
+  }
+}

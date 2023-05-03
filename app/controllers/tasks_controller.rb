@@ -120,17 +120,16 @@ class TasksController < ApplicationController
   end
 
   def task_requester
-    # TODO: Get the practioner role from the server and save it in the session when querying the practioner
     {
-      "reference": "PractitionerRole/SDOHCC-PractitionerRoleDrJanWaterExample",
-      "display": "Dr Jan Water Family Medicine Physician",
+      "reference": "PractitionerRole/#{fetch_and_cache_practitionerRoleId}",
+      "display": get_current_practitioner&.name,
     }
   end
 
   def task_owner
     {
-      "reference": "#{get_cp_url}/Organization/#{params[:performer_id]}",
-      "display": performer_options.find { |arr| arr[1] == params[:performer_id] }&.first,
+      "reference": "Organization/#{params[:performer_id]}",
+      "display": organizations.find { |org| org.id == params[:performer_id] }&.name,
     }
   end
 
