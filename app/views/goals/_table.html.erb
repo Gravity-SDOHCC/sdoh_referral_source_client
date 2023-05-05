@@ -49,15 +49,15 @@
             <% if type == "active" %>
               <td class="">
                 <%= link_to "#", class: 'action-button' do %>
-                  <span class="icon"><i class="bi bi-plus"></i></span>
+                  <%= image_tag 'goal-add-target.svg', class: 'image', alt: 'goal target' %>
                   <span class="label">Add Target</span>
                 <% end %>
                 <%= link_to "goals/#{goal.id}/completed", class: 'action-button' do %>
-                  <span class="icon"><i class="bi bi-check"></i></span>
+                  <%= image_tag 'goal-mark-as-completed.svg', class: 'image', alt: 'goal completed' %>
                   <span class="label">Mark as Completed</span>
                 <% end %>
                 <%= link_to "/goals/#{goal.id}", method: :delete, class: 'action-button' do %>
-                  <span class="icon"><i class="bi bi-trash"></i></span>
+                  <%= image_tag 'goal-remove.svg', class: 'image', alt: 'remove goal' %>
                   <span class="label">Remove</span>
                 <% end %>
               </td>

@@ -7,7 +7,7 @@
           <h3 class="text-secondary"><%= type.capitalize %> Tasks</h3>
           <% if type == "active" %>
             <button class="action-button btn btn-sm" data-bs-toggle="modal" data-bs-target="#add-referral-modal">
-              <span class="icon"><i class="bi bi-plus-lg text-primary"></i></span>
+              <%= image_tag 'add-action-step.svg', class: 'image', alt: 'add task' %>
               <span class="label">Add Referral</span>
             </button>
           <% end %>
@@ -44,23 +44,23 @@
                 <% status = referral.status %>
 
                 <% if status == "requested" %>
-                  <span class="bi bi-check2-circle"></span> Requested
+                  <%= image_tag 'status-requested.svg', class: 'image', alt: 'requested status' %> Requested
                 <% end %>
                 <% if status == "received" %>
-                  <span class="bi bi-arrow-bar-down text-primary"></span> Received
+                  <%= image_tag 'status-received.svg', class: 'image', alt: 'received status' %> Received
                 <% end %>
                 <% if status == "in-progress" %>
-                  <span class="bi bi-arrow-repeat"></span> In Progress
+                  <%= image_tag 'status-in-progress.svg', class: 'image', alt: 'in progress status' %></span> In Progress
                 <% end %>
                 <% if status == "completed" %>
-                  <span class="bi bi-check-lg"></span> Completed
+                  <%= image_tag 'status-completed.svg', class: 'image', alt: 'completed status' %> Completed
                 <% end %>
                 <% if status == "cancelled" || status == "rejected" %>
-                  <span class="bi bi-x-circle"></span><%= status %>
+                  <%= image_tag 'status-rejected.svg', class: 'image', alt: 'cancelled/rejected status' %> <%= status %>
                 <% end %>
 
                 <% if status == "accepted" %>
-                  <span class="bi bi-check-circle"></span> Accepted
+                  <%= image_tag 'status-accepted.svg', class: 'image', alt: 'accepted status' %> </span> Accepted
                 <% end %>
 
 
@@ -103,7 +103,7 @@
             <% if type == "active" %>
               <td class="p-3">
                 <%= link_to "/tasks/#{referral.id}/cancelled", class: "action-button text-nowrap text-muted" do %>
-                  <span class="icon"><i class="bi bi-trash"></i></span>
+                  <%= image_tag 'goal-remove.svg', class: 'image', alt: 'remove task' %>
                   <span class="label">Cancel Task</span>
                 <% end %>
 
