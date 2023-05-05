@@ -39,7 +39,7 @@ class GoalsController < ApplicationController
     rescue => e
       flash[:error] = "Unable to update goal: #{e.message}"
     end
-    set_active_tab("goal")
+    set_active_tab("goals")
     Rails.cache.delete("goals_#{patient_id}")
     redirect_to dashboard_path
   end
