@@ -52,11 +52,11 @@
                   <span class="icon"><i class="bi bi-plus"></i></span>
                   <span class="label">Add Target</span>
                 <% end %>
-                <%= link_to "#", class: 'action-button' do %>
+                <%= link_to "goals/#{goal.id}/completed", class: 'action-button' do %>
                   <span class="icon"><i class="bi bi-check"></i></span>
                   <span class="label">Mark as Completed</span>
                 <% end %>
-                <%= link_to "#", class: 'action-button' do %>
+                <%= link_to "/goals/#{goal.id}", method: :delete, class: 'action-button' do %>
                   <span class="icon"><i class="bi bi-trash"></i></span>
                   <span class="label">Remove</span>
                 <% end %>

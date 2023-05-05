@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root "sessions#index"
   resources :personal_characteristics, only: [:new, :create, :destroy]
+  resources :goals, only: [:create, :destroy]
   resources :patients, only: [:index, :show]
   resources :organizations, only: [:create]
   get "home", to: "sessions#index"
@@ -11,6 +12,7 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#main"
   post "conditions", to: "conditions#create"
   get "conditions/:id/:status", to: "conditions#update_condition"
+  get "goals/:id/:field", to: "goals#update_goal"
   post "tasks", to: "tasks#create"
   get "tasks/:id/:status", to: "tasks#update_task"
   get "poll_tasks", to: "tasks#poll_tasks"
