@@ -6,11 +6,14 @@
       <button class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#add-organization-modal">
         <span class="label">Add Organization</span>
       </button>
+      <% content_for :modals do %>
+        <%= render "dashboard/add_organization_modal" %>
+      <% end %>
     </div>
     <% if organizations.nil? %>
-      <p>Unable to fetch organizations.</p>
+      <p class="text-center pb-4 text-muted">Unable to fetch organizations.</p>
     <% elsif organizations.empty? %>
-      <p>No organization found.</p>
+      <p class="text-center pb-4 text-muted">No organization found.</p>
     <% else %>
       <table class="table table-sm text-center text-xs-custom fw-semibold">
         <thead class="text-xs-custom text-gray-700-custom text-uppercase bg-gray-50-custom">
@@ -41,9 +44,6 @@
           <% end %>
         </tbody>
       </table>
-      <% content_for :modals do %>
-        <%= render "dashboard/add_organization_modal" %>
-      <% end %>
     <% end %>
   </div>
 
