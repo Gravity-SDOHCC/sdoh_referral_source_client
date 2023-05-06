@@ -30,10 +30,10 @@
         <%= render "goals/table", goals: @completed_goals, type: "completed" %>
       <% end %>
     </div>
-
     <% content_for :modals do %>
-      <%= render "goals/form_modal", type: "health-concern" %>
+      <%= render "goals/form_modal"%>
     <% end %>
+
   <% end %>
 
 </div>

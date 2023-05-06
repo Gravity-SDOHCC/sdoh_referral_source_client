@@ -37,7 +37,7 @@
           </div>
           <div class="mb-3">
             <%= f.label :goal_ids, "Goal", class: "form-label" %>
-            <%= f.select :goal_ids, goal_options,  { prompt: 'Select Goal' }, { class: "form-select", data: { taskform_target: "goal" } } %>
+            <%= f.collection_select :goal_ids, @active_goals, :id, :description,  { prompt: 'Select Goal' }, { class: "form-select", data: { taskform_target: "goal" } } %>
           </div>
                     <hr>
           <div class="mb-3">
