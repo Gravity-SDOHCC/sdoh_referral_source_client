@@ -10,7 +10,9 @@
         </div>
         <button class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#add-goal-modal">Add Goal</button>
       </div>
-
+      <% content_for :modals do %>
+        <%= render "goals/form_modal"%>
+      <% end %>
       <% if @active_goals.empty? %>
         <h3 class="text-muted text-center mb-3">Patient has no active goals</h3>
       <% else %>
@@ -30,9 +32,7 @@
         <%= render "goals/table", goals: @completed_goals, type: "completed" %>
       <% end %>
     </div>
-    <% content_for :modals do %>
-      <%= render "goals/form_modal"%>
-    <% end %>
+
 
   <% end %>
 
