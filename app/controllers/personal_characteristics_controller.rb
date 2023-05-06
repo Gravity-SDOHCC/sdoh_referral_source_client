@@ -37,6 +37,7 @@ class PersonalCharacteristicsController < ApplicationController
     rescue StandardError => e
       flash[:error] = "Unable to delete personal characteristics. #{e.message}"
     end
+    set_active_tab("personal-characteristics")
     redirect_to dashboard_path
   end
 

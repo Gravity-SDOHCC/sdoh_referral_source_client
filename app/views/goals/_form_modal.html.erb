@@ -1,0 +1,37 @@
+<div class="modal fade" id="add-goal-modal" tabindex="-1" role="dialog" aria-labelledby="newGoalDialogTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newGoalDialogTitle">Add New Goal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with url: goals_path, method: :post, id: "goal-form", class: "form" do |f| %>
+          <div class="d-flex mb-3">
+            <%= f.select :condition_id, condition_options,  { prompt: 'Select a problem' }, { class: "form-select bg-transparent border-0 border-bottom border-2 border-gray-200 text-muted dark:text-muted dark:border-dark w-100"} %>
+          </div>
+          <div class="d-flex mb-3">
+            <select id="category" name="category" class="form-select me-2 bg-transparent border-0 border-bottom border-2 border-gray-200 text-muted dark:text-muted dark:border-dark w-100">
+              <option selected>Select a category</option>
+              <% goal_category.each do |category| %>
+                <option value="<%= category[:code]%>"><%= category[:display]%></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="d-flex mb-3">
+            <select id="achievement_status" name="achievement_status" class="form-select me-2 bg-transparent border-0 border-bottom border-2 border-gray-200 text-muted dark:text-muted dark:border-dark w-100">
+              <option selected>Select the achievement status</option>
+              <% achievement_status.each do |status| %>
+                <option value="<%= status[:code]%>"><%= status[:display]%></option>
+              <% end %>
+            </select>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <%= f.submit "Create Goal", class: "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
