@@ -5,7 +5,7 @@
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
         <h3 class="mb-0">Personal Characteristics</h3>
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-personal-characteristics-modal">
+        <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#add-personal-characteristics-modal">
           Add Personal Characteristic
         </button>
       </div>
@@ -17,9 +17,9 @@
             <p>No personal characteristics found.</p>
           <% else %>
             <div class="table-responsive small-text">
-              <table class="table table-sm table-striped text-center fw-semibold">
+              <table class="table table-sm table-borderless text-center fw-semibold">
                 <thead>
-                  <tr>
+                  <tr class="border-bottom">
                     <th scope="col">Type</th>
                     <th scope="col">Performer</th>
                     <th scope="col">Method</th>
@@ -29,14 +29,14 @@
                 </thead>
                 <tbody>
                   <% personal_characteristics.each do |pc| %>
-                    <tr>
+                    <tr class="border-bottom">
                       <td><%= pc.type %></td>
                       <td><%= pc.performer_name %></td>
                       <td><%= pc.reported_method %></td>
                       <td><%= pc.value %></td>
                       <td class="d-flex justify-content-between text-nowrap">
-                        <%= link_to 'FHIR Resource', "#fhir-resource-modal-#{pc.id}", data: { bs_toggle: 'modal'}, class: 'btn btn-sm btn-primary flex-fill me-2' %>
-                        <%= link_to "Delete", personal_characteristic_path(pc.id), method: :delete, data: { confirm: "Delete personal characteristics #{pc.type}?" }, class: "btn btn-danger btn-sm flex-fill" %>
+                        <%= link_to 'FHIR Resource', "#fhir-resource-modal-#{pc.id}", data: { bs_toggle: 'modal'}, class: 'btn btn-sm btn-link text-primary flex-fill me-2' %>
+                        <%= link_to "Delete", personal_characteristic_path(pc.id), method: :delete, data: { confirm: "Delete personal characteristics #{pc.type}?" }, class: "btn btn-ling text-danger btn-sm flex-fill" %>
                         <% content_for :modals do %>
                           <%= render 'shared/fhir_resource_modal', resource: pc %>
                         <% end %>
