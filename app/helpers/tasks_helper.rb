@@ -95,13 +95,4 @@ module TasksHelper
     end
     map
   end
-
-  def goal_options
-    map = []
-    goals = Rails.cache.read("goals_#{patient_id}") || []
-    goals.each do |goal|
-      map << [goal.description, goal.id]
-    end
-    map
-  end
 end

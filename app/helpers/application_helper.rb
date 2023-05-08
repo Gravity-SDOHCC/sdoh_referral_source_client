@@ -12,7 +12,7 @@ module ApplicationHelper
   include ServiceRequestsHelper
 
   def organizations
-    Rails.cache.fetch("organizations", expires_in: 1.day) do
+    Rails.cache.fetch("organizations", expires_in: 1.minute) do
       response = FHIR::Organization.search(_sort: "-_lastUpdated")
 
       if response.is_a?(FHIR::Bundle)
@@ -23,7 +23,7 @@ module ApplicationHelper
   end
 
   def consents
-    Rails.cache.fetch("consents_#{patient_id}", expires_in: 1.day) do
+    Rails.cache.fetch("consents_#{patient_id}", expires_in: 1.minute) do
       response = FHIR::Consent.search(patient: patient_id)
 
       if response.is_a?(FHIR::Bundle)

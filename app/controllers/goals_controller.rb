@@ -14,13 +14,18 @@ class GoalsController < ApplicationController
         addresses: addresses,
       )
 
-      goal.create
+      result = goal.create
       flash[:success] = "Goal has been created"
+      goals = fetch_goals
+      new_goal = goals["active"].find { |goal| goal.id == result.id}
+      if new_goal.nil?
+        goals["active"] << Goal.new(result)
+        save_goals(goals)
+      end
     rescue => e
       flash[:error] = "Unable to create goal. #{e.message}"
     end
     set_active_tab("goals")
-    Rails.cache.delete("goals_#{patient_id}")
     redirect_to dashboard_path
   end
 
@@ -49,6 +54,12 @@ class GoalsController < ApplicationController
       if @goal
         @goal.destroy
         flash[:success] = "Goal deleted successfully"
+        goals = fetch_goals
+        removed_goal = goals["active"].find { |goal| goal.id == @goal.id }
+        if !removed_goal.nil?
+          goals["active"].delete(removed_goal)
+          save_goals(goals)
+        end
       else
         flash[:error] = "Unable to delete goal: Goal not found"
       end
@@ -61,8 +72,10 @@ class GoalsController < ApplicationController
   private
 
   def get_goal
-    goals = Rails.cache.read("goals_#{patient_id}")
-    @goal = goals.find { |goal| goal.id == params[:id] }&.fhir_resource
+    goals = fetch_goals
+    @goal = goals["active"].find { |goal| goal.id == params[:id] }&.fhir_resource
+  rescue => e
+    puts e.message
   end
 
   ### Create a new goal ###

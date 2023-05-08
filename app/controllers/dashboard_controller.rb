@@ -63,13 +63,11 @@ class DashboardController < ApplicationController
   end
 
   def set_goals
-    success, result = fetch_goals
-    if success
-      @active_goals = result["active"] || []
-      @completed_goals = result["completed"] || []
-    else
-      flash[:warning] = result
-    end
+    goals = Rails.cache.read("goals_#{patient_id}") || fetch_goals
+    @active_goals = goals["active"] || []
+    @completed_goals = goals["completed"] || []
+  rescue => e
+    flash[:warning] = e.message
   end
 
   def set_referrals
