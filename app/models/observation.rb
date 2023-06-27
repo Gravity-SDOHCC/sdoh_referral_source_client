@@ -6,7 +6,7 @@ class Observation
     @fhir_resource = fhir_observation
     @code = get_code_string(fhir_observation.code)
     @category = get_category_display(fhir_observation.category)
-    @value = get_code_string(fhir_observation.valueCodeableConcept)
+    @value = get_code_string(fhir_observation.valueCodeableConcept) if fhir_observation.valueCodeableConcept.present?
     @effective_date_time = fhir_observation.effectiveDateTime
   end
 

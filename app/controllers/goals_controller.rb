@@ -116,8 +116,8 @@ class GoalsController < ApplicationController
       "coding": [
         {
           "system": "http://snomed.info/sct",
-          "code": GOAL_DESCRIPTION[params[:category]][:code],
-          "display": GOAL_DESCRIPTION[params[:category]][:display],
+          "code": params[:description_code],
+          "display": GOAL_DESCRIPTIONS[params[:description_code]],
         },
       ],
     }
