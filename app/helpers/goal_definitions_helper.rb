@@ -28,22 +28,22 @@ module GoalDefinitionsHelper
         code: "homelessness",
         display: "Homelessness",
       },
+      {
+        code: "housing-instability",
+        display: "Housing Instability",
+      },
     ]
   end
 
   # system": "http://snomed.info/sct
-  GOAL_DESCRIPTION = {
-    "food-insecurity" => {
-      code: "1078229009",
-      display: "Food security",
-    },
-    "transportation-insecurity" => {
-      code: "106854209",
-      display: "Transportation security",
-    },
-    "homelessness" => {
-      code: "425067005",
-      display: "Homelessness",
-    },
+  GOAL_DESCRIPTIONS = {
+    "611271000124109" => "Transportation security (finding)",
+    "611461000124101" => "Able to afford transportation-related expense (finding)",
+    "611491000124109" => "Has transportation that meets individual's cognitive needs (finding)",
+    "611511000124103" => "Has transportation to access community resources (finding)",
+    "611521000124106" => "Has transportation to access health care (finding)",
+    "1078229009" => "Food security (finding)",
+    "611211000124100" => "Housing security (finding)",
+    "611221000124108" => "Stably housed (finding)",
   }
 end
