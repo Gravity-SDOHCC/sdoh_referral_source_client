@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
   before_action :require_client
+  protect_from_forgery with: :null_session, only: :create
 
   def create
     begin
@@ -189,6 +190,8 @@ class TasksController < ApplicationController
   end
 
   def service_req_subject
+    save_patient_id(params[:patient_id]) if patient_id.nil?
+
     {
       "reference": "Patient/#{patient_id}",
       "display": current_patient&.name,
