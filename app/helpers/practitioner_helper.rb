@@ -64,7 +64,10 @@ module PractitionerHelper
       response = get_client.search(FHIR::PractitionerRole, search: { parameters: { practitioner: practitioner_id }})
 
       if response.resource.is_a?(FHIR::Bundle)
-        response.resource.entry&.map(&:resource)&.first&.id
+        entries = response.resource&.entry&.map(&:resource)
+        session[:practitioner_role_id] = entries&.first&.id
+      else
+        session[:practitioner_role_id] = response.resource&.id
       end
     end
   end
