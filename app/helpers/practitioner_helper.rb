@@ -59,7 +59,7 @@ module PractitionerHelper
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)
-        entries.first&.id
+        session[:practitioner_role_id] = entries.first&.id
       end
     end
   end
