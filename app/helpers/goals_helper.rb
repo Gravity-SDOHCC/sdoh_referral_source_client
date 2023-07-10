@@ -43,4 +43,12 @@ module GoalsHelper
       ],
     }
   end
+
+  def reference_server_url
+    ENV.fetch('RI_SERVER_URL')
+  end
+
+  def benefits_check_server_url
+    ENV.fetch('BENEFITS_CHECK_SERVER_URL')
+  end
 end
