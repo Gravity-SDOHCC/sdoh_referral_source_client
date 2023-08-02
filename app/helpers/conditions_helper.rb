@@ -2,7 +2,7 @@ module ConditionsHelper
   include SessionHelper
 
   def save_conditions(conditions)
-    Rails.cache.write("conditions_#{patient_id}", conditions, expires_in: 1.hour)
+    Rails.cache.write(conditions_key, conditions, expires_in: 1.hour)
   end
 
   def fetch_health_concerns

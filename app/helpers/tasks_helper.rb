@@ -2,7 +2,7 @@ module TasksHelper
   include SessionHelper
 
   def save_tasks(tasks)
-    Rails.cache.write("tasks_#{patient_id}", tasks, expires_in: 30.minutes)
+    Rails.cache.write(tasks_key, tasks, expires_in: 30.minutes)
   end
 
   def fetch_tasks
@@ -89,7 +89,7 @@ module TasksHelper
 
   def condition_options
     map = []
-    conditions = Rails.cache.read("conditions_#{patient_id}") || []
+    conditions = Rails.cache.read(conditions_key) || []
     conditions.each do |condition|
       map << [condition.code, condition.id]
     end

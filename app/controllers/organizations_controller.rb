@@ -10,7 +10,7 @@ class OrganizationsController < ApplicationController
     )
     org.create
     flash[:success] = "successfully created organization #{org.name}"
-    Rails.cache.delete("organizations")
+    Rails.cache.delete(organizations_key)
   rescue => e
     flash[:error] = "Unable to create organization"
   ensure

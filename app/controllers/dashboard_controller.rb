@@ -63,7 +63,7 @@ class DashboardController < ApplicationController
   end
 
   def set_goals
-    goals = Rails.cache.read("goals_#{patient_id}") || fetch_goals
+    goals = Rails.cache.read(goals_key) || fetch_goals
     @active_goals = goals["active"] || []
     @completed_goals = goals["completed"] || []
   rescue => e

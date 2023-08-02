@@ -2,7 +2,7 @@ module GoalsHelper
   include SessionHelper
 
   def save_goals(goals)
-    Rails.cache.write("goals_#{patient_id}", goals, expires_in: 1.minute)
+    Rails.cache.write(goals_key, goals, expires_in: 1.minute)
   end
 
   def fetch_goals

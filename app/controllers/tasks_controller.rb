@@ -34,7 +34,7 @@ class TasksController < ApplicationController
     rescue => e
       flash[:error] = "Unable to create task: #{e.message}"
     end
-    Rails.cache.delete("tasks_#{patient_id}")
+    Rails.cache.delete(tasks_key)
     set_active_tab("action-steps")
     redirect_to dashboard_path
   end
@@ -59,14 +59,14 @@ class TasksController < ApplicationController
     rescue => e
       flash[:error] = "Unable to update task: #{e.message}"
     end
-    Rails.cache.delete("tasks_#{patient_id}")
+    Rails.cache.delete(tasks_key)
     set_active_tab("action-steps")
     redirect_to dashboard_path
   end
 
   def poll_tasks
-    saved_tasks = Rails.cache.read("tasks_#{patient_id}") || []
-    Rails.cache.delete("tasks_#{patient_id}")
+    saved_tasks = Rails.cache.read(tasks_key) || []
+    Rails.cache.delete(tasks_key)
     success, result = fetch_tasks
     if success
       @active_referrals = result["active"] || []

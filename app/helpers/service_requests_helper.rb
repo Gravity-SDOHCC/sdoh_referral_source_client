@@ -2,11 +2,11 @@ module ServiceRequestsHelper
   include SessionHelper
 
   def save_service_requests(service_requests)
-    Rails.cache.write("service_requests", service_requests, expires_in: 1.hour)
+    Rails.cache.write(service_requests_key, service_requests, expires_in: 1.hour)
   end
 
   def get_service_requests
-    Rails.cache.read("service_requests")
+    Rails.cache.read(service_requests_key)
   end
 
   def fetch_service_requests
