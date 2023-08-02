@@ -42,7 +42,7 @@ module PractitionerHelper
 
   def fetch_and_cache_practitioners
     Rails.cache.fetch(practitioners_key, expires_in: 1.day) do
-      response = FHIR::Practitioner.search
+      response = get_client.read_feed(FHIR::Practitioner)
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)
@@ -55,7 +55,7 @@ module PractitionerHelper
 
   def fetch_and_cache_practitionerRoleId
     Rails.cache.fetch(practitioner_role_id_key, expires_in: 1.day) do
-      response = FHIR::PractitionerRole.search(practitioner: practitioner_id)
+      response = get_client.search(FHIR::PractitionerRole, search: { parameters: { practitioner: practitioner_id }})
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)

@@ -13,7 +13,7 @@ module ApplicationHelper
 
   def organizations
     Rails.cache.fetch(organizations_key, expires_in: 1.minute) do
-      response = FHIR::Organization.search(_sort: "-_lastUpdated")
+      response = get_client.search(FHIR::Organization, search: { parameters: { _sort: "-_lastUpdated" }})
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)
@@ -24,7 +24,7 @@ module ApplicationHelper
 
   def consents
     Rails.cache.fetch(consents_key, expires_in: 1.minute) do
-      response = FHIR::Consent.search(patient: patient_id)
+      response = get_client.search(FHIR::Consent, search: { parameters: { patient: patient_id }})
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)
