@@ -1,7 +1,8 @@
 class Procedure
-  attr_reader :id, :status, :category, :description, :performed_date, :problem, :fhir_resource
+  attr_reader :id, :status, :category, :description, :performed_date, :problem, :fhir_resource, :fhir_client
 
-  def initialize(fhir_procedure)
+  def initialize(fhir_procedure, fhir_client: nil)
+    @fhir_client = fhir_client
     @id = fhir_procedure.id
     @fhir_resource = fhir_procedure
     @status = fhir_procedure.status
@@ -20,9 +21,12 @@ class Procedure
 
   def read_reference(reference)
     id = reference.reference.split("/").last
-    condition = FHIR::Condition.read(id)
+
+    return nil if fhir_client.nil?
+
+    condition = fhir_client.read(FHIR::Condition, id)
     # sometimes for some reason read returns FHIR::Bundle
     condition = condition&.resource&.entry&.first&.resource if condition.is_a?(FHIR::Bundle)
-    Condition.new(condition) if condition
+    Condition.new(condition, fhir_client: fhir_client) if condition
   end
 end

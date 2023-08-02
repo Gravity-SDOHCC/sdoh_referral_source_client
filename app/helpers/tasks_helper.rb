@@ -21,7 +21,7 @@ module TasksHelper
       if response.response[:code] == 200
         entries = response.resource.entry
         tasks = entries.map do |entry|
-          Task.new(entry.resource)
+          Task.new(entry.resource, fhir_client: client)
         end
 
         grp = { "active" => [], "completed" => [] }

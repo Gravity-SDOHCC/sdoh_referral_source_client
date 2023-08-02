@@ -21,7 +21,7 @@ class GoalsController < ApplicationController
       goals = fetch_goals
       new_goal = goals["active"].find { |goal| goal.id == result.id}
       if new_goal.nil?
-        goals["active"] << Goal.new(result)
+        goals["active"] << Goal.new(result, fhir_client: get_client)
         save_goals(goals)
       end
     rescue => e

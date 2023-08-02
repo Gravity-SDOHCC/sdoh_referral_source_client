@@ -20,7 +20,7 @@ module ConditionsHelper
       if response.response[:code] == 200
         entries = response.resource.entry
         conditions = entries.map do |entry|
-          Condition.new(entry.resource)
+          Condition.new(entry.resource, fhir_client: client)
         end
 
         # Grouping by category(health concerns vs problems) then by clinical status (active, inactive, resolved)

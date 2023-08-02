@@ -25,7 +25,7 @@ module ServiceRequestsHelper
       if response.response[:code] == 200
         entries = response.resource.entry
         service_requests = entries.map do |entry|
-          ServiceRequest.new(entry.resource)
+          ServiceRequest.new(entry.resource, fhir_client: client)
         end
         save_service_requests(service_requests)
         [true, service_requests]

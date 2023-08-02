@@ -1,7 +1,8 @@
 class Goal
-  attr_reader :id, :description, :category, :status, :achievement_status, :start_date, :targets, :problems, :fhir_resource
+  attr_reader :id, :description, :category, :status, :achievement_status, :start_date, :targets, :problems, :fhir_resource, :fhir_client
 
-  def initialize(fhir_goal)
+  def initialize(fhir_goal, fhir_client: nil)
+    @fhir_client = fhir_client
     @id = fhir_goal.id
     @fhir_resource = fhir_goal
     @description = read_codeable_concept(fhir_goal.description)
@@ -28,10 +29,10 @@ class Goal
     probs = []
     problems.each do |problem|
       prob_id = problem.reference.split("/").last
-      fhir_prob = FHIR::Condition.read(prob_id)
+      fhir_prob = fhir_client.read(FHIR::Condition, prob_id)
       # sometimes for some reason read returns FHIR::Bundle
       fhir_prob = fhir_prob&.resource&.entry&.first&.resource if fhir_prob.is_a?(FHIR::Bundle)
-      probs << Condition.new(fhir_prob) if fhir_prob
+      probs << Condition.new(fhir_prob, fhir_client: fhir_client) if fhir_prob
     end
     probs
   end

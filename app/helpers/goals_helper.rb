@@ -9,7 +9,7 @@ module GoalsHelper
     response = get_client.search(FHIR::Goal, search: { parameters: { subject: patient_id, _sort: "-_lastUpdated" }})
     if response.is_a?(FHIR::Bundle)
       entries = response.entry.map(&:resource)
-      goals = entries.map { |entry| Goal.new(entry) }
+      goals = entries.map { |entry| Goal.new(entry, fhir_client: get_client) }
       grp = {"active" => [], "completed" => []}
       goals.each { |goal| goal.achievement_status != "Achieved" ? grp["active"] << goal : grp["completed"] << goal }
       save_goals(grp)

@@ -1,7 +1,8 @@
 class ServiceRequest
-  attr_reader :id, :status, :category, :description, :performer_name, :performer_reference, :consent, :goal, :problem, :fhir_resource
+  attr_reader :id, :status, :category, :description, :performer_name, :performer_reference, :consent, :goal, :problem, :fhir_resource, :fhir_client
 
-  def initialize(fhir_service_request)
+  def initialize(fhir_service_request, fhir_client = nil)
+    @fhir_client = fhir_client
     @id = fhir_service_request.id
     @fhir_resource = fhir_service_request
     @status = fhir_service_request.status
@@ -27,12 +28,17 @@ class ServiceRequest
   end
 
   def read_reference(reference, fhir_klass, klass)
-    return unless reference
+    return unless reference && fhir_client
+
     id = reference.reference.split("/").last
-    fhir_resource = fhir_klass.read(id)
+    fhir_resource = fhir_client.read(fhir_klass, id)
     # sometimes for some reason read returns FHIR::Bundle
     fhir_resource = fhir_resource&.resource&.entry&.first&.resource if fhir_resource.is_a?(FHIR::Bundle)
-    klass.new(fhir_resource) if fhir_resource
+    if fhir_klass == FHIR::Condition
+      klass.new(fhir_resource, fhir_client: fhir_client) if fhir_resource
+    else
+      klass.new(fhir_resource) if fhir_resource
+    end
   rescue => e
     puts e.message
   end
