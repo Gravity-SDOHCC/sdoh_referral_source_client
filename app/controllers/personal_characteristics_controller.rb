@@ -19,7 +19,8 @@ class PersonalCharacteristicsController < ApplicationController
       obs.derivedFrom = [FHIR::Reference.new(reference: params[:derived_from])] if params[:derived_from].present?
       set_fields_base_on_type(obs)
 
-      obs.create
+      get_client.create(obs)
+
       flash[:success] = "Personal characteristic created"
     rescue StandardError => e
       flash[:error] = "Unable to create personal characteristic. #{e.message}"

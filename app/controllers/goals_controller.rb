@@ -14,8 +14,10 @@ class GoalsController < ApplicationController
         addresses: addresses,
       )
 
-      result = goal.create
+      result = get_client.create(goal)
+
       flash[:success] = "Goal has been created"
+
       goals = fetch_goals
       new_goal = goals["active"].find { |goal| goal.id == result.id}
       if new_goal.nil?
@@ -36,7 +38,9 @@ class GoalsController < ApplicationController
         when "completed"
           @goal.achievementStatus = achievement_status("achieved")
         end
-        @goal.update
+
+        get_client.update(@goal, @goal.id)
+
         flash[:success] = "Goal has been marked as #{params[:status]}"
       else
         flash[:error] = "Unable to update goal: goal not found"

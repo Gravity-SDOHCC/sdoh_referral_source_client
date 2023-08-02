@@ -8,7 +8,8 @@ class OrganizationsController < ApplicationController
       contact: org_contact,
       address: org_address,
     )
-    org.create
+    get_client.create(org)
+
     flash[:success] = "successfully created organization #{org.name}"
     Rails.cache.delete(organizations_key)
   rescue => e
