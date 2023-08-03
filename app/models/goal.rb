@@ -29,9 +29,9 @@ class Goal
     probs = []
     problems.each do |problem|
       prob_id = problem.reference.split("/").last
-      fhir_prob = fhir_client.read(FHIR::Condition, prob_id)
+      fhir_prob = fhir_client.read(FHIR::Condition, prob_id)&.resource
       # sometimes for some reason read returns FHIR::Bundle
-      fhir_prob = fhir_prob&.resource&.entry&.first&.resource if fhir_prob.is_a?(FHIR::Bundle)
+      fhir_prob = fhir_prob&.entry&.first&.resource if fhir_prob.is_a?(FHIR::Bundle)
       probs << Condition.new(fhir_prob, fhir_client: fhir_client) if fhir_prob
     end
     probs

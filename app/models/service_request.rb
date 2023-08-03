@@ -31,9 +31,9 @@ class ServiceRequest
     return unless reference && fhir_client
 
     id = reference.reference.split("/").last
-    fhir_resource = fhir_client.read(fhir_klass, id)
+    fhir_resource = fhir_client.read(fhir_klass, id).resource
     # sometimes for some reason read returns FHIR::Bundle
-    fhir_resource = fhir_resource&.resource&.entry&.first&.resource if fhir_resource.is_a?(FHIR::Bundle)
+    fhir_resource = fhir_resource&.entry&.first&.resource if fhir_resource.is_a?(FHIR::Bundle)
     if fhir_klass == FHIR::Condition
       klass.new(fhir_resource, fhir_client: fhir_client) if fhir_resource
     else

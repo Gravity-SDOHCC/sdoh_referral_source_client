@@ -14,7 +14,7 @@ class GoalsController < ApplicationController
         addresses: addresses,
       )
 
-      result = get_client.create(goal)
+      result = get_client.create(goal).resource
 
       flash[:success] = "Goal has been created"
 

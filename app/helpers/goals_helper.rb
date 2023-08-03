@@ -6,7 +6,7 @@ module GoalsHelper
   end
 
   def fetch_goals
-    response = get_client.search(FHIR::Goal, search: { parameters: { subject: patient_id, _sort: "-_lastUpdated" }})
+    response = get_client.search(FHIR::Goal, search: { parameters: { subject: patient_id, _sort: "-_lastUpdated" }}).resource
     if response.is_a?(FHIR::Bundle)
       entries = response.entry.map(&:resource)
       goals = entries.map { |entry| Goal.new(entry, fhir_client: get_client) }

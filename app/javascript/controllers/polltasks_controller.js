@@ -7,7 +7,7 @@ export default class extends Controller {
     const pollUrl = this.element.dataset.pollUrl;
     if (pollUrl) {
       this.pollTasks(pollUrl);
-      this.pollingInterval = setInterval(() => this.pollTasks(pollUrl), 2000);
+      this.pollingInterval = setInterval(() => this.pollTasks(pollUrl), 20000);
     }
   }
 

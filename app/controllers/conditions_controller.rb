@@ -27,7 +27,7 @@ class ConditionsController < ApplicationController
 
   def update_condition
     begin
-      concern = get_client.read(FHIR::Condition, params[:id])
+      concern = get_client.read(FHIR::Condition, params[:id]).resource
       if concern
         concern.clinicalStatus = set_clinical_status if params[:status] != "problem"
         concern.abatementPeriod = set_period if params[:status] == "resolved"

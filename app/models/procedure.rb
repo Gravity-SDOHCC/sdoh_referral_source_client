@@ -24,9 +24,9 @@ class Procedure
 
     return nil if fhir_client.nil?
 
-    condition = fhir_client.read(FHIR::Condition, id)
+    condition = fhir_client.read(FHIR::Condition, id).resource
     # sometimes for some reason read returns FHIR::Bundle
-    condition = condition&.resource&.entry&.first&.resource if condition.is_a?(FHIR::Bundle)
+    condition = condition&.entry&.first&.resource if condition.is_a?(FHIR::Bundle)
     Condition.new(condition, fhir_client: fhir_client) if condition
   end
 end

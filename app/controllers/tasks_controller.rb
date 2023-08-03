@@ -16,7 +16,7 @@ class TasksController < ApplicationController
         supportingInfo: service_req_supporting_info,
       )
 
-      sr_result = get_client.create(service_request)
+      sr_result = get_client.create(service_request).resource
 
       # Task referral
       task = FHIR::Task.new(
@@ -43,7 +43,7 @@ class TasksController < ApplicationController
 
   def update_task
     begin
-      task = get_client.read(FHIR::Task, params[:id])
+      task = get_client.read(FHIR::Task, params[:id]).resource
       if task.present?
         task.status = params[:status]
         get_client.update(task, task.id)

@@ -44,8 +44,8 @@ module PractitionerHelper
     Rails.cache.fetch(practitioners_key, expires_in: 1.day) do
       response = get_client.read_feed(FHIR::Practitioner)
 
-      if response.is_a?(FHIR::Bundle)
-        entries = response.entry.map(&:resource)
+      if response.resource.is_a?(FHIR::Bundle)
+        entries = response.resource.entry.map(&:resource)
         entries.map { |entry| Practitioner.new(entry) }
       else
         raise "Error fetching Practitioners from FHIR server. You need to choose a test provider to continue. Status code: #{response.response[:code]}"
@@ -57,8 +57,8 @@ module PractitionerHelper
     Rails.cache.fetch(practitioner_role_id_key, expires_in: 1.day) do
       response = get_client.search(FHIR::PractitionerRole, search: { parameters: { practitioner: practitioner_id }})
 
-      if response.is_a?(FHIR::Bundle)
-        entries = response.entry.map(&:resource)
+      if response.resource.is_a?(FHIR::Bundle)
+        entries = response.resource.entry.map(&:resource)
         entries.first&.id
       end
     end
