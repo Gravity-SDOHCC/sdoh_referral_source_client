@@ -10,7 +10,6 @@ module SessionHelper
 
   def get_client
     @fhir_client = Rails.cache.read(client_key)
-    # FHIR::Model.client = @fhir_client
   end
 
   def client_connected?
