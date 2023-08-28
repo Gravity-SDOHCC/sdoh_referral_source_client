@@ -35,7 +35,7 @@ class DashboardController < ApplicationController
       @current_practitioner = result
     else
       reset_session
-      Rails.cache.clear
+      clear_cache
       flash[:error] = result
       redirect_to home_path
     end

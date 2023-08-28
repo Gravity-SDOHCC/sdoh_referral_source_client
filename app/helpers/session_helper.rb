@@ -52,6 +52,21 @@ module SessionHelper
     session[:id] ||= Base64.encode64(SecureRandom.random_number(2**64).to_s).chomp
   end
 
+  def clear_cache
+    Rails.cache.delete(client_key)
+    Rails.cache.delete(patients_key)
+    Rails.cache.delete(organizations_key)
+    Rails.cache.delete(consents_key)
+    Rails.cache.delete(conditions_key)
+    Rails.cache.delete(goals_key)
+    Rails.cache.delete(service_requests_key)
+    Rails.cache.delete(practitioner_key)
+    Rails.cache.delete(practitioners_key)
+    Rails.cache.delete(practitioner_role_id_key)
+    Rails.cache.delete(tasks_key)
+    Rails.cache.delete(personal_characteristics_key)
+  end
+
   def client_key
     "#{session_id}_client"
   end
