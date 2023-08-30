@@ -12,8 +12,8 @@ module ApplicationHelper
   include ServiceRequestsHelper
 
   def organizations
-    Rails.cache.fetch("organizations", expires_in: 1.minute) do
-      response = FHIR::Organization.search(_sort: "-_lastUpdated")
+    Rails.cache.fetch(organizations_key, expires_in: 1.minute) do
+      response = get_client.search(FHIR::Organization, search: { parameters: { _sort: "-_lastUpdated" }}).resource
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)
@@ -23,8 +23,8 @@ module ApplicationHelper
   end
 
   def consents
-    Rails.cache.fetch("consents_#{patient_id}", expires_in: 1.minute) do
-      response = FHIR::Consent.search(patient: patient_id)
+    Rails.cache.fetch(consents_key, expires_in: 1.minute) do
+      response = get_client.search(FHIR::Consent, search: { parameters: { patient: patient_id }}).resource
 
       if response.is_a?(FHIR::Bundle)
         entries = response.entry.map(&:resource)

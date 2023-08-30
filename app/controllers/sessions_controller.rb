@@ -44,13 +44,13 @@ class SessionsController < ApplicationController
     @practitioners = fetch_and_cache_practitioners
     if @practitioners&.empty?
       reset_session
-      Rails.cache.clear
+      clear_cache
       flash[:warning] = "There are no providers on the server. You need a test provider to see patients data."
       redirect_to root_path
     end
   rescue => e
     reset_session
-    Rails.cache.clear
+    clear_cache
     flash[:error] = e.message
     redirect_to root_path
   end
@@ -65,7 +65,7 @@ class SessionsController < ApplicationController
   # delete /disconnect
   def destroy
     reset_session
-    Rails.cache.clear
+    clear_cache
     flash[:success] = "Successfully disconnected from the FHIR server"
     redirect_to root_path
   end

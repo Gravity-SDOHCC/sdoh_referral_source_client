@@ -4,7 +4,7 @@ class Condition
               :resolution_period, :onset_period, :asserter_name, :asserter_reference, :evidence_reference,
               :evidence_source, :fhir_resource
 
-  def initialize(fhir_condition)
+  def initialize(fhir_condition, fhir_client: nil)
     @id = fhir_condition.id
     @fhir_resource = fhir_condition
     @clinical_status = get_code_from_complex(fhir_condition.clinicalStatus)
@@ -19,11 +19,13 @@ class Condition
     @asserter_name = fhir_condition.asserter&.display
     @asserter_reference = fhir_condition.asserter&.reference
     @evidence_reference = get_evidence_references(fhir_condition.evidence)
-    evidence_ref_id = @evidence_reference&.split("/")&.last
-    obs = FHIR::Observation.read(evidence_ref_id) if evidence_ref_id
-    # For some reason, sometimes a read retuns a FHIR::Bundle instead of a FHIR::Observation
-    obs = obs&.resource&.entry&.first&.resource if obs.is_a?(FHIR::Bundle)
-    @evidence_source = Observation.new(obs) if obs
+    if fhir_client.present?
+      evidence_ref_id = @evidence_reference&.split("/")&.last
+      obs = fhir_client.read(FHIR::Observation, evidence_ref_id).resource if evidence_ref_id
+      # For some reason, sometimes a read retuns a FHIR::Bundle instead of a FHIR::Observation
+      obs = obs&.entry&.first&.resource if obs.is_a?(FHIR::Bundle)
+      @evidence_source = Observation.new(obs) if obs
+    end
   end
 
   private
@@ -48,6 +50,6 @@ class Condition
 
   def get_condition_code(code)
     c = code&.coding&.find { |c| c.system == "http://hl7.org/fhir/sid/icd-10-cm" }
-    string = c.display ? "#{c.display} (#{c.code})" : c.code
+    c.display ? "#{c.display} (#{c.code})" : c.code
   end
 end

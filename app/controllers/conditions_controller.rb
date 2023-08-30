@@ -13,26 +13,29 @@ class ConditionsController < ApplicationController
       condition.onsetPeriod = onset_period
       condition.asserter = asserter
 
-      condition.create
+      get_client.create(condition)
+
       flash[:success] = "Condition has been created"
     rescue => e
       flash[:error] = "Unable to create condition. #{e.message}"
     end
     tab = params[:type] == "health-concern" ? "health-concerns" : "problems"
     set_active_tab(tab)
-    Rails.cache.delete("conditions_#{patient_id}")
+    Rails.cache.delete(conditions_key)
     redirect_to dashboard_path(active_tab: "health-concerns")
   end
 
   def update_condition
     begin
-      concern = FHIR::Condition.read(params[:id])
+      concern = get_client.read(FHIR::Condition, params[:id]).resource
       if concern
         concern.clinicalStatus = set_clinical_status if params[:status] != "problem"
         concern.abatementPeriod = set_period if params[:status] == "resolved"
         concern.onsetPeriod = set_period if params[:status] == "problem"
         set_category_to_problem(concern) if params[:status] == "problem"
-        concern.update
+
+        get_client.update(concern, concern.id)
+
         flash[:success] = "Health concern has been marked as #{params[:status]}"
       else
         flash[:error] = "Unable to update health concern: condition not found"
@@ -41,7 +44,7 @@ class ConditionsController < ApplicationController
       flash[:error] = "Unable to update health concern: #{e.message}"
     end
     set_active_tab("health-concerns")
-    Rails.cache.delete("conditions_#{patient_id}")
+    Rails.cache.delete(conditions_key)
     redirect_to dashboard_path
   end
 

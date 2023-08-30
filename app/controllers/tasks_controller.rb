@@ -15,7 +15,8 @@ class TasksController < ApplicationController
         reasonReference: service_req_reason_reference,
         supportingInfo: service_req_supporting_info,
       )
-      sr_result = service_request.create
+
+      sr_result = get_client.create(service_request).resource
 
       # Task referral
       task = FHIR::Task.new(
@@ -29,28 +30,30 @@ class TasksController < ApplicationController
         requester: task_requester,
         owner: task_owner,
       )
-      task.create
+      get_client.create(task)
+
       flash[:success] = "Task has been created"
     rescue => e
       flash[:error] = "Unable to create task: #{e.message}"
     end
-    Rails.cache.delete("tasks_#{patient_id}")
+    Rails.cache.delete(tasks_key)
     set_active_tab("action-steps")
     redirect_to dashboard_path
   end
 
   def update_task
     begin
-      task = FHIR::Task.read(params[:id])
+      task = get_client.read(FHIR::Task, params[:id]).resource
       if task.present?
         task.status = params[:status]
-        task.update
+        get_client.update(task, task.id)
 
         if params[:status] == "cancelled"
           sr_id = task.focus&.reference&.split("/")&.last
-          service_request = FHIR::ServiceRequest.read(sr_id)
+          service_request = get_client.read(FHIR::ServiceRequest, sr_id).resource
           service_request.status = "revoked"
-          service_request.update
+
+          get_client.update(service_request, sr_id)
         end
         flash[:success] = "Task has been marked as #{params[:status]}"
       else
@@ -59,14 +62,14 @@ class TasksController < ApplicationController
     rescue => e
       flash[:error] = "Unable to update task: #{e.message}"
     end
-    Rails.cache.delete("tasks_#{patient_id}")
+    Rails.cache.delete(tasks_key)
     set_active_tab("action-steps")
     redirect_to dashboard_path
   end
 
   def poll_tasks
-    saved_tasks = Rails.cache.read("tasks_#{patient_id}") || []
-    Rails.cache.delete("tasks_#{patient_id}")
+    saved_tasks = Rails.cache.read(tasks_key) || []
+    Rails.cache.delete(tasks_key)
     success, result = fetch_tasks
     if success
       @active_referrals = result["active"] || []

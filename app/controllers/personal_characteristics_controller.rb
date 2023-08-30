@@ -19,12 +19,13 @@ class PersonalCharacteristicsController < ApplicationController
       obs.derivedFrom = [FHIR::Reference.new(reference: params[:derived_from])] if params[:derived_from].present?
       set_fields_base_on_type(obs)
 
-      obs.create
+      get_client.create(obs)
+
       flash[:success] = "Personal characteristic created"
     rescue StandardError => e
       flash[:error] = "Unable to create personal characteristic. #{e.message}"
     end
-    Rails.cache.delete('personal_characteristics')
+    Rails.cache.delete(personal_characteristics_key)
     set_active_tab("personal-characteristics")
     redirect_to dashboard_path
   end
@@ -32,7 +33,7 @@ class PersonalCharacteristicsController < ApplicationController
   def destroy
     begin
       @fhir_client.destroy(FHIR::Observation, params[:id])
-      Rails.cache.delete('personal_characteristics')
+      Rails.cache.delete(personal_characteristics_key)
       flash[:success] = "Personal characteristic deleted"
     rescue StandardError => e
       flash[:error] = "Unable to delete personal characteristics. #{e.message}"
@@ -46,7 +47,7 @@ class PersonalCharacteristicsController < ApplicationController
   def set_fields_base_on_type(obs)
     case params[:type]
     when "personal_pronouns"
-     add_personal_pronoun_attr(obs)
+      add_personal_pronoun_attr(obs)
     when "ethnicity"
       add_ethnicity_attr(obs)
     when "race"

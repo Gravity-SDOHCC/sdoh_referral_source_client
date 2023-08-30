@@ -14,12 +14,14 @@ class GoalsController < ApplicationController
         addresses: addresses,
       )
 
-      result = goal.create
+      result = get_client.create(goal).resource
+
       flash[:success] = "Goal has been created"
+
       goals = fetch_goals
       new_goal = goals["active"].find { |goal| goal.id == result.id}
       if new_goal.nil?
-        goals["active"] << Goal.new(result)
+        goals["active"] << Goal.new(result, fhir_client: get_client)
         save_goals(goals)
       end
     rescue => e
@@ -36,7 +38,9 @@ class GoalsController < ApplicationController
         when "completed"
           @goal.achievementStatus = achievement_status("achieved")
         end
-        @goal.update
+
+        get_client.update(@goal, @goal.id)
+
         flash[:success] = "Goal has been marked as #{params[:status]}"
       else
         flash[:error] = "Unable to update goal: goal not found"
@@ -45,7 +49,7 @@ class GoalsController < ApplicationController
       flash[:error] = "Unable to update goal: #{e.message}"
     end
     set_active_tab("goals")
-    Rails.cache.delete("goals_#{patient_id}")
+    Rails.cache.delete(goals_key)
     redirect_to dashboard_path
   end
 
