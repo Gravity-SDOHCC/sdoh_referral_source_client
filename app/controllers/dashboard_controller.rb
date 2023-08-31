@@ -24,6 +24,8 @@ class DashboardController < ApplicationController
     if success
       @patients = result
     else
+      Rails.logger.error("Failed to set patients: #{result}")
+
       reset_session
       flash[:error] = result
     end
@@ -34,6 +36,8 @@ class DashboardController < ApplicationController
     if success
       @current_practitioner = result
     else
+      Rails.logger.error("Failed to set current practitioner: #{result}")
+
       reset_session
       clear_cache
       flash[:error] = result
@@ -46,6 +50,8 @@ class DashboardController < ApplicationController
     if success
       @personal_characteristics = result
     else
+      Rails.logger.error("Failed to set personal characteristics #{result}")
+
       flash[:warning] = result
     end
   end
@@ -58,6 +64,8 @@ class DashboardController < ApplicationController
       @active_health_concerns = result["health-concern"]&.dig("active") || []
       @resolved_health_concerns = result["health-concern"]&.dig("resolved") || []
     else
+      Rails.logger.error("Failed to set conditions: #{result}")
+
       flash[:warning] = result
     end
   end
@@ -67,6 +75,8 @@ class DashboardController < ApplicationController
     @active_goals = goals["active"] || []
     @completed_goals = goals["completed"] || []
   rescue => e
+    Rails.logger.error(e.full_message)
+
     flash[:warning] = e.message
   end
 
@@ -76,6 +86,8 @@ class DashboardController < ApplicationController
       @active_referrals = result["active"] || []
       @completed_referrals = result["completed"] || []
     else
+      Rails.logger.error("Failed to set referrals: #{result}")
+
       flash[:warning] = result
     end
   end
@@ -85,6 +97,8 @@ class DashboardController < ApplicationController
     if success
       @service_requests = result
     else
+      Rails.logger.error("Failed to set service requests: #{result}")
+
       flash[:warning] = result
     end
   end

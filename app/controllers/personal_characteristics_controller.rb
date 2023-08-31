@@ -21,6 +21,8 @@ class PersonalCharacteristicsController < ApplicationController
 
       flash[:success] = "Personal characteristic created"
     rescue StandardError => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create personal characteristic. #{e.message}"
     end
     Rails.cache.delete(personal_characteristics_key)
@@ -34,6 +36,8 @@ class PersonalCharacteristicsController < ApplicationController
       Rails.cache.delete(personal_characteristics_key)
       flash[:success] = "Personal characteristic deleted"
     rescue StandardError => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to delete personal characteristics. #{e.message}"
     end
     set_active_tab("personal-characteristics")

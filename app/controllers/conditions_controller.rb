@@ -17,6 +17,8 @@ class ConditionsController < ApplicationController
 
       flash[:success] = "Condition has been created"
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create condition. #{e.message}"
     end
     tab = params[:type] == "health-concern" ? "health-concerns" : "problems"
@@ -38,9 +40,13 @@ class ConditionsController < ApplicationController
 
         flash[:success] = "Health concern has been marked as #{params[:status]}"
       else
+        Rails.logger.error("Unable to update health concern: condition not found")
+
         flash[:error] = "Unable to update health concern: condition not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to update health concern: #{e.message}"
     end
     set_active_tab("health-concerns")

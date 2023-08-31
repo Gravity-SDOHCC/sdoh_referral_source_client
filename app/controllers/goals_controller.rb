@@ -25,6 +25,8 @@ class GoalsController < ApplicationController
         save_goals(goals)
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create goal. #{e.message}"
     end
     set_active_tab("goals")
@@ -43,9 +45,13 @@ class GoalsController < ApplicationController
 
         flash[:success] = "Goal has been marked as #{params[:status]}"
       else
+        Rails.logger.error("Unable to update goal: goal not found")
+
         flash[:error] = "Unable to update goal: goal not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to update goal: #{e.message}"
     end
     set_active_tab("goals")
@@ -65,9 +71,13 @@ class GoalsController < ApplicationController
           save_goals(goals)
         end
       else
+        Rails.logger.error("Unable to delete goal: Goal not found")
+
         flash[:error] = "Unable to delete goal: Goal not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to destroy goal: #{e.message}"
     end
     redirect_to dashboard_path
@@ -79,7 +89,7 @@ class GoalsController < ApplicationController
     goals = fetch_goals
     @goal = goals["active"].find { |goal| goal.id == params[:id] }&.fhir_resource
   rescue => e
-    puts e.message
+    Rails.logger.error(e.full_message)
   end
 
   ### Create a new goal ###

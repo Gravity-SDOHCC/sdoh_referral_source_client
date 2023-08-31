@@ -34,6 +34,8 @@ class TasksController < ApplicationController
 
       flash[:success] = "Task has been created"
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create task: #{e.message}"
     end
     Rails.cache.delete(tasks_key)
@@ -58,9 +60,13 @@ class TasksController < ApplicationController
         end
         flash[:success] = "Task has been marked as #{params[:status]}"
       else
+        Rails.logger.error("Unable to update task: task not found")
+
         flash[:error] = "Unable to update task: task not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to update task: #{e.message}"
     end
     Rails.cache.delete(tasks_key)
@@ -89,7 +95,8 @@ class TasksController < ApplicationController
       task_status = updated_tasks.map { |t| t.status }.join(", ")
       flash[:success] = "#{task_names} status has been updated to #{task_status}" if updated_tasks.present?
     else
-      # Rails.logger.warn { 'message' => 'Unable to fetch tasks for update', 'result' => result }
+      Rails.logger.error("Unable to poll tasks: #{result}")
+
       flash[:warning] = result
     end
     render json: {
