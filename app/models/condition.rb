@@ -21,7 +21,8 @@ class Condition
     @evidence_reference = get_evidence_references(fhir_condition.evidence)
 
     if fhir_client.present?
-      evidence_ref_id = @evidence_reference&.reference_id
+      evidence_ref_id = @evidence_reference&.split("/")&.last
+
       obs = fhir_client.read(FHIR::Observation, evidence_ref_id).resource if evidence_ref_id
       # For some reason, sometimes a read retuns a FHIR::Bundle instead of a FHIR::Observation
       obs = obs&.entry&.first&.resource if obs.is_a?(FHIR::Bundle)

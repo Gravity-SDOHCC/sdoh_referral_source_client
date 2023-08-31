@@ -1,16 +1,16 @@
 class Goal
-  attr_reader :id, :description, :category, :status, :achievement_status, :start_date, :targets, :problems, :fhir_resource, :fhir_client
+  attr_reader :id, :description, :category, :status, :achievement_status, :start_date, :targets, :problems, :fhir_resource
 
   def initialize(fhir_goal, fhir_client: nil)
-    @fhir_client = fhir_client
     @id = fhir_goal.id
     @fhir_resource = fhir_goal
+    @fhir_resource.client = nil
     @description = read_codeable_concept(fhir_goal.description)
     @category = read_category(fhir_goal.category)
     @status = fhir_goal.lifecycleStatus
     @achievement_status = read_codeable_concept(fhir_goal.achievementStatus)
     @targets = get_targets(fhir_goal.target)
-    @problems = get_problems(fhir_goal.addresses)
+    @problems = get_problems(fhir_goal.addresses, fhir_client)
     @start_date = fhir_goal.statusDate
   end
 
@@ -25,7 +25,7 @@ class Goal
     category&.map { |c| read_codeable_concept(c) }&.join(", ")
   end
 
-  def get_problems(problems)
+  def get_problems(problems, fhir_client)
     probs = []
     problems&.each do |problem|
       prob_id = problem&.reference_id

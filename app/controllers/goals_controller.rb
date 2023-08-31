@@ -38,10 +38,10 @@ class GoalsController < ApplicationController
       if @goal
         case params[:field]
         when "completed"
-          @goal.achievementStatus = achievement_status("achieved")
+          @goal.fhir_resource.achievementStatus = achievement_status("achieved")
         end
 
-        get_client.update(@goal, @goal.id)
+        get_client.update(@goal.fhir_resource, @goal.id)
 
         flash[:success] = "Goal has been marked as #{params[:status]}"
       else
@@ -62,7 +62,7 @@ class GoalsController < ApplicationController
   def destroy
     begin
       if @goal
-        @goal.destroy
+        get_client.destroy(FHIR::Goal, @goal.id)
         flash[:success] = "Goal deleted successfully"
         goals = fetch_goals
         removed_goal = goals["active"].find { |goal| goal.id == @goal.id }
@@ -87,7 +87,7 @@ class GoalsController < ApplicationController
 
   def get_goal
     goals = fetch_goals
-    @goal = goals["active"].find { |goal| goal.id == params[:id] }&.fhir_resource
+    @goal = goals["active"].find { |goal| goal.id == params[:id] }
   rescue => e
     Rails.logger.error(e.full_message)
   end

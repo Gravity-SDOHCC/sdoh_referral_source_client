@@ -52,7 +52,7 @@ class TasksController < ApplicationController
         client.update(task, task.id)
 
         if params[:status] == "cancelled"
-          sr_id = task.focus&.reference&.reference_id
+          sr_id = task.focus&.reference_id
           service_request = client.read(FHIR::ServiceRequest, sr_id).resource
           service_request&.status = "revoked"
 

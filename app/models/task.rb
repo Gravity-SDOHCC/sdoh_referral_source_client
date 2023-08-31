@@ -15,6 +15,8 @@ class Task
   private
 
   def get_focus(focus)
+    return if focus.nil?
+
     f = focus.reference_id
     fhir_focus = fhir_client.read(FHIR::ServiceRequest, f).resource
     # sometimes for some reason read returns FHIR::Bundle

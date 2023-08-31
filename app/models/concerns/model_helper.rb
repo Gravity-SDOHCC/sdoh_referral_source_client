@@ -56,7 +56,7 @@ module ModelHelper
     latest_start_date = nil
 
     array.each do |item|
-      if item&.period && item.period&.start
+      if item.period&.start
         start_date = Date.parse(item.period.start)
 
         if latest_start_date.nil? || start_date > latest_start_date

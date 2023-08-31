@@ -1,5 +1,5 @@
 class DashboardController < ApplicationController
-  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_referrences
+  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_references
 
   # GET /dashboard
   def main
@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
   private
 
   # Getting all resources associated with the given patient
-  def get_patient_referrences
+  def get_patient_references
     if patient_id.present?
       set_personal_characteristics
       set_conditions
@@ -50,7 +50,7 @@ class DashboardController < ApplicationController
     if success
       @personal_characteristics = result
     else
-      Rails.logger.error("Failed to set personal characteristics #{result}")
+      Rails.logger.info("Failed to set personal characteristics #{result}")
 
       flash[:warning] = result
     end
@@ -64,7 +64,7 @@ class DashboardController < ApplicationController
       @active_health_concerns = result["health-concern"]&.dig("active") || []
       @resolved_health_concerns = result["health-concern"]&.dig("resolved") || []
     else
-      Rails.logger.error("Failed to set conditions: #{result}")
+      Rails.logger.info("Failed to set conditions: #{result}")
 
       flash[:warning] = result
     end
@@ -75,7 +75,7 @@ class DashboardController < ApplicationController
     @active_goals = goals["active"] || []
     @completed_goals = goals["completed"] || []
   rescue => e
-    Rails.logger.error(e.full_message)
+    Rails.logger.info(e.full_message)
 
     flash[:warning] = e.message
   end
@@ -86,7 +86,7 @@ class DashboardController < ApplicationController
       @active_referrals = result["active"] || []
       @completed_referrals = result["completed"] || []
     else
-      Rails.logger.error("Failed to set referrals: #{result}")
+      Rails.logger.info("Failed to set referrals: #{result}")
 
       flash[:warning] = result
     end
@@ -97,7 +97,7 @@ class DashboardController < ApplicationController
     if success
       @service_requests = result
     else
-      Rails.logger.error("Failed to set service requests: #{result}")
+      Rails.logger.info("Failed to set service requests: #{result}")
 
       flash[:warning] = result
     end

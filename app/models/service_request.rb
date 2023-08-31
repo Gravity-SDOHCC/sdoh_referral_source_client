@@ -1,8 +1,7 @@
 class ServiceRequest
-  attr_reader :id, :status, :category, :description, :performer_name, :performer_reference, :consent, :goal, :problem, :fhir_resource, :fhir_client
+  attr_reader :id, :status, :category, :description, :performer_name, :performer_reference, :consent, :goal, :problem, :fhir_resource
 
-  def initialize(fhir_service_request, fhir_client = nil)
-    @fhir_client = fhir_client
+  def initialize(fhir_service_request, fhir_client: nil)
     @id = fhir_service_request.id
     @fhir_resource = fhir_service_request
     @status = fhir_service_request.status
@@ -10,10 +9,10 @@ class ServiceRequest
     @description = read_codeable_concept(fhir_service_request.code)
     @performer_name = fhir_service_request.performer&.first&.display
     @performer_reference = fhir_service_request.performer.first&.reference
-    @consent = read_reference(fhir_service_request.supportingInfo&.first, FHIR::Consent, Consent)
+    @consent = read_reference(fhir_service_request.supportingInfo&.first, FHIR::Consent, Consent, fhir_client)
+    @problem = read_reference(fhir_service_request.reasonReference&.first, FHIR::Condition, Condition, fhir_client)
     # TODO: ruby FHIR::ServiceRequest.pertainsToGoal is not defined. find a workaround
     # @goal = read_reference(fhir_service_request.pertainsToGoal&.first, FHIR::Goal, Goal)
-    @problem = read_reference(fhir_service_request.reasonReference&.first, FHIR::Condition, Condition)
   end
 
   private
@@ -27,7 +26,7 @@ class ServiceRequest
     c&.display ? c.display : c&.code&.gsub("-", " ")&.titleize
   end
 
-  def read_reference(reference, fhir_klass, klass)
+  def read_reference(reference, fhir_klass, klass, fhir_client)
     return unless reference && fhir_client
 
     id = reference.reference_id
