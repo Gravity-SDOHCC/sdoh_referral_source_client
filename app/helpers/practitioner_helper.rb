@@ -31,9 +31,13 @@ module PractitionerHelper
         save_current_practitioner(practitioner)
         [true, practitioner]
       else
+        Rails.logger.error("Failed to fetch patient's personal characteristics. Status: #{response.response[:code]} - #{response.response[:body]}")
+
         [false, "Failed to fetch practitioner. Practitioner may not exist. Status: #{response.response[:code]} - #{response.response[:body]}"]
       end
     rescue Errno::ECONNREFUSED => e
+      Rails.logger.error(e.full_message)
+
       [false, "Connection refused. Please check FHIR server's URL #{get_server_base_url} is up and try again. #{e.message}"]
       # rescue Rack::Timeout::RequestTimeoutException => e
       #   [false, "Request timeout. Please try again later. #{e.message}"]
@@ -45,10 +49,12 @@ module PractitionerHelper
       response = get_client.read_feed(FHIR::Practitioner)
 
       if response.resource.is_a?(FHIR::Bundle)
-        entries = response.resource.entry.map(&:resource)
-        entries.map { |entry| Practitioner.new(entry) }
+        entries = response.resource.entry&.map(&:resource)
+        entries&.map { |entry| Practitioner.new(entry) }
       else
-        raise "Error fetching Practitioners from FHIR server. You need to choose a test provider to continue. Status code: #{response.response[:code]}"
+        Rails.logger.error("Error fetching Practitioners from FHIR server. Status: #{response.response[:code]} - #{response.response[:body]}")
+
+        raise "Error fetching Practitioners from FHIR server. You need to choose a test provider to continue. Status: #{response.response[:code]}"
       end
     end
   end
@@ -58,8 +64,7 @@ module PractitionerHelper
       response = get_client.search(FHIR::PractitionerRole, search: { parameters: { practitioner: practitioner_id }})
 
       if response.resource.is_a?(FHIR::Bundle)
-        entries = response.resource.entry.map(&:resource)
-        entries.first&.id
+        response.resource.entry&.map(&:resource)&.first&.id
       end
     end
   end
