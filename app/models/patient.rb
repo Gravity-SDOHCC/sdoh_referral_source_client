@@ -16,16 +16,16 @@ class Patient < Resource
     @race = characteristics[:race]
     @ethnicity = characteristics[:ethnicity]
     @birthsex = characteristics[:birthsex]
-    @marital_status = fhir_patient.maritalStatus.coding[0]&.display if fhir_patient.maritalStatus
+    @marital_status = fhir_patient.maritalStatus.coding&.first&.display if fhir_patient.maritalStatus
   end
 
   private
 
   def get_med_rec_num(fhir_patient_id_arr)
     fhir_patient_id_arr.each do |id_obj|
-      if id_obj.type && id_obj.type.coding
+      if id_obj&.type&.coding
         id_obj.type.coding.each do |coding|
-          if coding.code == 'MR'
+          if coding&.code == 'MR'
             return id_obj.value
           end
         end
@@ -37,17 +37,17 @@ class Patient < Resource
   def read_characteristics(fhir_patient_extension_arr)
     characteristics = { race: [], ethnicity: [], birthsex: nil }
 
-    fhir_patient_extension_arr.each do |ext|
-      case ext.url
+    fhir_patient_extension_arr&.each do |ext|
+      case ext&.url
       when 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
-        ext.extension.each do |race_ext|
-          if race_ext.url == 'ombCategory' && race_ext.valueCoding && race_ext.valueCoding.display
+        ext.extension&.each do |race_ext|
+          if race_ext&.url == 'ombCategory' && race_ext&.valueCoding&.display
             characteristics[:race] << race_ext.valueCoding.display
           end
         end
       when 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
-        ext.extension.each do |ethnicity_ext|
-          if ethnicity_ext.url == 'ombCategory' && ethnicity_ext.valueCoding && ethnicity_ext.valueCoding.display
+        ext.extension&.each do |ethnicity_ext|
+          if ethnicity_ext&.url == 'ombCategory' && ethnicity_ext&.valueCoding&.display
             characteristics[:ethnicity] << ethnicity_ext.valueCoding.display
           end
         end
@@ -61,5 +61,4 @@ class Patient < Resource
 
     characteristics
   end
-
 end

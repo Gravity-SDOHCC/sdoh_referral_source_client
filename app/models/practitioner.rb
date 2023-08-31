@@ -14,8 +14,8 @@ class Practitioner < Resource
   private
 
   def get_npi(fhir_practitioner_id_arr)
-    fhir_practitioner_id_arr.each do |id_obj|
-      if id_obj.system.include?('npi')
+    fhir_practitioner_id_arr&.each do |id_obj|
+      if id_obj&.system&.include?('npi')
         return id_obj.value
       end
     end

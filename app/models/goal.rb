@@ -22,13 +22,13 @@ class Goal
   end
 
   def read_category(category)
-    category.map { |c| read_codeable_concept(c) }.join(", ")
+    category&.map { |c| read_codeable_concept(c) }&.join(", ")
   end
 
   def get_problems(problems)
     probs = []
-    problems.each do |problem|
-      prob_id = problem.reference.split("/").last
+    problems&.each do |problem|
+      prob_id = problem&.reference_id
       fhir_prob = fhir_client.read(FHIR::Condition, prob_id)&.resource
       # sometimes for some reason read returns FHIR::Bundle
       fhir_prob = fhir_prob&.entry&.first&.resource if fhir_prob.is_a?(FHIR::Bundle)
@@ -39,10 +39,10 @@ class Goal
 
   def get_targets(targets)
     targs = []
-    targets.each do |target|
-      measure = read_codeable_concept(target.measure)
-      detail = read_codeable_concept(target.detailCodeableConcept)
-      due_date = target.dueDate
+    targets&.each do |target|
+      measure = read_codeable_concept(target&.measure)
+      detail = read_codeable_concept(target&.detailCodeableConcept)
+      due_date = target&.dueDate
       targs << Target.new(measure, detail, due_date)
     end
     targs

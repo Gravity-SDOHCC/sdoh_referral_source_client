@@ -19,8 +19,9 @@ class Condition
     @asserter_name = fhir_condition.asserter&.display
     @asserter_reference = fhir_condition.asserter&.reference
     @evidence_reference = get_evidence_references(fhir_condition.evidence)
+
     if fhir_client.present?
-      evidence_ref_id = @evidence_reference&.split("/")&.last
+      evidence_ref_id = @evidence_reference&.reference_id
       obs = fhir_client.read(FHIR::Observation, evidence_ref_id).resource if evidence_ref_id
       # For some reason, sometimes a read retuns a FHIR::Bundle instead of a FHIR::Observation
       obs = obs&.entry&.first&.resource if obs.is_a?(FHIR::Bundle)
@@ -35,13 +36,20 @@ class Condition
   end
 
   def get_category_display(category)
-    type = category&.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes" }&.coding&.first
-    display = type&.display || type&.code&.gsub("-", " ")&.titleize
+    type =
+      category
+        &.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes" }
+        &.coding
+        &.first
+    type&.display || type&.code&.gsub("-", " ")&.titleize
   end
 
   def get_type(category)
-    type = category&.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/core/CodeSystem/condition-category" }&.coding&.first
-    type&.code
+    category
+      &.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/core/CodeSystem/condition-category" }
+      &.coding
+      &.first
+      &.code
   end
 
   def get_evidence_references(evidence)
@@ -49,7 +57,7 @@ class Condition
   end
 
   def get_condition_code(code)
-    c = code&.coding&.find { |c| c.system == "http://hl7.org/fhir/sid/icd-10-cm" }
-    c.display ? "#{c.display} (#{c.code})" : c.code
+    c = code&.coding&.find { |c| c&.system == "http://hl7.org/fhir/sid/icd-10-cm" }
+    c&.display ? "#{c.display} (#{c.code})" : c.code
   end
 end

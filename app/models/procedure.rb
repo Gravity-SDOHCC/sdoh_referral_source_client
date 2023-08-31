@@ -20,13 +20,13 @@ class Procedure
   end
 
   def read_reference(reference)
-    id = reference.reference.split("/").last
+    id = reference.reference_id
 
     return nil if fhir_client.nil?
 
     condition = fhir_client.read(FHIR::Condition, id).resource
     # sometimes for some reason read returns FHIR::Bundle
-    condition = condition&.entry&.first&.resource if condition.is_a?(FHIR::Bundle)
+    condition = condition.entry&.first&.resource if condition.is_a?(FHIR::Bundle)
     Condition.new(condition, fhir_client: fhir_client) if condition
   end
 end

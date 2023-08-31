@@ -14,12 +14,12 @@ class Observation
 
   def get_code_string(code)
     c = code&.coding&.first
-    string = c.display ? "#{c.display} (#{c.code})" : c.code
+    c&.display ? "#{c.display} (#{c.code})" : c.code
   end
 
   def get_category_display(category)
     category&.map(&:coding)&.flatten&.map do |c|
-      c.display || c.code&.gsub("-", " ")&.titleize
+      c&.display || c&.code&.gsub("-", " ")&.titleize
     end&.join("/ ")
   end
 end
