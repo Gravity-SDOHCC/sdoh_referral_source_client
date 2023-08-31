@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
   # Get /select_test_practitioner
   def select_test_practitioner
     @practitioners = fetch_and_cache_practitioners
-    if @practitioners&.empty?
+    if @practitioners.blank?
       reset_session
       clear_cache
       flash[:warning] = "There are no providers on the server. You need a test provider to see patients data."

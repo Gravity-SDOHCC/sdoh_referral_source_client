@@ -69,13 +69,13 @@ class ConditionsController < ApplicationController
   end
 
   def set_category_to_problem(concern)
-    concern.category.each do |category|
-      if category.coding.first.system ==  "http://hl7.org/fhir/us/core/CodeSystem/condition-category"
+    concern&.category&.each do |category|
+      if category&.coding&.first&.system ==  "http://hl7.org/fhir/us/core/CodeSystem/condition-category"
         category.coding.first.code = "problem-list-item"
         category.coding.first.display = "Problem List Item"
       end
     end
-    puts "Promoted to problem? #{concern.category.first.coding.first.code == "problem-list-item"}"
+    puts "Promoted to problem? #{concern&.category&.first&.coding&.first&.code == "problem-list-item"}"
   end
 
   ### Create a new health concern ###
@@ -116,7 +116,7 @@ class ConditionsController < ApplicationController
           {
             "system": CONDITION_CATEGORY_US_CORE_CODE_SYSTEM ,
             "code": params[:type],
-            "display": params[:type].titleize
+            "display": params[:type]&.titleize
           }
         ]
       },
@@ -125,7 +125,7 @@ class ConditionsController < ApplicationController
           {
             "system": CATEGORY_SDOH_CODE_SYSTEM,
             "code": params[:category],
-            "display": params[:category].titleize
+            "display": params[:category]&.titleize
           }
         ]
       }
@@ -152,13 +152,13 @@ class ConditionsController < ApplicationController
   def subject
     {
       "reference": "Patient/#{patient_id}",
-      "display": current_patient.name
+      "display": current_patient&.name
     }
   end
 
   def onset_period
     {
-      "start": params[:effective_date].to_time.utc.strftime('%Y-%m-%dT%H:%M:%S.%3NZ')
+      "start": params[:effective_date]&.to_time&.utc&.strftime('%Y-%m-%dT%H:%M:%S.%3NZ')
     }
   end
 

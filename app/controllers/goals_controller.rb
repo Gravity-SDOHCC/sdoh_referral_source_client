@@ -130,7 +130,7 @@ class GoalsController < ApplicationController
   def subject
     {
       "reference": "Patient/#{patient_id}",
-      "display": current_patient.name,
+      "display": current_patient&.name,
     }
   end
 
