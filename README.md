@@ -1,27 +1,24 @@
-# README
+# Gravity Referral Source Client 
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This application is part of a reference implementation for the [Gravity FHIR
+Implementation Guide](http://hl7.org/fhir/us/sdoh-clinicalcare/). It, together
+with the [EHR FHIR
+Server](https://github.com/Gravity-SDOHCC/gravity-sdoh-ehr-server), plays the
+role of a simulated EHR which is capable as initiating referrals for SDOH
+services.
 
-Things you may want to cover:
 
-* Ruby version
+## Setup
+This application is built with Ruby on Rails. To run it locally, first [install
+rails](https://guides.rubyonrails.org/getting_started.html#creating-a-new-rails-project-installing-rails).
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Clone this repository: `git clone
+  https://github.com/Gravity-SDOHCC/sdoh_referral_source_client.git`
+* Navigate to the root of this repository: `cd sdoh_referral_source_client`
+* Install dependencios: `bundle install`
+* Set up the database: `bundle exec rake db:setup`
+* Run the application: `bundle exec rails s`
+* Navigate to `http://localhost:3000`
 
 # TODO:
 - [ ] Add authentication
