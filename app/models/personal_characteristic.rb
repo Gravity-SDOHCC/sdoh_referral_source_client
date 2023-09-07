@@ -6,6 +6,7 @@ class PersonalCharacteristic
   def initialize(fhir_observation)
     @id = fhir_observation.id
     @fhir_resource = fhir_observation
+    @fhir_resource.client = nil
     @subject_name = fhir_observation.subject&.display
     @subject_reference = fhir_observation.subject&.reference
     @performer_name = fhir_observation.performer&.map(&:display)&.join(', ')

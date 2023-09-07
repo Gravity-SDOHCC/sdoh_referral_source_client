@@ -5,6 +5,7 @@ class Organization < Resource
   def initialize(fhir_organization)
     @id = fhir_organization.id
     @fhir_resource = fhir_organization
+    @fhir_resource.client = nil
     @name = fhir_organization.name
     @address = format_address(fhir_organization.address)
     telecom = fhir_organization.contact&.first&.telecom || fhir_organization.telecom

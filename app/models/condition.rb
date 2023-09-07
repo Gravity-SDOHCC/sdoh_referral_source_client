@@ -7,6 +7,7 @@ class Condition
   def initialize(fhir_condition, fhir_client: nil)
     @id = fhir_condition.id
     @fhir_resource = fhir_condition
+    @fhir_resource.client = nil
     @clinical_status = get_code_from_complex(fhir_condition.clinicalStatus)
     @verification_status = get_code_from_complex(fhir_condition.verificationStatus)
     @category = get_category_display(fhir_condition.category)

@@ -5,6 +5,7 @@ class Patient < Resource
   def initialize(fhir_patient)
     @id = fhir_patient.id
     @fhir_resource = fhir_patient
+    @fhir_resource.client = nil
     @name = format_name(fhir_patient.name)
     @dob = fhir_patient.birthDate
     @medical_record_number = get_med_rec_num(fhir_patient.identifier)

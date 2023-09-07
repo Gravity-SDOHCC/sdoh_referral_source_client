@@ -5,6 +5,7 @@ class Practitioner < Resource
   def initialize(fhir_practitioner)
     @id = fhir_practitioner.id
     @fhir_resource = fhir_practitioner
+    @fhir_resource.client = nil
     @name = format_name(fhir_practitioner.name)
     @address = format_address(fhir_practitioner.address)
     @active = fhir_practitioner.active

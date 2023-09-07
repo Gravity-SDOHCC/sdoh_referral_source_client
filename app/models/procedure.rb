@@ -1,25 +1,26 @@
 class Procedure
-  attr_reader :id, :status, :category, :description, :performed_date, :problem, :fhir_resource, :fhir_client
+  attr_reader :id, :status, :category, :description, :performed_date, :problem, :fhir_resource
 
   def initialize(fhir_procedure, fhir_client: nil)
     @fhir_client = fhir_client
     @id = fhir_procedure.id
     @fhir_resource = fhir_procedure
+    @fhir_resource.client = nil
     @status = fhir_procedure.status
     @category = read_codeable_concept(fhir_procedure.category)
     @description = read_codeable_concept(fhir_procedure.code)
     @performed_date = fhir_procedure.performedDateTime
-    @problem = read_reference(fhir_procedure.reasonReference&.first)
+    @problem = read_reference(fhir_procedure.reasonReference&.first, fhir_client)
   end
 
   private
 
   def read_codeable_concept(codeable_concept)
-    diplay = codeable_concept&.coding&.map(&:display)&.join(", ")
-    diplay ? diplay : codeable_concept&.coding&.map(&:code)&.join(", ")&.gsub("-", " ")&.titleize
+    display = codeable_concept&.coding&.map(&:display)&.join(", ")
+    display || codeable_concept&.coding&.map(&:code)&.join(", ")&.gsub("-", " ")&.titleize
   end
 
-  def read_reference(reference)
+  def read_reference(reference, fhir_client)
     id = reference.reference_id
 
     return nil if fhir_client.nil?

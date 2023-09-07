@@ -4,6 +4,7 @@ class Observation
   def initialize(fhir_observation)
     @id = fhir_observation.id
     @fhir_resource = fhir_observation
+    @fhir_resource.client = nil
     @code = get_code_string(fhir_observation.code)
     @category = get_category_display(fhir_observation.category)
     @value = get_code_string(fhir_observation.valueCodeableConcept) if fhir_observation.valueCodeableConcept.present?
