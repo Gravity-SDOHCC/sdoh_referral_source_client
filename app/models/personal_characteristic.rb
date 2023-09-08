@@ -1,12 +1,14 @@
 # Personal characteristic model
 class PersonalCharacteristic
+  include ModelHelper
+
   attr_reader :id, :subject_name, :subject_reference, :performer_name, :performer_reference, :fhir_resource,
               :reported_method, :type, :value
 
   def initialize(fhir_observation)
     @id = fhir_observation.id
     @fhir_resource = fhir_observation
-    @fhir_resource.client = nil
+    remove_client_instances(@fhir_resource)
     @subject_name = fhir_observation.subject&.display
     @subject_reference = fhir_observation.subject&.reference
     @performer_name = fhir_observation.performer&.map(&:display)&.join(', ')

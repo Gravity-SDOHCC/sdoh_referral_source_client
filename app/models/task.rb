@@ -1,11 +1,12 @@
 class Task
+  include ModelHelper
+
   attr_reader :id, :status, :focus, :owner_reference, :owner_name, :outcome, :outcome_type, :fhir_resource
 
   def initialize(fhir_task, fhir_client: nil)
-    @fhir_client = fhir_client
     @id = fhir_task.id
     @fhir_resource = fhir_task
-    @fhir_resource.client = nil
+    remove_client_instances(@fhir_resource)
     @status = fhir_task.status
     @focus = get_focus(fhir_task.focus, fhir_client)
     @owner_reference = fhir_task.owner&.reference

@@ -1,5 +1,7 @@
 # Condition model for Health concerns and Problems
 class Condition
+  include ModelHelper
+
   attr_reader :id, :clinical_status, :verification_status, :category, :type, :code, :subject_name, :subject_reference,
               :resolution_period, :onset_period, :asserter_name, :asserter_reference, :evidence_reference,
               :evidence_source, :fhir_resource
@@ -7,7 +9,7 @@ class Condition
   def initialize(fhir_condition, fhir_client: nil)
     @id = fhir_condition.id
     @fhir_resource = fhir_condition
-    @fhir_resource.client = nil
+    remove_client_instances(@fhir_resource)
     @clinical_status = get_code_from_complex(fhir_condition.clinicalStatus)
     @verification_status = get_code_from_complex(fhir_condition.verificationStatus)
     @category = get_category_display(fhir_condition.category)

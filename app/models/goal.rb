@@ -1,10 +1,12 @@
 class Goal
+  include ModelHelper
+
   attr_reader :id, :description, :category, :status, :achievement_status, :start_date, :targets, :problems, :fhir_resource
 
   def initialize(fhir_goal, fhir_client: nil)
     @id = fhir_goal.id
     @fhir_resource = fhir_goal
-    @fhir_resource.client = nil
+    remove_client_instances(@fhir_resource)
     @description = read_codeable_concept(fhir_goal.description)
     @category = read_category(fhir_goal.category)
     @status = fhir_goal.lifecycleStatus

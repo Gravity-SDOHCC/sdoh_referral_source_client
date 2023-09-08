@@ -1,11 +1,14 @@
 # Patient Model
-class Patient < Resource
+class Patient
+  include ModelHelper
+
   attr_reader :id, :fhir_resource, :name, :dob, :medical_record_number, :gender, :address,
               :phone, :email, :race, :ethnicity, :marital_status, :birthsex
+
   def initialize(fhir_patient)
     @id = fhir_patient.id
     @fhir_resource = fhir_patient
-    @fhir_resource.client = nil
+    remove_client_instances(@fhir_resource)
     @name = format_name(fhir_patient.name)
     @dob = fhir_patient.birthDate
     @medical_record_number = get_med_rec_num(fhir_patient.identifier)
