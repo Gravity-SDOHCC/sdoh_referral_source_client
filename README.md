@@ -5,8 +5,8 @@ Implementation Guide](http://hl7.org/fhir/us/sdoh-clinicalcare/). It, together
 with the [EHR FHIR
 Server](https://github.com/Gravity-SDOHCC/gravity-sdoh-ehr-server), plays the
 role of a simulated EHR which is capable as initiating referrals for SDOH
-services.
-
+services. See [docs/usage.md](the usage documentation) for instructions on using
+the RI.
 
 ## Setup
 This application is built with Ruby on Rails. To run it locally, first [install
@@ -18,7 +18,9 @@ rails](https://guides.rubyonrails.org/getting_started.html#creating-a-new-rails-
 * Install dependencios: `bundle install`
 * Set up the database: `bundle exec rake db:setup`
 * Run the application: `bundle exec rails s`
-* Navigate to `http://localhost:3000`
+  * If you need to run the application on a different port, specify the `PORT`
+    environment variable: `PORT=3333 bundle exec rails s`
+* Navigate to `http://localhost:3000` in your browser
 
 # TODO:
 - [ ] Add authentication
