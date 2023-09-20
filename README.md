@@ -22,20 +22,11 @@ rails](https://guides.rubyonrails.org/getting_started.html#creating-a-new-rails-
     environment variable: `PORT=3333 bundle exec rails s`
 * Navigate to `http://localhost:3000` in your browser
 
-# TODO:
-- [ ] Add authentication
-- [ ] create race, sex gender, sexual orientation, & gender identity personal characteristics
-- [ ] Goals (Goal resource) addresses health concerns/problems (Condition)
-- [ ] read, delete health concerns, and promote to problems
-- [ ] read problems
-- [ ] read, create, complete goals
-- [ ] read, create, cancel referral management tasks (Action steps), also poll for status update
-- [ ] read, create, cancel, patient tasks, also poll for status update
-- [ ] social risk assessment workflow
-- [ ] fix view fhir_resource modal
-- [ ] fix logout popover link not showing when in patient page (when displaying single patient info)
-- [ ] complete upper level menu (showing the list of org recipients, ...)
-- [ ] switch flash bootstrap alert to toast (live toast)
+## Known Issues
+- No support for servers which require authorization
+- No support for patient task/social risk assessment workflow
+- Users are required to manually enter ICD-10 and SNOMED codes when adding a
+  Health Concern/Problem
 
 ## License
 Copyright 2023 The MITRE Corporation
@@ -52,6 +43,5 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
 ## Trademark Notice
-
 HL7, FHIR and the FHIR [FLAME DESIGN] are the registered trademarks of Health
 Level Seven International and their use does not constitute endorsement by HL7.
