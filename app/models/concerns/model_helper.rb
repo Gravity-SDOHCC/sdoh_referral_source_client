@@ -2,28 +2,33 @@
 module ModelHelper
   extend ActiveSupport::Concern
 
+  def remove_client_instances(resource)
+    resource.client = nil
+    @fhir_resource.each_element { |element| element.client = nil if element.respond_to? :client }
+  end
+
   def format_phone(fhir_telecom_arr)
-    phone_numbers = fhir_telecom_arr.select do |telecom|
-      telecom.system == "phone"
+    phone_numbers = fhir_telecom_arr&.select do |telecom|
+      telecom&.system == "phone"
     end.map { |phone| phone.value }
 
-    phone_numbers.join(", ")
+    phone_numbers&.join(", ")
   end
 
   def format_email(fhir_telecom_arr)
-    email_addresses = fhir_telecom_arr.select do |telecom|
-      telecom.system == "email"
+    email_addresses = fhir_telecom_arr&.select do |telecom|
+      telecom&.system == "email"
     end.map { |email| email.value }
 
-    email_addresses.join(", ")
+    email_addresses&.join(", ")
   end
 
   def format_url(fhir_telecom_arr)
-    urls = fhir_telecom_arr.select do |telecom|
-      telecom.system == "url"
+    urls = fhir_telecom_arr&.select do |telecom|
+      telecom&.system == "url"
     end.map { |url| url.value }
 
-    urls.join(", ")
+    urls&.join(", ")
   end
 
   def format_name(fhir_name_array)
@@ -56,7 +61,7 @@ module ModelHelper
     latest_start_date = nil
 
     array.each do |item|
-      if item.period && item.period.start
+      if item.period&.start
         start_date = Date.parse(item.period.start)
 
         if latest_start_date.nil? || start_date > latest_start_date

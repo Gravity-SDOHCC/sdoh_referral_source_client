@@ -25,6 +25,8 @@ class GoalsController < ApplicationController
         save_goals(goals)
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create goal. #{e.message}"
     end
     set_active_tab("goals")
@@ -36,16 +38,20 @@ class GoalsController < ApplicationController
       if @goal
         case params[:field]
         when "completed"
-          @goal.achievementStatus = achievement_status("achieved")
+          @goal.fhir_resource.achievementStatus = achievement_status("achieved")
         end
 
-        get_client.update(@goal, @goal.id)
+        get_client.update(@goal.fhir_resource, @goal.id)
 
         flash[:success] = "Goal has been marked as #{params[:status]}"
       else
+        Rails.logger.error("Unable to update goal: goal not found")
+
         flash[:error] = "Unable to update goal: goal not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to update goal: #{e.message}"
     end
     set_active_tab("goals")
@@ -56,7 +62,7 @@ class GoalsController < ApplicationController
   def destroy
     begin
       if @goal
-        @goal.destroy
+        get_client.destroy(FHIR::Goal, @goal.id)
         flash[:success] = "Goal deleted successfully"
         goals = fetch_goals
         removed_goal = goals["active"].find { |goal| goal.id == @goal.id }
@@ -65,9 +71,13 @@ class GoalsController < ApplicationController
           save_goals(goals)
         end
       else
+        Rails.logger.error("Unable to delete goal: Goal not found")
+
         flash[:error] = "Unable to delete goal: Goal not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to destroy goal: #{e.message}"
     end
     redirect_to dashboard_path
@@ -77,9 +87,9 @@ class GoalsController < ApplicationController
 
   def get_goal
     goals = fetch_goals
-    @goal = goals["active"].find { |goal| goal.id == params[:id] }&.fhir_resource
+    @goal = goals["active"].find { |goal| goal.id == params[:id] }
   rescue => e
-    puts e.message
+    Rails.logger.error(e.full_message)
   end
 
   ### Create a new goal ###
@@ -130,7 +140,7 @@ class GoalsController < ApplicationController
   def subject
     {
       "reference": "Patient/#{patient_id}",
-      "display": current_patient.name,
+      "display": current_patient&.name,
     }
   end
 

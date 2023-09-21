@@ -3,6 +3,8 @@ module GoalsHelper
 
   def save_goals(goals)
     Rails.cache.write(goals_key, goals, expires_in: 1.minute)
+  rescue StandardError => e
+    Rails.logger.error(e.full_message)
   end
 
   def fetch_goals

@@ -16,8 +16,8 @@ module ApplicationHelper
       response = get_client.search(FHIR::Organization, search: { parameters: { _sort: "-_lastUpdated" }}).resource
 
       if response.is_a?(FHIR::Bundle)
-        entries = response.entry.map(&:resource)
-        entries.map { |entry| Organization.new(entry) }
+        entries = response.entry&.map(&:resource)
+        entries&.map { |entry| Organization.new(entry) }
       end
     end
   end
@@ -27,8 +27,8 @@ module ApplicationHelper
       response = get_client.search(FHIR::Consent, search: { parameters: { patient: patient_id }}).resource
 
       if response.is_a?(FHIR::Bundle)
-        entries = response.entry.map(&:resource)
-        entries.map { |entry| Consent.new(entry) }
+        entries = response.entry&.map(&:resource)
+        entries&.map { |entry| Consent.new(entry) }
       else
         Rails.logger.error "Error fetching consents"
       end

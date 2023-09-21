@@ -1,9 +1,7 @@
 class PersonalCharacteristicsController < ApplicationController
-
   before_action :require_client
 
   def new
-
   end
 
   def create
@@ -23,6 +21,8 @@ class PersonalCharacteristicsController < ApplicationController
 
       flash[:success] = "Personal characteristic created"
     rescue StandardError => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create personal characteristic. #{e.message}"
     end
     Rails.cache.delete(personal_characteristics_key)
@@ -32,10 +32,12 @@ class PersonalCharacteristicsController < ApplicationController
 
   def destroy
     begin
-      @fhir_client.destroy(FHIR::Observation, params[:id])
+      get_client.destroy(FHIR::Observation, params[:id])
       Rails.cache.delete(personal_characteristics_key)
       flash[:success] = "Personal characteristic deleted"
     rescue StandardError => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to delete personal characteristics. #{e.message}"
     end
     set_active_tab("personal-characteristics")
@@ -85,7 +87,7 @@ class PersonalCharacteristicsController < ApplicationController
         {
           "system": "http://loinc.org",
           "code": params[:value],
-          "display": PERSONAL_PRONOUNS.find { |pronoun| pronoun[:code] == params[:value] }[:display]
+          "display": PERSONAL_PRONOUNS.find { |pronoun| pronoun[:code] == params[:value] }&.dig(:display)
         }
       ]
     }
@@ -118,7 +120,7 @@ class PersonalCharacteristicsController < ApplicationController
             {
               "system": "urn:oid:2.16.840.1.113883.6.238",
               "code": params[:value],
-              "display": ETHNICITY.find { |e| e[:code] == params[:value] }[:display]
+              "display": ETHNICITY.find { |e| e[:code] == params[:value] }&.dig(:display)
             }
           ]
         }
@@ -136,7 +138,7 @@ class PersonalCharacteristicsController < ApplicationController
   def obs_meta
     {
       "profile": [
-        PERSONAL_CHARACTERISTICS_PROFILES[params[:type].to_sym]
+        PERSONAL_CHARACTERISTICS_PROFILES[params[:type]&.to_sym]
       ]
     }
   end
@@ -160,7 +162,7 @@ class PersonalCharacteristicsController < ApplicationController
         {
           "system": REPORTED_METHODS_SYSTEM,
           "code": params[:reported_method],
-          "display": REPORTED_METHODS[params[:reported_method].to_sym][:display]
+          "display": REPORTED_METHODS.dig(params[:reported_method]&.to_sym, :display)
         }
       ]
     }
@@ -169,8 +171,7 @@ class PersonalCharacteristicsController < ApplicationController
   def obs_subject
     {
       "reference": "Patient/#{patient_id}",
-      "display": current_patient.name
+      "display": current_patient&.name
     }
   end
-
 end

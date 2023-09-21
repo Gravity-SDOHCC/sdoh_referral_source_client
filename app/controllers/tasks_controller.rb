@@ -34,6 +34,8 @@ class TasksController < ApplicationController
 
       flash[:success] = "Task has been created"
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to create task: #{e.message}"
     end
     Rails.cache.delete(tasks_key)
@@ -43,23 +45,28 @@ class TasksController < ApplicationController
 
   def update_task
     begin
-      task = get_client.read(FHIR::Task, params[:id]).resource
+      client = get_client
+      task = client.read(FHIR::Task, params[:id]).resource
       if task.present?
         task.status = params[:status]
-        get_client.update(task, task.id)
+        client.update(task, task.id)
 
         if params[:status] == "cancelled"
-          sr_id = task.focus&.reference&.split("/")&.last
-          service_request = get_client.read(FHIR::ServiceRequest, sr_id).resource
-          service_request.status = "revoked"
+          sr_id = task.focus&.reference_id
+          service_request = client.read(FHIR::ServiceRequest, sr_id).resource
+          service_request&.status = "revoked"
 
-          get_client.update(service_request, sr_id)
+          client.update(service_request, sr_id)
         end
         flash[:success] = "Task has been marked as #{params[:status]}"
       else
+        Rails.logger.error("Unable to update task: task not found")
+
         flash[:error] = "Unable to update task: task not found"
       end
     rescue => e
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Unable to update task: #{e.message}"
     end
     Rails.cache.delete(tasks_key)
@@ -84,11 +91,12 @@ class TasksController < ApplicationController
           nil
         end
       end.compact
-      task_names = updated_tasks.map { |t| t.focus.description }.join(", ")
+      task_names = updated_tasks.map { |t| t.focus&.description }.join(", ")
       task_status = updated_tasks.map { |t| t.status }.join(", ")
       flash[:success] = "#{task_names} status has been updated to #{task_status}" if updated_tasks.present?
     else
-      # Rails.logger.warn { 'message' => 'Unable to fetch tasks for update', 'result' => result }
+      Rails.logger.error("Unable to poll tasks: #{result}")
+
       flash[:warning] = result
     end
     render json: {
@@ -132,7 +140,7 @@ class TasksController < ApplicationController
   def task_owner
     {
       "reference": "Organization/#{params[:performer_id]}",
-      "display": organizations.find { |org| org.id == params[:performer_id] }&.name,
+      "display": organizations&.find { |org| org&.id == params[:performer_id] }&.name,
     }
   end
 
@@ -161,7 +169,7 @@ class TasksController < ApplicationController
           {
             "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
             "code": params[:category],
-            "display": params[:category].titleize,
+            "display": params[:category]&.titleize,
           },
         ],
       },

@@ -29,11 +29,14 @@ class SessionsController < ApplicationController
         flash[:success] = "Successfully connected to #{fhir_server.name}"
         redirect_to select_test_practitioner_path
       else
+        Rails.logger.error("Failed to connect to #{fhir_server.name}: #{fhir_server.base_url}")
+
         flash[:error] = "Failed to connect to the provided server, verify the URL provided is correct."
         redirect_to home_path
       end
     rescue StandardError => e
-      puts "Error happened:#{e.class} => #{e.message}"
+      Rails.logger.error(e.full_message)
+
       flash[:error] = "Failed to connect to the provided server, verify the URL provided is correct. Error: #{e.message}"
       redirect_to home_path
     end
@@ -42,13 +45,17 @@ class SessionsController < ApplicationController
   # Get /select_test_practitioner
   def select_test_practitioner
     @practitioners = fetch_and_cache_practitioners
-    if @practitioners&.empty?
+    if @practitioners.blank?
+      Rails.logger.error("No Practitioners found. Redirecting to root.")
+
       reset_session
       clear_cache
       flash[:warning] = "There are no providers on the server. You need a test provider to see patients data."
       redirect_to root_path
     end
   rescue => e
+    Rails.logger.error(e.full_message)
+
     reset_session
     clear_cache
     flash[:error] = e.message
