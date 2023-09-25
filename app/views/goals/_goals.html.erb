@@ -20,14 +20,6 @@
       <% end %>
     </div>
 
-    <% if session[:fhir_server_base_url] == 'https://gravity-ehr-server.herokuapp.com/fhir' %>
-    <div>
-      <a class="btn btn-primary mb-3" href="http://localhost:3000/oauth/launch?launch=pid-<%= session[:patient_id] %>&iss=https://gravity-ehr-server.herokuapp.com/fhir" target="_blank">
-        Check for social care benefits
-      </a>
-    </div>
-    <% end %>
-
     <div class="table-wrapper">
       <div class="header">
         <div class="title">
