@@ -22,6 +22,14 @@ rails](https://guides.rubyonrails.org/getting_started.html#creating-a-new-rails-
     environment variable: `PORT=3333 bundle exec rails s`
 * Navigate to `http://localhost:3000` in your browser
 
+### Environment Variables for Supplemental Benefits Checking
+In order to interact with the proof of concept for checking supplemental
+benefits, two environment variables must be set:
+
+* `RI_SERVER_URL` - The base url of the Gravity RI EHR server
+* `BENEFITS_CHECK_SERVER_URL` - The base of the url for the benefits checking
+  PoC (just protocol, host, and port if needed)
+
 ## Usage
 See [the usage
 documentation](https://github.com/Gravity-SDOHCC/sdoh_referral_source_client/blob/master/docs/usage.md)
