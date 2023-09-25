@@ -32,6 +32,9 @@ for instructions on using the reference implementations.
 - No support for patient task/social risk assessment workflow
 - Users are required to manually enter ICD-10 and SNOMED codes when adding a
   Health Concern/Problem
+- Not all SDOH categories are supported when creating Goals and Referrals
+- Sometimes when new links are added to the page (such as when a new referral is
+  received), clicking o the link will have no effect until the page is reloaded
 
 ## License
 Copyright 2023 The MITRE Corporation
