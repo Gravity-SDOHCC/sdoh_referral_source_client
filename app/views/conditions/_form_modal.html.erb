@@ -20,8 +20,8 @@
           </div>
           <div class="mb-3">
             <%= f.label :snomed_code, "SNOMED-CT Code", class: "form-label" %>
-            <%= f.text_field :snomed_code, class: "form-control", placeholder: "Enter SNOMED-CT code", required: true %>
-            <%= f.text_field :snomed_display, class: "form-control mt-2", placeholder: "Enter SNOMED-CT code description", required: true %>
+            <%= f.text_field :snomed_code, class: "form-control", placeholder: "Enter SNOMED-CT code", required: false %>
+            <%= f.text_field :snomed_display, class: "form-control mt-2", placeholder: "Enter SNOMED-CT code description", required: false %>
           </div>
           <div class="mb-3">
             <%= f.label :effective_date, "Effective Date", class: "form-label" %>
