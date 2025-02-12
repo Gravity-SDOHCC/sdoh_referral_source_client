@@ -14,7 +14,7 @@ class DashboardController < ApplicationController
       set_personal_characteristics
       set_conditions
       set_goals
-      set_referrals
+      set_tasks
       set_service_requests
     end
   end
@@ -80,11 +80,21 @@ class DashboardController < ApplicationController
     flash[:warning] = e.message
   end
 
-  def set_referrals
-    success, result = fetch_tasks
+  def set_tasks
+    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement")
     if success
       @active_referrals = result["active"] || []
       @completed_referrals = result["completed"] || []
+    else
+      Rails.logger.info("Failed to set referrals: #{result}")
+
+      flash[:warning] = result
+    end
+
+    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient")
+    if success
+      @active_patient_tasks = result["active"] || []
+      @completed_patient_tasks = result["completed"] || []
     else
       Rails.logger.info("Failed to set referrals: #{result}")
 

@@ -5,12 +5,12 @@ module TasksHelper
     Rails.cache.write(tasks_key, tasks, expires_in: 30.minutes)
   end
 
-  def fetch_tasks
+  def fetch_tasks(profile)
     client = get_client
     search_params = {
       parameters: {
         subject: patient_id,
-        _profile: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement",
+        _profile: profile,
         requester: "PractitionerRole/#{fetch_and_cache_practitionerRoleId}",
         _sort: "-_lastUpdated",
       },
@@ -32,9 +32,9 @@ module TasksHelper
         save_tasks([grp["active"], grp["completed"]].flatten)
         [true, grp]
       else
-        Rails.logger.error("Failed to fetch patient's referral tasks. Status: #{response.response[:code]} - #{response.response[:body]}")
+        Rails.logger.error("Failed to fetch tasks. Status: #{response.response[:code]} - #{response.response[:body]}")
 
-        [false, "Failed to fetch patient's referral tasks. Status: #{response.response[:code]} - #{response.response[:body]}"]
+        [false, "Failed to fetch tasks. Status: #{response.response[:code]} - #{response.response[:body]}"]
       end
     rescue Errno::ECONNREFUSED => e
       Rails.logger.error(e.full_message)

@@ -1,5 +1,4 @@
-<div class="container" data-controller="polltasks" data-poll-url="<%= client_connected? ? poll_tasks_path : '' %>">
-
+<div class="container" data-controller="polltasks" data-poll-url="<%= client_connected? ? poll_referral_tasks_path : '' %>">
   <% if @active_referrals.nil? && @completed_referrals.nil? %>
     <h3 class="text-muted text-center my-3">Unable to fetch referrals from server</h3>
   <% else %>

@@ -1,0 +1,117 @@
+<!--views/patient_tasks/_table.html.erb-->
+
+
+  <div class="table-responsive small-text">
+    <table class="table table-sm text-center fw-semibold caption-top">
+        <div class="d-flex justify-content-between text-nowrap">
+          <h3 class="text-secondary"><%= type.capitalize %> Tasks</h3>
+
+        </div>
+        <thead>
+          <tr>
+            <th scope="col">Task</th>
+            <th scope="col">Status</th>
+            <th scope="col">Category</th>
+            <th scope="col">Problems</th>
+            <th scope="col">Performer</th>
+            <th scope="col">Consent</th>
+
+            <% if type == "completed" %>
+              <th scope="col">Outcomes</th>
+            <% end %>
+
+            <% if type == "active" %>
+              <th scope="col">Actions</th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks&.each do |task| %>
+            <tr>
+              <td>
+                <%= link_to task.focus&.description, "#fhir-resource-modal-#{task.id}", data: { bs_toggle: "modal" } %>
+                <% content_for :modals do %>
+                  <%= render "shared/fhir_resource_modal", resource: task %>
+                <% end %>
+              </td>
+              <td>
+                <% status = task.status %>
+
+                <% if status == "requested" %>
+                  <%= image_tag 'status-requested.svg', class: 'image', alt: 'requested status' %> Requested
+                <% end %>
+                <% if status == "received" %>
+                  <%= image_tag 'status-received.svg', class: 'image', alt: 'received status' %> Received
+                <% end %>
+                <% if status == "in-progress" %>
+                  <%= image_tag 'status-in-progress.svg', class: 'image', alt: 'in progress status' %></span> In Progress
+                <% end %>
+                <% if status == "completed" %>
+                  <%= image_tag 'status-completed.svg', class: 'image', alt: 'completed status' %> Completed
+                <% end %>
+                <% if status == "cancelled" || status == "rejected" %>
+                  <%= image_tag 'status-rejected.svg', class: 'image', alt: 'cancelled/rejected status' %> <%= status %>
+                <% end %>
+
+                <% if status == "accepted" %>
+                  <%= image_tag 'status-accepted.svg', class: 'image', alt: 'accepted status' %> </span> Accepted
+                <% end %>
+
+
+              </td>
+              <td><%= task.focus&.category %></td>
+              <td>
+
+                <% if task.focus&.problem.present? %>
+                  <%= link_to task.focus&.problem&.code, "#fhir-resource-modal-#{task.focus&.problem&.id}", data: { bs_toggle: "modal" } %>
+                  <% content_for :modals do %>
+                    <%= render "shared/fhir_resource_modal", resource: task.focus&.problem %>
+                  <% end %>
+              <% end %>
+
+            </td>
+            <td><%= task.owner_name %></td>
+            <td>
+              <% if task.focus&.consent.present? %>
+                <%= link_to task.focus.consent.code, "#fhir-resource-modal-#{task.focus.consent&.id}", data: { bs_toggle: "modal" } %>
+                <% content_for :modals do %>
+                  <%= render "shared/fhir_resource_modal", resource: task.focus.consent %>
+                <% end %>
+                <% else %>
+                --
+              <% end %>
+            </td>
+
+            <% if type == "completed" %>
+              <td>
+                <% if task&.outcome&.id.present? %>
+                  <%= link_to task.outcome_type, "#task-procedure-modal-#{task.outcome&.id}", data: { bs_toggle: "modal" } %>
+                  <% content_for :modals do %>
+                  <% end %>
+                <% else %>
+                  --
+                <% end %>
+              </td>
+            <% end %>
+            <% if type == "active" %>
+              <td class="p-3">
+                <%= link_to "/tasks/#{task.id}/cancelled", class: "action-button text-nowrap text-muted" do %>
+                  <%= image_tag 'goal-remove.svg', class: 'image', alt: 'remove task' %>
+                  <span class="label">Cancel Task</span>
+                <% end %>
+
+
+                <% if task.status == "draft" %>
+                  <%= link_to "/tasks/#{task.id}/requested", class: "action-button text-nowrap text-muted" do %>
+                    <span class="icon"><i class="bi bi-arrow"></i></span>
+                    <span class="label d-none">Mark as Requested</span>
+                  <% end %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+

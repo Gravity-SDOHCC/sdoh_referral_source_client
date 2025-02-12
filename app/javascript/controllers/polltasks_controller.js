@@ -16,6 +16,7 @@ export default class extends Controller {
   }
 
   pollTasks(pollUrl) {
+    console.log("pollTasks tables:", this);
     fetch(pollUrl)
       .then((response) => {
         if (response.ok) {

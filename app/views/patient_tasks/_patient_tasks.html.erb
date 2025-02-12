@@ -1,0 +1,19 @@
+<div class="container" data-controller="polltasks" data-poll-url="<%= client_connected? ? poll_patient_tasks_path : '' %>">
+  <% if @active_patient_tasks.nil? && @completed_patient_tasks.nil? %>
+    <h3 class="text-muted text-center my-3">Unable to fetch patient tasks from server</h3>
+  <% else %>
+    <div class="table-wrapper my-3">
+      <div id="active-tasks-table" data-polltasks-target="activeTable">
+        <%= render "patient_tasks/table", tasks: @active_patient_tasks, type: "active" %>
+      </div>
+    </div>
+
+    <div class="table-wrapper mt-3">
+      <div id="completed-tasks-table" data-polltasks-target="completedTable">
+        <%= render "patient_tasks/table", tasks: @completed_patient_tasks, type: "completed" %>
+      </div>
+    </div>
+
+  <% end %>
+  <div id="flash-container" data-polltasks-target="flashContainer" class="position-fixed top-0 end-0 w-25" style="z-index: 1060;"></div>
+</div>

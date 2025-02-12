@@ -74,10 +74,42 @@ class TasksController < ApplicationController
     redirect_to dashboard_path
   end
 
-  def poll_tasks
+  def poll_patient_tasks
     saved_tasks = Rails.cache.read(tasks_key) || []
     Rails.cache.delete(tasks_key)
-    success, result = fetch_tasks
+    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient")
+    if success
+      @active_patient_tasks = result["active"] || []
+      @completed_patient_tasks= result["completed"] || []
+      new_task_list = [@active_patient_tasks, @completed_patient_tasks].flatten
+      # check if any active tasks have changed status
+      updated_tasks = new_task_list.map do |pt|
+        saved_task = saved_tasks.find { |task| task.id == pt.id }
+        if saved_task && saved_task.status != pt.status
+          pt
+        else
+          nil
+        end
+      end.compact
+      task_names = updated_tasks.map { |t| t.focus&.description }.join(", ")
+      task_status = updated_tasks.map { |t| t.status }.join(", ")
+      flash[:success] = "#{task_names} status has been updated to #{task_status}" if updated_tasks.present?
+    else
+      Rails.logger.error("Unable to poll tasks: #{result}")
+
+      flash[:warning] = result
+    end
+    render json: {
+      active_table: render_to_string(partial: "patient_tasks/table", locals: { tasks: @active_patient_tasks, type: "active" }),
+      completed_table: render_to_string(partial: "patient_tasks/table", locals: { tasks: @completed_patient_tasks, type: "completed" }),
+      flash: flash[:success],
+    }
+  end
+
+  def poll_referral_tasks
+    saved_tasks = Rails.cache.read(tasks_key) || []
+    Rails.cache.delete(tasks_key)
+    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement")
     if success
       @active_referrals = result["active"] || []
       @completed_referrals = result["completed"] || []

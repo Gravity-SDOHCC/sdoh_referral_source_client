@@ -43,7 +43,7 @@
       <%= render 'action_steps/action_steps' %>
     </div>
     <div class="tab-pane fade <%= 'show active' if @active_tab == 'patient-tasks' %>" id="patient-tasks" role="tabpanel" aria-labelledby="patient-tasks-tab">
-      <%= render 'patient_tasks', patient_tasks: @patient_tasks %>
+      <%= render 'patient_tasks/patient_tasks' %>
     </div>
     <div class="tab-pane fade <%= 'show active' if @active_tab == 'social-risks' %>" id="social-risks" role="tabpanel" aria-labelledby="social-risks-tab">
       <%= render 'social_risks', social_risks: @social_risk_assessments %>
