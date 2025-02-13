@@ -13,7 +13,12 @@ module SessionHelper
   end
 
   def client_connected?
-    !!Rails.cache.read(client_key)
+    begin
+      !!Rails.cache.read(client_key)
+    rescue => e
+      Rails.logger.error("Error checking client connection: #{e.message}")
+      false
+    end
   end
 
   def save_server_base_url(base_url)

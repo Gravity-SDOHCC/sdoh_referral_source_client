@@ -16,7 +16,7 @@ export default class extends Controller {
   }
 
   pollTasks(pollUrl) {
-    console.log("pollTasks tables:", this);
+    
     fetch(pollUrl)
       .then((response) => {
         if (response.ok) {
@@ -27,11 +27,12 @@ export default class extends Controller {
       })
       .then((response) => {
         if (response) {
-          if (response.active_table) {
+          if (response.active_table && this.activeTableTarget) {
             this.activeTableTarget.innerHTML = response.active_table;
+          }
+          if (response.completed_table && this.completedTableTarget) {
             this.completedTableTarget.innerHTML = response.completed_table;
           }
-
           if (response.flash) {
             this.flashContainerTarget.innerHTML = `<div class="alert alert-info alert-dismissible fade show" data-controller="toasts" role="alert">${response.flash} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
           }

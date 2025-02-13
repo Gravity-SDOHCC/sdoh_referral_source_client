@@ -29,7 +29,7 @@
           <% tasks&.each do |task| %>
             <tr>
               <td>
-                <%= link_to task.focus&.description, "#fhir-resource-modal-#{task.id}", data: { bs_toggle: "modal" } %>
+                <%= link_to task.code, "#fhir-resource-modal-#{task.id}", data: { bs_toggle: "modal" } %>
                 <% content_for :modals do %>
                   <%= render "shared/fhir_resource_modal", resource: task %>
                 <% end %>
@@ -37,24 +37,26 @@
               <td>
                 <% status = task.status %>
 
-                <% if status == "requested" %>
-                  <%= image_tag 'status-requested.svg', class: 'image', alt: 'requested status' %> Requested
-                <% end %>
-                <% if status == "received" %>
-                  <%= image_tag 'status-received.svg', class: 'image', alt: 'received status' %> Received
+                <% if status == "ready" %>
+                  <%= image_tag 'status-ready.svg', class: 'image', alt: 'ready status' %> Ready
                 <% end %>
                 <% if status == "in-progress" %>
-                  <%= image_tag 'status-in-progress.svg', class: 'image', alt: 'in progress status' %></span> In Progress
+                  <%= image_tag 'status-in-progress.svg', class: 'image', alt: 'in progress status' %> In Progress
                 <% end %>
                 <% if status == "completed" %>
                   <%= image_tag 'status-completed.svg', class: 'image', alt: 'completed status' %> Completed
                 <% end %>
-                <% if status == "cancelled" || status == "rejected" %>
-                  <%= image_tag 'status-rejected.svg', class: 'image', alt: 'cancelled/rejected status' %> <%= status %>
+                <% if status == "cancelled" %>
+                  <%= image_tag 'status-rejected.svg', class: 'image', alt: 'cancelled status' %> Cancelled
                 <% end %>
-
-                <% if status == "accepted" %>
-                  <%= image_tag 'status-accepted.svg', class: 'image', alt: 'accepted status' %> </span> Accepted
+                <% if status == "on-hold" %>
+                  <%= image_tag 'status-on-hold.svg', class: 'image', alt: 'on-hold status' %> On Hold
+                <% end %>
+                <% if status == "failed" %>
+                  <%= image_tag 'status-failed.svg', class: 'image', alt: 'failed status' %> Failed
+                <% end %>
+                <% if status == "entered-in-error" %>
+                  <%= image_tag 'status-rejected.svg', class: 'image', alt: 'entered-in-error status' %> Entered In Error
                 <% end %>
 
 
@@ -77,16 +79,22 @@
                 <% content_for :modals do %>
                   <%= render "shared/fhir_resource_modal", resource: task.focus.consent %>
                 <% end %>
-                <% else %>
+              <% else %>
                 --
               <% end %>
             </td>
 
             <% if type == "completed" %>
               <td>
-                <% if task&.outcome&.id.present? %>
-                  <%= link_to task.outcome_type, "#task-procedure-modal-#{task.outcome&.id}", data: { bs_toggle: "modal" } %>
+                <% if task.outcome.is_a? String %>
+                  <%= link_to task.outcome_type, "#string-modal-#{task.id}", data: { bs_toggle: "modal" } %>
                   <% content_for :modals do %>
+                    <%= render "shared/string_modal", {id: task.id, resource: task.outcome} %>
+                  <% end %>
+                <% elsif task.outcome&.id.present? %>
+                  <%= link_to task.outcome_type, "#fhir-resource-modal-#{task.outcome&.id}", data: { bs_toggle: "modal" } %>
+                  <% content_for :modals do %>
+                    <%= render "shared/fhir_resource_modal", resource: task.outcome %>
                   <% end %>
                 <% else %>
                   --

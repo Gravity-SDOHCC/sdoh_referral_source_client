@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
       reset_session
       clear_cache
 
-      flash[:error] = "Your session has expired. Plesase connect to a FHIR server"
+      flash[:error] = "Your session has expired. Please connect to a FHIR server"
       redirect_to home_path
     end
   end
