@@ -1,3 +1,55 @@
-<div>
-  Form modal todo
+<div class="modal fade" id="add-patient-tasks-modal" tabindex="-1" role="dialog" aria-labelledby="newRequestDialogTitle" aria-hidden="true" data-controller="taskform" data-taskform-request-options='<%= raw(request_options.to_json) %>'>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newRequestDialogTitle">Add Questionnaire</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with url: patient_tasks_path, method: :post, id: "patient-task-form", class: "form" do |f| %>
+        <!-- this should be Questionnaire below -->
+          <div class="mb-3">
+            <%= f.label :category, "Category/Domain", class: "form-label" %>
+            <%= f.select :category, category_options, { prompt: 'Select Category/Domain' }, { class: "form-select form-select-sm", id: "category-select", data: { taskform_target: "categorySelect" } } %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :code, "Request", class: "form-label" %>
+            <%= f.select :request_code, {}, { prompt: 'Select Request' }, { class: "form-select form-select-sm", id: "request-select", disabled: true, data: { taskform_target: "requestSelect" } } %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :status, "Status", class: "form-label" %>
+            <%= f.select :status, [["Draft", "draft"], ["Requested", "requested"]], {}, { class: "form-select form-select-sm", data: { taskform_target: "status" }} %>
+          </div>
+          <hr>
+          <div class="form-group mb-3">
+            <%= f.label :priority, "Priority", class: "form-label" %>
+            <%= f.radio_button :priority, "routine", {class: "form-check-input", data: { taskform_target: "priority" }} %> Routine
+            <%= f.radio_button :priority, "urgent", {class: "form-check-input", data: { taskform_target: "priority" }} %> Urgent
+            <%= f.radio_button :priority, "asap", {class: "form-check-input", data: { taskform_target: "priority" }} %> ASAP
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <%= f.submit "Create & Send", class: "btn btn-primary",  data: { taskform_target: "submitButton" } %>
+      </div>
+      <% end %>
+    </div>
+  </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

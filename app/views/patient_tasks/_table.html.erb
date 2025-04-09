@@ -5,6 +5,12 @@
     <table class="table table-sm text-center fw-semibold caption-top">
         <div class="d-flex justify-content-between text-nowrap">
           <h3 class="text-secondary"><%= type.capitalize %> Tasks</h3>
+          <% if type == "active" %>
+                      <button class="action-button btn btn-sm" data-bs-toggle="modal" data-bs-target="#add-patient-tasks-modal">
+                        <%= image_tag 'add-action-step.svg', class: 'image', alt: 'add task' %>
+                        <span class="label">Add Questionnaire</span>
+                      </button>
+                    <% end %>
 
         </div>
         <thead>

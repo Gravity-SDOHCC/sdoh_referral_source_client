@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   get "goals/:id/:field", to: "goals#update_goal"
   post "tasks", to: "tasks#create"
   get "tasks/:id/:status", to: "tasks#update_task"
+  post "patient_tasks", to: "tasks#create_patient_tasks"
   get "poll_patient_tasks", to: "tasks#poll_patient_tasks"
   get "poll_referral_tasks", to: "tasks#poll_referral_tasks"
 

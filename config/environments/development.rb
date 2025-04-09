@@ -22,7 +22,7 @@ Rails.application.configure do
   #   config.action_controller.perform_caching = true
   #   config.action_controller.enable_fragment_cache_logging = true
 
-  #   config.cache_store = :mem_cache_store
+     config.cache_store = :memory_store
   #   config.public_file_server.headers = {
   #     'Cache-Control' => "public, max-age=#{2.days.to_i}"
   #   }
@@ -58,7 +58,7 @@ Rails.application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
-  config.assets.debug = true
+  config.assets.debug = false
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true

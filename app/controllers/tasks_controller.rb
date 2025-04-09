@@ -74,6 +74,37 @@ class TasksController < ApplicationController
     redirect_to dashboard_path
   end
 
+  def create_patient_tasks
+    begin
+      # Create Task for Patient (SDOHCC TaskForPatient)
+      task = FHIR::Task.new(
+        meta: patient_task_meta,
+        status: params[:status], # Dynamic status passed from form
+        intent: "order",
+        code: task_code_for_patient,
+        priority: "routine",
+        focus: { reference: "Patient/#{params[:patient_id]}" },
+        for: { reference: "Patient/#{params[:patient_id]}" },
+        authoredOn: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S.%3NZ"),
+        requester: task_requester,
+        owner: task_owner,
+      )
+
+      get_client.create(task)
+      Rails.cache.write(tasks_key, task_result.resource)
+      flash[:success] = "Task for patient has been created"
+
+    rescue => e
+      Rails.logger.error(e.full_message)
+      flash[:error] = "Unable to create task: #{e.message}"
+    end
+
+
+    Rails.cache.delete(tasks_key)
+    set_active_tab("action-steps")
+    redirect_to dashboard_path
+  end
+
   def poll_patient_tasks
     saved_tasks = Rails.cache.read(tasks_key) || []
     Rails.cache.delete(tasks_key)
@@ -175,6 +206,27 @@ class TasksController < ApplicationController
       "display": organizations&.find { |org| org&.id == params[:performer_id] }&.name,
     }
   end
+
+   ### Patient Task Attributes ###
+    def patient_task_meta
+      {
+        "profile": [
+          "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient",
+        ],
+      }
+    end
+
+    def task_code_for_patient
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+            "code": "make-contact",  # Example: Replace with the correct code from SDOHCC Task for Patient
+            "display": "Make Contact",
+          },
+        ],
+      }
+    end
 
   ### Service Request Attributes ###
   def service_req_meta
