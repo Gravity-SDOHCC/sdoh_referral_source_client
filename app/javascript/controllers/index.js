@@ -7,6 +7,9 @@ import { application } from "./application"
 import GoalsController from "./goals_controller"
 application.register("goals", GoalsController)
 
+import PatientTasksController from "./patient_tasks_controller"
+application.register("patient-tasks", PatientTasksController)
+
 import PolltasksController from "./polltasks_controller"
 application.register("polltasks", PolltasksController)
 

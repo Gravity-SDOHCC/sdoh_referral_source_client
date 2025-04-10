@@ -8,6 +8,7 @@ module ApplicationHelper
   include ConditionDefinitionsHelper
   include GoalsHelper
   include GoalDefinitionsHelper
+  include QuestionnaireHelper
   include TasksHelper
   include ServiceRequestsHelper
 

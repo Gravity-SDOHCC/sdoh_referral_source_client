@@ -14,6 +14,9 @@
       </div>
     </div>
 
+    <% content_for :modals do %>
+      <%= render "patient_tasks/form_modal", questionnaire_options: @questionnaire_options %>
+    <% end %>
   <% end %>
   <div id="flash-container" data-polltasks-target="flashContainer" class="position-fixed top-0 end-0 w-25" style="z-index: 1060;"></div>
 </div>

@@ -15,8 +15,8 @@ Rails.application.routes.draw do
   get "goals/:id/:field", to: "goals#update_goal"
   post "tasks", to: "tasks#create"
   get "tasks/:id/:status", to: "tasks#update_task"
-  post "patient_tasks", to: "tasks#create_patient_tasks"
-  get "poll_patient_tasks", to: "tasks#poll_patient_tasks"
+  post "patient_tasks", to: "patient_tasks#create"
+  get "poll_patient_tasks", to: "patient_tasks#poll_patient_tasks"
   get "poll_referral_tasks", to: "tasks#poll_referral_tasks"
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

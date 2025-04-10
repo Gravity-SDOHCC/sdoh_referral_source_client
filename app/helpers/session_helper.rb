@@ -68,6 +68,7 @@ module SessionHelper
     Rails.cache.delete(practitioner_key)
     Rails.cache.delete(practitioners_key)
     Rails.cache.delete(practitioner_role_id_key)
+    Rails.cache.delete(patient_tasks_key)
     Rails.cache.delete(tasks_key)
     Rails.cache.delete(personal_characteristics_key)
   end
@@ -110,6 +111,14 @@ module SessionHelper
 
   def practitioner_role_id_key
     "#{session_id}_practitioner_role_id_#{get_server_base_url}"
+  end
+
+  def questionnaires_key
+    "#{session_id}_questionnaires"
+  end
+
+  def patient_tasks_key
+    "#{session_id}_patient_tasks_#{patient_id}"
   end
 
   def tasks_key

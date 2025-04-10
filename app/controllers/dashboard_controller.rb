@@ -1,5 +1,5 @@
 class DashboardController < ApplicationController
-  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_references
+  before_action :require_client, :set_patients, :set_current_practitioner, :get_patient_references, :get_questionnaires, only: [:main]
 
   # GET /dashboard
   def main
@@ -42,6 +42,18 @@ class DashboardController < ApplicationController
       clear_cache
       flash[:error] = result
       redirect_to home_path
+    end
+  end
+
+  def get_questionnaires
+    success, result = fetch_questionnaires_bundle
+    if success
+      @questionnaires = result
+      # @questionnaire_options = @questionnaires.map { |q| [q.title || "Untitled Questionnaire", q.full_url] }
+      @questionnaire_options = @questionnaires.entry.map { |e| [e.resource.title || "Untitled Questionnaire", e.fullUrl] }
+    else
+      Rails.logger.error("Failed to get questionnaires: #{result}")
+      flash[:warning] = result
     end
   end
 

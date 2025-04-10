@@ -74,68 +74,6 @@ class TasksController < ApplicationController
     redirect_to dashboard_path
   end
 
-  def create_patient_tasks
-    begin
-      # Create Task for Patient (SDOHCC TaskForPatient)
-      task = FHIR::Task.new(
-        meta: patient_task_meta,
-        status: params[:status], # Dynamic status passed from form
-        intent: "order",
-        code: task_code_for_patient,
-        priority: "routine",
-        focus: { reference: "Patient/#{params[:patient_id]}" },
-        for: { reference: "Patient/#{params[:patient_id]}" },
-        authoredOn: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S.%3NZ"),
-        requester: task_requester,
-        owner: task_owner,
-      )
-
-      get_client.create(task)
-      Rails.cache.write(tasks_key, task_result.resource)
-      flash[:success] = "Task for patient has been created"
-
-    rescue => e
-      Rails.logger.error(e.full_message)
-      flash[:error] = "Unable to create task: #{e.message}"
-    end
-
-
-    Rails.cache.delete(tasks_key)
-    set_active_tab("action-steps")
-    redirect_to dashboard_path
-  end
-
-  def poll_patient_tasks
-    saved_tasks = Rails.cache.read(tasks_key) || []
-    Rails.cache.delete(tasks_key)
-    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient")
-    if success
-      @active_patient_tasks = result["active"] || []
-      @completed_patient_tasks= result["completed"] || []
-      new_task_list = [@active_patient_tasks, @completed_patient_tasks].flatten
-      # check if any active tasks have changed status
-      updated_tasks = new_task_list.map do |pt|
-        saved_task = saved_tasks.find { |task| task.id == pt.id }
-        if saved_task && saved_task.status != pt.status
-          pt
-        else
-          nil
-        end
-      end.compact
-      task_names = updated_tasks.map { |t| t.focus&.description }.join(", ")
-      task_status = updated_tasks.map { |t| t.status }.join(", ")
-      flash[:success] = "#{task_names} status has been updated to #{task_status}" if updated_tasks.present?
-    else
-      Rails.logger.error("Unable to poll tasks: #{result}")
-
-      flash[:warning] = result
-    end
-    render json: {
-      active_table: render_to_string(partial: "patient_tasks/table", locals: { tasks: @active_patient_tasks, type: "active" }),
-      completed_table: render_to_string(partial: "patient_tasks/table", locals: { tasks: @completed_patient_tasks, type: "completed" }),
-      flash: flash[:success],
-    }
-  end
 
   def poll_referral_tasks
     saved_tasks = Rails.cache.read(tasks_key) || []
@@ -208,13 +146,6 @@ class TasksController < ApplicationController
   end
 
    ### Patient Task Attributes ###
-    def patient_task_meta
-      {
-        "profile": [
-          "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient",
-        ],
-      }
-    end
 
     def task_code_for_patient
       {
