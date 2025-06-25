@@ -78,6 +78,26 @@ module ConditionDefinitionsHelper
     {
       code: "medical-cost-burden",
       display: "Medical Cost Burden"
+    },
+    {
+      code: "digital-literacy",
+      display: "Digital Literacy"
+    },
+    {
+      code: "digital-access",
+      display: "Digital Access"
+    },
+    {
+      code: "utility-insecurity",
+      display: "Utility Insecurity"
+    },
+    {
+      code: "incarceration-status",
+      display: "Incarceration Status"
+    },
+    {
+      code: "language-access",
+      display: "Language Access"
     }
   ]
 

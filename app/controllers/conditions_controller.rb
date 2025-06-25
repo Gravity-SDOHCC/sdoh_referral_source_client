@@ -139,20 +139,23 @@ class ConditionsController < ApplicationController
   end
 
   def code
-    {
-      "coding": [
-        {
+    codings = []
+    if params[:snomed_code].present? && params[:snomed_display].present?
+        codings << {
           "system": SNOMED_CODE_SYSTEM,
           "code": params[:snomed_code],
           "display": params[:snomed_display]
-        },
-        {
+        }
+    end
+    if params[:icd_code].present? && params[:icd_display].present?
+        codings << {
           "system": ICD_10_CODE_SYSTEM,
           "code": params[:icd_code],
           "display": params[:icd_display]
         }
-      ]
-    }
+    end
+    return nil if codings.empty?
+    {coding: codings}
   end
 
   def subject

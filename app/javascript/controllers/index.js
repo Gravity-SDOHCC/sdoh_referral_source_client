@@ -18,3 +18,6 @@ application.register("taskform", TaskformController)
 
 import ToastsController from "./toasts_controller"
 application.register("toasts", ToastsController)
+
+import ConditionsController from "./conditions_controller"
+application.register("conditions", ConditionsController)

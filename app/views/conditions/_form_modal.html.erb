@@ -7,21 +7,29 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <%= form_with url: conditions_path, method: :post, id: "condition-form", class: "form" do |f| %>
+      <div data-controller="conditions" data-conditions-description-options-condition="<%= description_options_condition.to_json %>">
+      <div id="conditions-errors" class ="text-danger mb-3" style="display :none;"> </div>
+        <%= form_with url: conditions_path, method: :post, id: "condition-form", class: "form", data: { action: "submit->conditions#submit" } do |f| %>
 
           <div class="mb-3">
             <%= f.label :category, "Category", class: "form-label" %>
-            <%= f.select :category, options_for_select([["Select category", ""]] + ConditionDefinitionsHelper::CONDITION_CATEGORY.map { |type| [type[:display], type[:code]] }), {}, { class: "form-select", id: "type-select", required: true } %>
+            <%= f.select :category, options_for_select([["Select category", ""]] + ConditionDefinitionsHelper::CONDITION_CATEGORY.map { |type| [type[:display], type[:code]] }), {}, { class: "form-select", id: "type-select", required: true , data: { conditions_target: "categorySelect" , action: "change->conditions#handleCategoryChange" } } %>
           </div>
           <div class="mb-3">
-            <%= f.label :icd_code, "ICD-10 Code", class: "form-label" %>
-            <%= f.text_field :icd_code, class: "form-control", placeholder: "Enter ICD-10 code", required: true %>
-            <%= f.text_field :icd_display, class: "form-control mt-2", placeholder: "Enter ICD-10 code description", required: true %>
+            <%= f.label :icd_code, "Select ICD-10 from options below", class: "form-label" %>
+            <%= f.select :icd_picklist,options_for_select([["Select from list", ""]]) , {}, { id: "icd_picklist", class: "form-select", disabled: "true", data: { conditions_target: "icd10Combined" , action: "change->conditions#handleOptionChange" } } %>
+            <div class="mb-3">-OR-</div>
+            <%= f.select :icd_code,options_for_select([["Select a ICD-10 Code", ""]]), {}, { id: "icd10_code", class: "form-select", disabled: "true", data: { conditions_target: "icd10Code" , action: "change->conditions#handleOptionChange" } } %>
+            <div class="mb-3">-OR-</div>
+            <%= f.select :icd_display,options_for_select([["Select a ICD-10 Description", ""]]), {}, { id: "icd_display", class: "form-select", disabled: "true", data: { conditions_target: "icd10Desc" , action: "change->conditions#handleOptionChange" } } %>
           </div>
           <div class="mb-3">
-            <%= f.label :snomed_code, "SNOMED-CT Code", class: "form-label" %>
-            <%= f.text_field :snomed_code, class: "form-control", placeholder: "Enter SNOMED-CT code", required: false %>
-            <%= f.text_field :snomed_display, class: "form-control mt-2", placeholder: "Enter SNOMED-CT code description", required: false %>
+            <%= f.label :snomed_code, "Select SNOMED-CT from options below", class: "form-label" %>
+            <%= f.select :snomed_picklist,options_for_select([["Select from list", ""]]), {}, { id: "snomed_picklist", class: "form-select", disabled: "true", data: { conditions_target: "snomedCombined" , action: "change->conditions#handleOptionChange" } } %>
+            <div class="mb-3">-OR-</div>
+            <%= f.select :snomed_code,options_for_select([["Select a SNOMED Code", ""]]), {}, { id: "snomed_code", class: "form-select", disabled: "true", data: { conditions_target: "snomedCode" , action: "change->conditions#handleOptionChange"} } %>
+            <div class="mb-3">-OR-</div>
+            <%= f.select :snomed_display,options_for_select([["Select a SNOMED Description", ""]]), {}, { id: "snomed_display", class: "form-select", disabled: "true", data: { conditions_target: "snomedDesc", action: "change->conditions#handleOptionChange" } } %>
           </div>
           <div class="mb-3">
             <%= f.label :effective_date, "Effective Date", class: "form-label" %>
@@ -36,7 +44,7 @@
           </div>
         <% end %>
 
-
+        </div>
       </div>
     </div>
   </div>
