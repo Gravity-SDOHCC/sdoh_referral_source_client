@@ -112,7 +112,7 @@ export default class extends Controller {
       console.error("Capacity check failed", err)
     }
 
-    this.capacityBadgeTarget.classList.remove("d-none", "bg-success", "bg-danger", "bg-warning", "bg-secondary")
+    this.capacityBadgeTarget.classList.remove("d-none", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-secondary")
     this.blockedAlertTarget.classList.add("d-none")
     this.waitlistAlertTarget.classList.add("d-none")
     this.submitButtonTarget.disabled = false
@@ -130,6 +130,9 @@ export default class extends Controller {
     } else if (capacity === "available") {
       this.capacityBadgeTarget.textContent = "Capacity Available"
       this.capacityBadgeTarget.classList.add("bg-success")
+    } else if (capacity === "assessment-required") {
+      this.capacityBadgeTarget.textContent = "Assessment Required"
+      this.capacityBadgeTarget.classList.add("bg-info")
     } else {
       this.capacityBadgeTarget.textContent = "Capacity Unknown"
       this.capacityBadgeTarget.classList.add("bg-secondary")
