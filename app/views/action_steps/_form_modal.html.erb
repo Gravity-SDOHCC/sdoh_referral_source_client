@@ -42,7 +42,18 @@
                     <hr>
           <div class="mb-3">
             <%= f.label :performer_id, "Performer", class: "form-label" %>
-            <%= f.collection_select :performer_id, organizations, :id, :name, { prompt: 'Select Performer' }, { class: "form-select", data: { taskform_target: "performer" } } %>
+            <%= f.collection_select :performer_id, organizations, :id, :name, { prompt: 'Select Performer' }, { class: "form-select", data: { taskform_target: "performer", action: "change->taskform#checkCapacity" } } %>
+            <span class="badge ms-2 d-none" data-taskform-target="capacityBadge"></span>
+          </div>
+          <div class="alert alert-danger d-none mt-2" data-taskform-target="blockedAlert">
+            This organization is at capacity and cannot accept new referrals. Please select a different organization.
+          </div>
+          <div class="alert alert-warning d-none mt-2" data-taskform-target="waitlistAlert">
+            This organization has a waitlist. Do you want to proceed with the referral?
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-secondary" data-action="taskform#cancelWaitlist">Cancel</button>
+              <button type="button" class="btn btn-sm btn-primary" data-action="taskform#proceedWaitlist">Proceed</button>
+            </div>
           </div>
           <div class="mb-3">
             <%= f.label :consent, "Consent", class: "form-label" %>

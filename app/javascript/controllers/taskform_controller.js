@@ -14,6 +14,9 @@ export default class extends Controller {
     "performer",
     "consent",
     "submitButton",
+    "capacityBadge",
+    "blockedAlert",
+    "waitlistAlert",
   ];
 
   connect() {
@@ -95,5 +98,55 @@ export default class extends Controller {
     const date = new Date();
     date.setDate(date.getDate() + Math.floor(Math.random() * 365) + 1);
     dateElement.valueAsDate = date;
+  }
+
+  async checkCapacity() {
+    const orgId = this.performerTarget.value
+    if (!orgId) return
+
+    let capacity = "unknown"
+    try {
+      const data = await fetch(`/organizations/${orgId}/check_capacity`).then(r => r.json())
+      capacity = data.capacity
+    } catch (err) {
+      console.error("Capacity check failed", err)
+    }
+
+    this.capacityBadgeTarget.classList.remove("d-none", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-secondary")
+    this.blockedAlertTarget.classList.add("d-none")
+    this.waitlistAlertTarget.classList.add("d-none")
+    this.submitButtonTarget.disabled = false
+
+    if (capacity === "at-capacity") {
+      this.capacityBadgeTarget.textContent = "At Capacity"
+      this.capacityBadgeTarget.classList.add("bg-danger")
+      this.blockedAlertTarget.classList.remove("d-none")
+      this.submitButtonTarget.disabled = true
+    } else if (capacity === "has-waitlist") {
+      this.capacityBadgeTarget.textContent = "Has Waitlist"
+      this.capacityBadgeTarget.classList.add("bg-warning")
+      this.waitlistAlertTarget.classList.remove("d-none")
+      this.submitButtonTarget.disabled = true
+    } else if (capacity === "available") {
+      this.capacityBadgeTarget.textContent = "Capacity Available"
+      this.capacityBadgeTarget.classList.add("bg-success")
+    } else if (capacity === "assessment-required") {
+      this.capacityBadgeTarget.textContent = "Assessment Required"
+      this.capacityBadgeTarget.classList.add("bg-info")
+    } else {
+      this.capacityBadgeTarget.textContent = "Capacity Unknown"
+      this.capacityBadgeTarget.classList.add("bg-secondary")
+    }
+  }
+
+  proceedWaitlist() {
+    this.waitlistAlertTarget.classList.add("d-none")
+    this.submitButtonTarget.disabled = false
+  }
+
+  cancelWaitlist() {
+    this.waitlistAlertTarget.classList.add("d-none")
+    this.performerTarget.value = ""
+    this.capacityBadgeTarget.classList.add("d-none")
   }
 }

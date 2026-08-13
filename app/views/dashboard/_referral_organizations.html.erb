@@ -15,7 +15,7 @@
     <% elsif organizations.empty? %>
       <p class="text-center pb-4 text-muted">No organization found.</p>
     <% else %>
-      <table class="table table-sm text-center text-xs-custom fw-semibold">
+      <table class="table table-sm text-center text-xs-custom fw-semibold" data-controller="capacity">
         <thead class="text-xs-custom text-gray-700-custom text-uppercase bg-gray-50-custom">
           <tr>
             <th>Name</th>
@@ -23,6 +23,7 @@
             <th>Phone</th>
             <th>Email</th>
             <th>URL</th>
+            <th>Capacity</th>
             <th>FHIR Resource</th>
           </tr>
         </thead>
@@ -34,6 +35,10 @@
               <td><%= organization.phone %></td>
               <td><%= organization.email %></td>
               <td><%= organization.url %></td>
+              <td>
+                <span class="badge capacity-badge" data-capacity-target="badge" data-org-id="<%= organization.id %>">—</span>
+                <button type="button" class="btn btn-link btn-sm check-capacity-btn" data-action="capacity#check" data-org-id="<%= organization.id %>">Check Capacity</button>
+              </td>
               <td>
                 <%= link_to 'FHIR Resource', '#', data: { bs_toggle: 'modal', bs_target: "#fhir-resource-modal-#{organization.id}" } %>
                 <% content_for :modals do %>

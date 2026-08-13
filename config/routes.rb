@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :goals, only: [:create, :destroy]
   resources :patients, only: [:index, :show]
   resources :organizations, only: [:create]
+  get "/organizations/:id/check_capacity", to: "organizations#check_capacity", as: :check_capacity_organization
   get "home", to: "sessions#index"
   post "connect", to: "sessions#create"
   get "disconnect", to: "sessions#destroy"

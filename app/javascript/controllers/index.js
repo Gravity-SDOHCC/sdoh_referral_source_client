@@ -21,3 +21,6 @@ application.register("toasts", ToastsController)
 
 import ConditionsController from "./conditions_controller"
 application.register("conditions", ConditionsController)
+
+import CapacityController from "./capacity_controller"
+application.register("capacity", CapacityController)
