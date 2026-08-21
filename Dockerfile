@@ -36,4 +36,4 @@ RUN RAILS_ENV=production \
 EXPOSE 3000
 
 # Start the application server
-CMD ["bundle", "exec", "rails", "server", "-p", "3000"]
+CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -p 3000"]
