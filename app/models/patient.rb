@@ -43,19 +43,19 @@ class Patient
 
     fhir_patient_extension_arr&.each do |ext|
       case ext&.url
-      when 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+      when FhirProfiles::US_CORE_RACE_EXTENSION
         ext.extension&.each do |race_ext|
           if race_ext&.url == 'ombCategory' && race_ext&.valueCoding&.display
             characteristics[:race] << race_ext.valueCoding.display
           end
         end
-      when 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
+      when FhirProfiles::US_CORE_ETHNICITY_EXTENSION
         ext.extension&.each do |ethnicity_ext|
           if ethnicity_ext&.url == 'ombCategory' && ethnicity_ext&.valueCoding&.display
             characteristics[:ethnicity] << ethnicity_ext.valueCoding.display
           end
         end
-      when 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
+      when FhirProfiles::US_CORE_BIRTHSEX_EXTENSION
         characteristics[:birthsex] = ext.valueCode
       end
     end

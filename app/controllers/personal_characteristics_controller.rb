@@ -148,7 +148,7 @@ class PersonalCharacteristicsController < ApplicationController
       {
         "coding": [
           {
-            "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+            "system": FhirProfiles::TEMPORARY_CODE_SYSTEM,
             "code": "personal-characteristic"
           }
         ]

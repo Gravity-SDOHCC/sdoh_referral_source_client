@@ -42,7 +42,7 @@ class Condition
   def get_category_display(category)
     type =
       category
-        &.find { |c| c.coding&.first&.system == "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes" }
+        &.find { |c| c.coding&.first&.system == FhirProfiles::TEMPORARY_CODE_SYSTEM }
         &.coding
         &.first
     type&.display || type&.code&.gsub("-", " ")&.titleize

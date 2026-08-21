@@ -90,10 +90,27 @@
 
             <% if type == "completed" %>
               <td>
-                <% if referral&.outcome&.id.present? %>
-                  <%= link_to referral.outcome_type, "#referral-procedure-modal-#{referral.outcome&.id}", data: { bs_toggle: "modal" } %>
-                  <% content_for :modals do %>
-                    <%= render "action_steps/procedure_modal", resource: referral.outcome %>
+                <% if referral&.outputs.present? %>
+                  <% referral.outputs.each_with_index do |output, index| %>
+                    <% if index.positive? %>, <% end %>
+                    <% if output.resource.blank? && output.value.blank? %>
+                      <span class="small-text"><%= output.display_type %></span>
+                    <% elsif output.resource.blank? %>
+                      <%= link_to output.display_type, "#string-modal-#{referral.id}-#{index}", data: { bs_toggle: "modal" } %>
+                      <% content_for :modals do %>
+                        <%= render "shared/string_modal", { id: "#{referral.id}-#{index}", resource: output.value } %>
+                      <% end %>
+                    <% elsif output.resource_type == "Procedure" %>
+                      <%= link_to output.display_type, "#referral-procedure-modal-#{output.id}", data: { bs_toggle: "modal" } %>
+                      <% content_for :modals do %>
+                        <%= render "action_steps/procedure_modal", resource: output.resource %>
+                      <% end %>
+                    <% else %>
+                      <%= link_to output.display_type, "#fhir-resource-modal-#{output.id}", data: { bs_toggle: "modal" } %>
+                      <% content_for :modals do %>
+                        <%= render "shared/fhir_resource_modal", resource: output.resource %>
+                      <% end %>
+                    <% end %>
                   <% end %>
                 <% else %>
                   --
