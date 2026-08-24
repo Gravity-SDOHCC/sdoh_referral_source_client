@@ -1,6 +1,18 @@
 module TasksHelper
   include SessionHelper
 
+  # Badge colours for SDOHCC-ValueSetEnrollmentStatus. Enrolled reads as done,
+  # a waitlist as something still outstanding, not enrolled as neither.
+  ENROLLMENT_STATUS_BADGE_CLASSES = {
+    "enrolled" => "bg-success",
+    "not-enrolled" => "bg-secondary",
+    "not-enrolled-on-waitlist" => "bg-warning text-dark",
+  }.freeze
+
+  def enrollment_status_badge_class(code)
+    ENROLLMENT_STATUS_BADGE_CLASSES.fetch(code, "bg-light text-dark border")
+  end
+
   def save_tasks(tasks)
     Rails.cache.write(tasks_key, tasks, expires_in: 30.minutes)
   end
