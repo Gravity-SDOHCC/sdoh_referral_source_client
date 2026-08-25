@@ -21,10 +21,14 @@ class Procedure
     display || codeable_concept&.coding&.map(&:code)&.join(", ")&.gsub("-", " ")&.titleize
   end
 
+  # Procedure.reasonReference is 0..*, and a referral made with no problem
+  # recorded produces a Procedure with none. Reading .reference off nil raised,
+  # TaskIoEntry's rescue turned that into an unresolved output, and the Outcomes
+  # cell fell back to a bare "Resulting Activity" with nothing behind it.
   def read_reference(reference, fhir_client)
-    id = reference.reference_id
+    id = reference&.reference_id
 
-    return nil if fhir_client.nil?
+    return nil if id.blank? || fhir_client.nil?
 
     condition = fhir_client.read(FHIR::Condition, id).resource
     # sometimes for some reason read returns FHIR::Bundle
