@@ -67,10 +67,24 @@ module TasksHelper
     ]
   end
 
+  # What can be requested, by SDOH domain. SDOHCC-ServiceRequest binds
+  # ServiceRequest.code to US Core Procedure Codes (required) and adds an
+  # extensible additional binding per ServiceRequest.category: for these three
+  # domains those are the VSAC value sets Food Insecurity Service Requests
+  # (http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1247.11),
+  # Housing Instability Service Requests (...1.4.1247.45) and Transportation
+  # Insecurity Service Requests (...1.4.1247.28), all version 20240604.
+  #
+  # rffa.html asks for both a general and a domain-specific assessment request,
+  # because ServiceRequest.code is the only thing that separates "assess this
+  # person for food insecurity" from "give this person food". The general code
+  # 710824005 is a member of all three value sets; the domain-specific
+  # assessment codes are members of their own.
   def request_options
     {
       "food-insecurity" => [
         ["Assessment of health and social care needs", "710824005"],
+        ["Assessment for food insecurity", "1002224003"],
         ["Assessment of nutritional status", "1759002"],
         ["Counseling about nutrition", "441041000124100"],
         ["Meals on wheels provision education", "385767005"],
@@ -81,6 +95,10 @@ module TasksHelper
         ["Referral to social worker", "308440001"],
       ],
       "housing-instability" => [
+        ["Assessment of health and social care needs", "710824005"],
+        ["Assessment for housing insecurity", "1148447008"],
+        # 225340009 is not a member of the housing value set above. It is left
+        # in place because referrals already exist that use it.
         ["Housing assessment", "225340009"],
         ["Referral to housing service", "710911006"],
       ],
