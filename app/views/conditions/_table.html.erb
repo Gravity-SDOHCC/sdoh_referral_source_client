@@ -24,7 +24,12 @@
                 <%= render 'shared/fhir_resource_modal', resource: condition %>
               <% end %>
             </td>
-            <td><%= condition.category %></td>
+            <td>
+              <%= condition.category %>
+              <% if condition.protective_factor? %>
+                <span class="badge bg-success">Protective Factor</span>
+              <% end %>
+            </td>
             <td>
               <% if condition.evidence_reference.present? %>
                 <span class="btn btn-sm btn-link cursor-pointer" data-bs-toggle="modal" data-bs-target="#condition-evidence-modal-<%= condition.id %>">

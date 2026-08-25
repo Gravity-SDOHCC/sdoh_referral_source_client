@@ -115,8 +115,13 @@ class ConditionsController < ApplicationController
     }
   end
 
+  # Condition.category is sliced by SDOHCC-Condition. Every condition this app
+  # creates carries the US Core problem-list-item/health-concern code
+  # (SDOH-Con-2) and the US Core "sdoh" screening-assessment code (SDOH-Con-3).
+  # category[SDOHCC] is 0..*, so the SDOH domain and protective-factor are
+  # appended as separate repeats rather than competing for one slot (cond-4).
   def category
-    [
+    categories = [
       {
         "coding": [
           {
@@ -129,13 +134,43 @@ class ConditionsController < ApplicationController
       {
         "coding": [
           {
-            "system": CATEGORY_SDOH_CODE_SYSTEM,
-            "code": params[:category],
-            "display": params[:category]&.titleize
+            "system": CATEGORY_SCREENING_ASSESSMENT_CODE_SYSTEM,
+            "code": CATEGORY_SDOH,
+            "display": "SDOH"
           }
         ]
       }
     ]
+
+    if params[:category].present?
+      categories << {
+        "coding": [
+          {
+            "system": CATEGORY_SDOH_CODE_SYSTEM,
+            "code": params[:category],
+            "display": params[:category].titleize
+          }
+        ]
+      }
+    end
+
+    if protective_factor?
+      categories << {
+        "coding": [
+          {
+            "system": CATEGORY_SDOH_CODE_SYSTEM,
+            "code": CATEGORY_PROTECTIVE_FACTOR,
+            "display": "Protective Factor"
+          }
+        ]
+      }
+    end
+
+    categories
+  end
+
+  def protective_factor?
+    ActiveModel::Type::Boolean.new.cast(params[:protective_factor]).present?
   end
 
   def code
