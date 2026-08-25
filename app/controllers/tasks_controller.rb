@@ -210,18 +210,33 @@ class TasksController < ApplicationController
     }
   end
 
+  # The Condition the referral is being made about, when one was chosen.
+  #
+  # There is not always one - a patient with no problems recorded has an empty
+  # Problem list - and "Condition/" is not a reference. A FHIR server rejects
+  # any resource that copies it (HAPI-0508 "Invalid resource reference ... Does
+  # not contain resource ID"), so the referral target could not complete the
+  # referral: its Procedure copies ServiceRequest.reasonReference.
   def service_req_reason_reference
+    condition_id = params[:condition_ids].presence
+    return if condition_id.blank?
+
     [
       {
-        "reference": "Condition/#{params[:condition_ids]}",
+        "reference": "Condition/#{condition_id}",
       },
     ]
   end
 
+  # Same for the Consent: the picker offers "Select Consent", and a referral
+  # sent without one must not carry "Consent/".
   def service_req_supporting_info
+    consent_id = params[:consent].presence
+    return if consent_id.blank?
+
     [
       {
-        "reference": "Consent/#{params[:consent]}",
+        "reference": "Consent/#{consent_id}",
       },
     ]
   end
