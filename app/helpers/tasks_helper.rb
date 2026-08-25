@@ -97,9 +97,6 @@ module TasksHelper
       "housing-instability" => [
         ["Assessment of health and social care needs", "710824005"],
         ["Assessment for housing insecurity", "1148447008"],
-        # 225340009 is not a member of the housing value set above. It is left
-        # in place because referrals already exist that use it.
-        ["Housing assessment", "225340009"],
         ["Referral to housing service", "710911006"],
       ],
       "transportation-insecurity" => [
