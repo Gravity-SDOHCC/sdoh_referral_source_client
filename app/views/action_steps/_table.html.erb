@@ -121,7 +121,11 @@
                         <%= render "action_steps/procedure_modal", resource: output.resource %>
                       <% end %>
                     <% else %>
-                      <%= link_to output.display_type, "#fhir-resource-modal-#{output.id}", data: { bs_toggle: "modal" } %>
+                      <%# Name the resource, not the slice it arrived in: a %>
+                      <%# completed assessment returns several at once and %>
+                      <%# "Additional Content (QuestionnaireResponse)" three %>
+                      <%# times over says nothing about what came back. %>
+                      <%= link_to "#{output.resource_label.presence || output.display_type} (#{output.display_type})", "#fhir-resource-modal-#{output.id}", data: { bs_toggle: "modal" } %>
                       <% content_for :modals do %>
                         <%= render "shared/fhir_resource_modal", resource: output.resource %>
                       <% end %>
