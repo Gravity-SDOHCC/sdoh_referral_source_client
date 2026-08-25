@@ -116,7 +116,7 @@
                         <%= render "shared/string_modal", { id: "#{referral.id}-#{index}", resource: output.value } %>
                       <% end %>
                     <% elsif output.resource_type == "Procedure" %>
-                      <%= link_to output.display_type, "#referral-procedure-modal-#{output.id}", data: { bs_toggle: "modal" } %>
+                      <%= link_to "#{output.resource_label.presence || output.display_type} (#{output.display_type})", "#referral-procedure-modal-#{output.id}", data: { bs_toggle: "modal" } %>
                       <% content_for :modals do %>
                         <%= render "action_steps/procedure_modal", resource: output.resource %>
                       <% end %>
