@@ -128,4 +128,54 @@ module TasksHelper
     end
     map
   end
+  # The resources the provider can attach to a referral as
+  # Task.input:AdditionalContent, grouped by resource type for
+  # grouped_options_for_select.
+  #
+  # The IG's worked example is a diagnosis plus the results that support it, so
+  # the groups are the clinical context this client already has loaded for the
+  # patient: no group costs an extra server read.
+  #
+  # value[x] is Reference(Resource) with no targetProfile, so the option value
+  # is "<ResourceType>/<id>": a bare id cannot be turned into a reference.
+  def additional_content_options
+    {
+      "Problems & Health Concerns" => Array(@active_problems) + Array(@active_health_concerns),
+      "Goals" => Array(@active_goals),
+      "Assessments" => Array(@social_risk_assessments),
+      "Observations" => Array(@personal_characteristics),
+      "Service Requests" => Array(@service_requests),
+      "Consents" => Array(consents),
+    }.filter_map do |group, records|
+      options = Array(records).filter_map { |record| additional_content_option(record) }
+      [group, options] if options.present?
+    end
+  end
+
+  # One option: what the provider reads, and the reference the controller builds
+  # from it. The resource type comes off the FHIR resource itself rather than
+  # from the group it was listed under, so a mislabelled group cannot produce a
+  # reference that points at the wrong endpoint.
+  def additional_content_option(record)
+    return if record.nil? || record.id.blank?
+
+    resource_type = record.fhir_resource&.resourceType
+    return if resource_type.blank?
+
+    [additional_content_label(record), "#{resource_type}/#{record.id}"]
+  end
+
+  def additional_content_label(record)
+    text =
+      case record
+      when Condition then record.code
+      when Goal then record.description
+      when QuestionnaireResponse then [record.display_questionnaire, record.display_date].reject(&:blank?).join(" - ")
+      when PersonalCharacteristic then [record.type, record.value].reject(&:blank?).join(": ")
+      when ServiceRequest then record.description
+      when Consent then record.code
+      end
+
+    text.presence || "#{record.fhir_resource&.resourceType}/#{record.id}"
+  end
 end
