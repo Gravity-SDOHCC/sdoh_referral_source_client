@@ -7,13 +7,13 @@ class PersonalCharacteristicsController < ApplicationController
   def create
     begin
       obs = FHIR::Observation.new
-      obs.meta = obs_meta
+      obs.meta = as_fhir(FHIR::Meta, obs_meta)
       obs.status = "final"
-      obs.category = obs_category
-      obs.local_method = obs_method
-      obs.subject = obs_subject
+      obs.category = as_fhir(FHIR::CodeableConcept, obs_category)
+      obs.local_method = as_fhir(FHIR::CodeableConcept, obs_method)
+      obs.subject = as_fhir(FHIR::Reference, obs_subject)
       obs.effectiveDateTime = Time.now.utc.strftime('%Y-%m-%dT%H:%M:%S.%3NZ')
-      obs.performer = [obs_subject] if params[:reported_method] == "self-reported"
+      obs.performer = [as_fhir(FHIR::Reference, obs_subject)] if params[:reported_method] == "self-reported"
       obs.derivedFrom = [FHIR::Reference.new(reference: params[:derived_from])] if params[:derived_from].present?
       set_fields_base_on_type(obs)
 
@@ -65,8 +65,8 @@ class PersonalCharacteristicsController < ApplicationController
 
   #### Personal Pronoun type ####
   def add_personal_pronoun_attr(obs)
-    obs.code = personal_pronoun_code
-    obs.valueCodeableConcept = personal_pronoun_valueCodeableConcept
+    obs.code = as_fhir(FHIR::CodeableConcept, personal_pronoun_code)
+    obs.valueCodeableConcept = as_fhir(FHIR::CodeableConcept, personal_pronoun_valueCodeableConcept)
   end
 
   def personal_pronoun_code
@@ -95,8 +95,8 @@ class PersonalCharacteristicsController < ApplicationController
 
   #### Ethnicity type ####
   def add_ethnicity_attr(obs)
-    obs.code = ethnicity_code
-    obs.component = ethnicity_component
+    obs.code = as_fhir(FHIR::CodeableConcept, ethnicity_code)
+    obs.component = as_fhir(FHIR::Observation::Component, ethnicity_component)
   end
 
   def ethnicity_code
