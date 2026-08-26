@@ -13,6 +13,7 @@ export default class extends Controller {
     "goal",
     "performer",
     "consent",
+    "supportingResources",
     "submitButton",
     "capacityBadge",
     "blockedAlert",
@@ -46,8 +47,35 @@ export default class extends Controller {
 
   handleSubmit(event) {
     event.preventDefault(); // Prevent the default form submission behavior
+    if (!this.validateSupportingResources()) return;
+
     const formElement = document.getElementById("task-form");
     formElement.submit(); // Manually submit the form
+  }
+
+  // Task.input is 0..*, so attaching nothing is valid. An option that is not
+  // "<ResourceType>/<id>" is not: value[x] is Reference(Resource) with no
+  // targetProfile, and a value missing its resource type cannot be turned into
+  // a reference on the server side either.
+  validateSupportingResources() {
+    if (!this.hasSupportingResourcesTarget) return true;
+
+    const target = this.supportingResourcesTarget;
+    const malformed = Array.from(target.selectedOptions)
+      .map(option => option.value)
+      .filter(value => value !== "")
+      .filter(value => !/^[A-Z][A-Za-z]+\/[A-Za-z0-9.-]{1,64}$/.test(value));
+
+    if (malformed.length === 0) {
+      target.setCustomValidity("");
+      return true;
+    }
+
+    target.setCustomValidity(
+      `Cannot attach ${malformed.join(", ")}: expected "ResourceType/id".`
+    );
+    target.reportValidity();
+    return false;
   }
 
   updateRequestOptions(selectedCategory) {
@@ -67,6 +95,10 @@ export default class extends Controller {
     });
   }
 
+  // The demo auto-fill deliberately leaves the additional-content picker alone.
+  // Attaching a patient's clinical record to a referral is the provider's
+  // decision, and a random selection would send whatever happened to be first
+  // in the list.
   populateFieldsRandomly() {
     // this.setRandomValue(this.statusTarget);
     this.statusTarget.selectedIndex = 1;
