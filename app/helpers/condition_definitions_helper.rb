@@ -1,7 +1,7 @@
 # Helper constants valueset for Condition resource (health concern/ problem)
 module ConditionDefinitionsHelper
-  CONDITION_PROFILE = "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-Condition".freeze
-  CATEGORY_SDOH_CODE_SYSTEM = "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes".freeze
+  CONDITION_PROFILE = FhirProfiles::CONDITION
+  CATEGORY_SDOH_CODE_SYSTEM = FhirProfiles::TEMPORARY_CODE_SYSTEM
   CONDITION_CATEGORY_US_CORE_CODE_SYSTEM = "http://hl7.org/fhir/us/core/CodeSystem/condition-category".freeze
   SNOMED_CODE_SYSTEM = "http://snomed.info/sct".freeze
   ICD_10_CODE_SYSTEM = "http://hl7.org/fhir/sid/icd-10-cm".freeze

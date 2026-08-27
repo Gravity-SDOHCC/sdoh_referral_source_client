@@ -104,7 +104,7 @@ class DashboardController < ApplicationController
   end
 
   def set_tasks
-    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement")
+    success, result = fetch_tasks(FhirProfiles::TASK_FOR_REFERRAL_MANAGEMENT)
     if success
       @active_referrals = result["active"] || []
       @completed_referrals = result["completed"] || []
@@ -114,7 +114,7 @@ class DashboardController < ApplicationController
       flash[:warning] = result
     end
 
-    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient")
+    success, result = fetch_tasks(FhirProfiles::TASK_FOR_PATIENT)
     if success
       @active_patient_tasks = result["active"] || []
       @completed_patient_tasks = result["completed"] || []

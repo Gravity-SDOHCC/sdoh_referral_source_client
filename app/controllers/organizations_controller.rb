@@ -1,8 +1,6 @@
 class OrganizationsController < ApplicationController
   before_action :require_client
 
-  CAPACITY_EXTENSION_URL = "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ExtensionHealthcareServiceCapacityStatus".freeze
-
   # The four concepts bound to SDOHCC-ValueSetCapacityStatus, mapped to the
   # statuses the front end understands. These are the only capacity codes in
   # SDOHCC-CodeSystemTemporaryCodes: "at-capacity" and "no-capacity-has-waitlist"
@@ -28,7 +26,7 @@ class OrganizationsController < ApplicationController
     Rails.logger.info("[CHECK_CAPACITY] Found #{services.size} HealthcareService(s): #{services.map(&:id)}")
 
     # Prefer the first service that actually carries a capacity extension
-    extension = services.filter_map { |s| s.extension&.find { |e| e.url == CAPACITY_EXTENSION_URL } }.first
+    extension = services.filter_map { |s| s.extension&.find { |e| e.url == FhirProfiles::CAPACITY_STATUS_EXTENSION } }.first
     # SDOHCC-ExtensionHealthcareServiceCapacityStatus is a complex extension:
     # capacityStatus is 1..1 and Extension.value[x] is prohibited (0..0).
     capacity_status_extension = extension&.extension&.find { |e| e.url == "capacityStatus" }

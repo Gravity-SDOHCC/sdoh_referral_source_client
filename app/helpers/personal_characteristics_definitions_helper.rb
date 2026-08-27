@@ -1,6 +1,6 @@
 module PersonalCharacteristicsDefinitionsHelper
   # Code Systems
-  REPORTED_METHODS_SYSTEM = "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes".freeze
+  REPORTED_METHODS_SYSTEM = FhirProfiles::TEMPORARY_CODE_SYSTEM
 
   PERSONAL_PRONOUNS_OTHER = "OTH".freeze
   SEX_GENDER_OTHER = "LA32969-0".freeze
@@ -23,12 +23,12 @@ module PersonalCharacteristicsDefinitionsHelper
   }.freeze
 
   PERSONAL_CHARACTERISTICS_PROFILES = {
-    race: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationRaceOMB",
-    ethnicity: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationEthnicityOMB",
-    gender_identity: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationGenderIdentity",
-    recorded_sex_gender: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationRecordedSexGender",
-    sexual_orientation: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationSexualOrientation",
-    personal_pronouns: "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationPersonalPronouns"
+    race: FhirProfiles::OBSERVATION_RACE_OMB,
+    ethnicity: FhirProfiles::OBSERVATION_ETHNICITY_OMB,
+    gender_identity: FhirProfiles::OBSERVATION_GENDER_IDENTITY,
+    recorded_sex_gender: FhirProfiles::OBSERVATION_RECORDED_SEX_GENDER,
+    sexual_orientation: FhirProfiles::OBSERVATION_SEXUAL_ORIENTATION,
+    personal_pronouns: FhirProfiles::OBSERVATION_PERSONAL_PRONOUNS
   }.freeze
 
   PERSONAL_PRONOUNS = [
