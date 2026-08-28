@@ -14,6 +14,7 @@ class DashboardController < ApplicationController
       set_personal_characteristics
       set_conditions
       set_social_risk_assessments
+      set_sdoh_observations
       set_goals
       set_tasks
       set_service_requests
@@ -89,6 +90,17 @@ class DashboardController < ApplicationController
       @social_risk_assessments = result
     else
       Rails.logger.info("Failed to set social risk assessments: #{result}")
+      flash[:warning] = result
+    end
+  end
+
+  def set_sdoh_observations
+    success, result = fetch_sdoh_observations
+    if success
+      @sdoh_assessments = result["assessment"] || []
+      @sdoh_screening_responses = result["screening-response"] || []
+    else
+      Rails.logger.info("Failed to set SDOH observations: #{result}")
       flash[:warning] = result
     end
   end

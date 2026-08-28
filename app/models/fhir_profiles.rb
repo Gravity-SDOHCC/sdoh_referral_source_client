@@ -23,6 +23,14 @@ module FhirProfiles
   # SDOHCC Condition
   CONDITION = "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-Condition".freeze
 
+  # SDOHCC Observation Assessment - a derived finding, e.g. "Inadequate oral
+  # food intake for physiological needs".
+  OBSERVATION_ASSESSMENT = "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationAssessment".freeze
+  # SDOHCC Observation Screening Response - one answer to one screening
+  # question, e.g. "Within the past 12 months we worried whether our food would
+  # run out before we got money to buy more".
+  OBSERVATION_SCREENING_RESPONSE = "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse".freeze
+
   # SDOHCC Observation Race OMB
   OBSERVATION_RACE_OMB = "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationRaceOMB".freeze
   # SDOHCC Observation Ethnicity OMB
