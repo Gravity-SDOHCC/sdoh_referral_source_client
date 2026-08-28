@@ -142,8 +142,9 @@ module TasksHelper
     {
       "Problems & Health Concerns" => Array(@active_problems) + Array(@active_health_concerns),
       "Goals" => Array(@active_goals),
-      "Assessments" => Array(@social_risk_assessments),
-      "Observations" => Array(@personal_characteristics),
+      "Completed Questionnaires" => Array(@social_risk_assessments),
+      "Assessment Findings" => Array(@sdoh_assessments),
+      "Screening Responses" => Array(@sdoh_screening_responses),
       "Service Requests" => Array(@service_requests),
       "Consents" => Array(consents),
     }.filter_map do |group, records|
@@ -171,7 +172,7 @@ module TasksHelper
       when Condition then record.code
       when Goal then record.description
       when QuestionnaireResponse then [record.display_questionnaire, record.display_date].reject(&:blank?).join(" - ")
-      when PersonalCharacteristic then [record.type, record.value].reject(&:blank?).join(": ")
+      when Observation then [record.code, record.value].reject(&:blank?).join(": ")
       when ServiceRequest then record.description
       when Consent then record.code
       end
