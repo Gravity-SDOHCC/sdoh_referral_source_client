@@ -78,7 +78,7 @@ class TasksController < ApplicationController
   def poll_referral_tasks
     saved_tasks = Rails.cache.read(tasks_key) || []
     Rails.cache.delete(tasks_key)
-    success, result = fetch_tasks("http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement")
+    success, result = fetch_tasks(FhirProfiles::TASK_FOR_REFERRAL_MANAGEMENT)
     if success
       @active_referrals = result["active"] || []
       @completed_referrals = result["completed"] || []
@@ -114,7 +114,7 @@ class TasksController < ApplicationController
   def task_meta
     {
       "profile": [
-        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForReferralManagement",
+        FhirProfiles::TASK_FOR_REFERRAL_MANAGEMENT,
       ],
     }
   end
@@ -151,7 +151,7 @@ class TasksController < ApplicationController
       {
         "coding": [
           {
-            "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+            "system": FhirProfiles::TEMPORARY_CODE_SYSTEM,
             "code": "make-contact",  # Example: Replace with the correct code from SDOHCC Task for Patient
             "display": "Make Contact",
           },
@@ -163,7 +163,7 @@ class TasksController < ApplicationController
   def service_req_meta
     {
       "profile": [
-        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ServiceRequest",
+        FhirProfiles::SERVICE_REQUEST,
       ],
     }
   end
@@ -182,7 +182,7 @@ class TasksController < ApplicationController
       {
         "coding": [
           {
-            "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+            "system": FhirProfiles::TEMPORARY_CODE_SYSTEM,
             "code": params[:category],
             "display": params[:category]&.titleize,
           },

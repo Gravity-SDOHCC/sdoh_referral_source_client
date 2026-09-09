@@ -95,7 +95,7 @@ class GoalsController < ApplicationController
   ### Create a new goal ###
   def meta
     {
-      "profile": ["http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-Goal"],
+      "profile": [FhirProfiles::GOAL],
     }
   end
 
@@ -116,7 +116,7 @@ class GoalsController < ApplicationController
       {
         "coding": [
           {
-            "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+            "system": FhirProfiles::TEMPORARY_CODE_SYSTEM,
             "code": params[:category],
             "display": params[:category]&.split("-")&.join(" ")&.titleize,
           },

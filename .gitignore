@@ -39,3 +39,6 @@ yarn-debug.log*
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Local-only compose overrides (host port mapping, etc.)
+/docker-compose.override.yml

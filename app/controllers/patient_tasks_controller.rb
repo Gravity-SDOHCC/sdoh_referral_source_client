@@ -90,7 +90,7 @@ class PatientTasksController < ApplicationController
   def patient_task_meta
     {
       "profile": [
-        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-TaskForPatient",
+        FhirProfiles::TASK_FOR_PATIENT,
       ],
     }
   end
