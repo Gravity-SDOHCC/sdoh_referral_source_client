@@ -4,14 +4,14 @@ class ConditionsController < ApplicationController
   def create
     begin
       condition = FHIR::Condition.new
-      condition.meta = meta
-      condition.clinicalStatus = clinical_status
-      condition.verificationStatus = verification_status
-      condition.category = category
-      condition.code = code
-      condition.subject = subject
-      condition.onsetPeriod = onset_period
-      condition.asserter = asserter
+      condition.meta = as_fhir(FHIR::Meta, meta)
+      condition.clinicalStatus = as_fhir(FHIR::CodeableConcept, clinical_status)
+      condition.verificationStatus = as_fhir(FHIR::CodeableConcept, verification_status)
+      condition.category = as_fhir(FHIR::CodeableConcept, category)
+      condition.code = as_fhir(FHIR::CodeableConcept, code)
+      condition.subject = as_fhir(FHIR::Reference, subject)
+      condition.onsetPeriod = as_fhir(FHIR::Period, onset_period)
+      condition.asserter = as_fhir(FHIR::Reference, asserter)
 
       get_client.create(condition)
 

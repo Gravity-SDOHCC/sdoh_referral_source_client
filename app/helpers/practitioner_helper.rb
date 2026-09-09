@@ -26,10 +26,15 @@ module PractitionerHelper
     client = get_client
     begin
       response = client.read(FHIR::Practitioner, practitioner_id)
-      if response.response[:code] == 200
-        practitioner = Practitioner.new(response.resource)
+      fhir_practitioner = read_practitioner_resource(response.resource)
+      if response.response[:code] == 200 && fhir_practitioner
+        practitioner = Practitioner.new(fhir_practitioner)
         save_current_practitioner(practitioner)
         [true, practitioner]
+      elsif response.response[:code] == 200
+        Rails.logger.error("Practitioner/#{practitioner_id} came back as #{response.resource.class} rather than a Practitioner.")
+
+        [false, "Failed to fetch practitioner. The server answered with #{response.resource.class} rather than a Practitioner."]
       else
         Rails.logger.error("Failed to fetch patient's personal characteristics. Status: #{response.response[:code]} - #{response.response[:body]}")
 
@@ -42,6 +47,17 @@ module PractitionerHelper
       # rescue Rack::Timeout::RequestTimeoutException => e
       #   [false, "Request timeout. Please try again later. #{e.message}"]
     end
+  end
+
+  # A read can come back as a Bundle rather than the resource asked for -
+  # TaskIoEntry has handled that since it was written, and this had not, so
+  # every practitioner 500d on "undefined method name for FHIR::Bundle" and took
+  # the dashboard down with it. Unwrap a Bundle the same way, and then
+  # check the type rather than assuming it: a Bundle with no entries, or an
+  # OperationOutcome, is not a Practitioner either.
+  def read_practitioner_resource(resource)
+    resource = resource.entry&.first&.resource if resource.is_a?(FHIR::Bundle)
+    resource if resource.is_a?(FHIR::Practitioner)
   end
 
   def fetch_and_cache_practitioners

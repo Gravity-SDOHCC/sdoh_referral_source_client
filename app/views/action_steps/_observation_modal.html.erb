@@ -1,0 +1,46 @@
+<%# Enrollment Status Observation behind the badge in the Outcomes column. %>
+<%# Separate from action_steps/_procedure_modal, whose card header is hardcoded %>
+<%# to Procedure/<id> and whose fields (performed date, addresses) do not apply. %>
+<div id="enrollment-observation-modal-<%= resource.id %>" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Enrollment Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title">Observation/<%= resource.id %></h6>
+          </div>
+          <div class="card-body">
+            <div class="label-value">
+              <span class="fw-semibold">Program:</span>
+              <span class="small-text"><%= resource.code || "--" %></span>
+            </div>
+            <div class="label-value">
+              <span class="fw-semibold">Category:</span>
+              <span class="small-text"><%= resource.category || "--" %></span>
+            </div>
+            <div class="label-value">
+              <span class="fw-semibold">Enrollment Status:</span>
+              <span class="badge <%= enrollment_status_badge_class(resource.enrollment_status_code) %>">
+                <%= resource.enrollment_status_display || "--" %>
+              </span>
+            </div>
+            <div class="label-value">
+              <span class="fw-semibold">Enrollment Date:</span>
+              <span class="small-text"><%= resource.effective_date_time || "--" %></span>
+            </div>
+            <% if resource.note.present? %>
+              <div class="label-value">
+                <span class="fw-semibold">Note:</span>
+                <span class="small-text"><%= resource.note %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
