@@ -90,9 +90,24 @@
 
             <% if type == "completed" %>
               <td>
-                <% if referral&.outputs.present? %>
-                  <% referral.outputs.each_with_index do |output, index| %>
-                    <% if index.positive? %>, <% end %>
+                <%# The enrollment status the CBO closed the referral with leads %>
+                <%# the cell: it is the outcome the referrer is looking for, and %>
+                <%# it gets its own modal rather than the Procedure's. %>
+                <% enrollment = referral&.enrollment_status %>
+                <% if enrollment.present? %>
+                  <%= link_to "#enrollment-observation-modal-#{enrollment.id}", data: { bs_toggle: "modal" }, class: "text-decoration-none" do %>
+                    <span class="badge <%= enrollment_status_badge_class(enrollment.enrollment_status_code) %>">
+                      <%= enrollment.enrollment_status_display %>
+                    </span>
+                  <% end %>
+                  <% content_for :modals do %>
+                    <%= render "action_steps/observation_modal", resource: enrollment %>
+                  <% end %>
+                <% end %>
+                <% other_outputs = Array(referral&.outputs).reject { |output| enrollment.present? && output.resource == enrollment } %>
+                <% if other_outputs.present? %>
+                  <% other_outputs.each_with_index do |output, index| %>
+                    <% if index.positive? || enrollment.present? %>, <% end %>
                     <% if output.resource.blank? && output.value.blank? %>
                       <span class="small-text"><%= output.display_type %></span>
                     <% elsif output.resource.blank? %>
@@ -101,18 +116,22 @@
                         <%= render "shared/string_modal", { id: "#{referral.id}-#{index}", resource: output.value } %>
                       <% end %>
                     <% elsif output.resource_type == "Procedure" %>
-                      <%= link_to output.display_type, "#referral-procedure-modal-#{output.id}", data: { bs_toggle: "modal" } %>
+                      <%= link_to "#{output.resource_label.presence || output.display_type} (#{output.display_type})", "#referral-procedure-modal-#{output.id}", data: { bs_toggle: "modal" } %>
                       <% content_for :modals do %>
                         <%= render "action_steps/procedure_modal", resource: output.resource %>
                       <% end %>
                     <% else %>
-                      <%= link_to output.display_type, "#fhir-resource-modal-#{output.id}", data: { bs_toggle: "modal" } %>
+                      <%# Name the resource, not the slice it arrived in: a %>
+                      <%# completed assessment returns several at once and %>
+                      <%# "Additional Content (QuestionnaireResponse)" three %>
+                      <%# times over says nothing about what came back. %>
+                      <%= link_to "#{output.resource_label.presence || output.display_type} (#{output.display_type})", "#fhir-resource-modal-#{output.id}", data: { bs_toggle: "modal" } %>
                       <% content_for :modals do %>
                         <%= render "shared/fhir_resource_modal", resource: output.resource %>
                       <% end %>
                     <% end %>
                   <% end %>
-                <% else %>
+                <% elsif enrollment.blank? %>
                   --
                 <% end %>
               </td>

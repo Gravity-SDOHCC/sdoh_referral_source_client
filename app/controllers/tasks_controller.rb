@@ -1,6 +1,39 @@
 class TasksController < ApplicationController
   before_action :require_client
 
+  # Task.input:AdditionalContent.type, the coding the profile discriminates the
+  # slice on.
+  #
+  # referral_workflow.html says only that "the provider may attach additional
+  # content relevant for the care of the individual through the SDOHCC Task
+  # resource" - it never names the slice or the code. The binding comes from
+  # SDOHCC-TaskForReferralManagement:
+  #   input[AdditionalContent].type = $SDOHCC-CodeSystemTemporaryCodes#additional-content
+  ADDITIONAL_CONTENT_TYPE = {
+    "coding": [
+      {
+        "system": FhirProfiles::TEMPORARY_CODE_SYSTEM,
+        "code": FhirProfiles::ADDITIONAL_CONTENT_CODE,
+        "display": FhirProfiles::ADDITIONAL_CONTENT_DISPLAY,
+      },
+    ],
+  }.freeze
+
+  # input[AdditionalContent].value[x] is Reference(Resource) with no
+  # targetProfile, so any resource is legal and a bare id is not enough to build
+  # a reference from. The picker submits "<ResourceType>/<id>" and both halves
+  # are used; only the types this client actually offers are accepted, so no
+  # unvalidated parameter is ever interpolated into a reference.
+  ADDITIONAL_CONTENT_RESOURCE_TYPES = %w[
+    Condition
+    Consent
+    DocumentReference
+    Goal
+    Observation
+    QuestionnaireResponse
+    ServiceRequest
+  ].freeze
+
   def create
     begin
       # Service Request
@@ -29,6 +62,7 @@ class TasksController < ApplicationController
         authoredOn: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S.%3NZ"),
         requester: task_requester,
         owner: task_owner,
+        input: task_input,
       )
       get_client.create(task)
 
@@ -159,6 +193,40 @@ class TasksController < ApplicationController
       }
     end
 
+  ### Task.input ###
+
+  # The resources the provider chose to send with the referral, as
+  # Task.input:AdditionalContent entries.
+  #
+  # Returns nil rather than [] when nothing was selected so that the element is
+  # omitted from the Task instead of being emitted empty: input is 0..*, and an
+  # empty array is not what "no additional content" looks like on the wire.
+  def task_input
+    entries = Array(params[:additional_content_ids]).filter_map do |value|
+      reference = additional_content_reference(value)
+      next if reference.blank?
+
+      {
+        "type": ADDITIONAL_CONTENT_TYPE,
+        "valueReference": { "reference": reference },
+      }
+    end
+
+    entries.presence
+  end
+
+  # "Condition/abc" and nothing else. The type has to be one this client offers
+  # and the id has to look like a FHIR id ([A-Za-z0-9-.]{1,64}), so a crafted
+  # parameter cannot become part of a reference. Parsing is TaskIoEntry's, which
+  # is what reads these references back.
+  def additional_content_reference(value)
+    resource_type, id = TaskIoEntry.parse_reference(value)
+    return unless ADDITIONAL_CONTENT_RESOURCE_TYPES.include?(resource_type)
+    return unless id.to_s.match?(/\A[A-Za-z0-9\-.]{1,64}\z/)
+
+    "#{resource_type}/#{id}"
+  end
+
   ### Service Request Attributes ###
   def service_req_meta
     {
@@ -210,18 +278,33 @@ class TasksController < ApplicationController
     }
   end
 
+  # The Condition the referral is being made about, when one was chosen.
+  #
+  # There is not always one - a patient with no problems recorded has an empty
+  # Problem list - and "Condition/" is not a reference. A FHIR server rejects
+  # any resource that copies it (HAPI-0508 "Invalid resource reference ... Does
+  # not contain resource ID"), so the referral target could not complete the
+  # referral: its Procedure copies ServiceRequest.reasonReference.
   def service_req_reason_reference
+    condition_id = params[:condition_ids].presence
+    return if condition_id.blank?
+
     [
       {
-        "reference": "Condition/#{params[:condition_ids]}",
+        "reference": "Condition/#{condition_id}",
       },
     ]
   end
 
+  # Same for the Consent: the picker offers "Select Consent", and a referral
+  # sent without one must not carry "Consent/".
   def service_req_supporting_info
+    consent_id = params[:consent].presence
+    return if consent_id.blank?
+
     [
       {
-        "reference": "Consent/#{params[:consent]}",
+        "reference": "Consent/#{consent_id}",
       },
     ]
   end

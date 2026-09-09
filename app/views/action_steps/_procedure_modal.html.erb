@@ -27,10 +27,14 @@
               <span class="fw-semibold">Performed Date:</span>
               <span class="small-text"><%= resource.performed_date.to_date %></span>
             </div>
-            <div class="label-value">
-              <span class="fw-semibold">Addresses:</span>
-              <span class="small-text">Condition/<%= resource.problem&.id %></span>
-            </div>
+            <%# reasonReference is 0..*, so a Procedure can have no problem to %>
+            <%# address; the row read "Condition/" with nothing after it. %>
+            <% if resource.problem.present? %>
+              <div class="label-value">
+                <span class="fw-semibold">Addresses:</span>
+                <span class="small-text">Condition/<%= resource.problem.id %></span>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>
