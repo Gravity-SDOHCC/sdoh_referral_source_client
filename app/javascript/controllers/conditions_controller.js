@@ -4,11 +4,17 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = [
     "categorySelect",
+    "protectiveFactor",
     "icd10Code",
     "icd10Desc",
     "snomedCode",
     "snomedDesc"
   ];
+
+  // SDOHCC-Condition cond-5: when Condition.category includes protective-factor,
+  // Condition.code is drawn from the protective factor value set, whichever SDOH
+  // domain is also selected. So the checkbox, not the dropdown, keys the code list.
+  static PROTECTIVE_FACTOR = "protective-factor";
 
   connect() {
     this.descriptionOptions = JSON.parse(this.data.get("descriptionOptionsCondition"));
@@ -18,13 +24,13 @@ export default class extends Controller {
     const errorDiv = document.getElementById("conditions-errors");
     errorDiv.style.display = "none";
     errorDiv.textContent = "";
-    const hasCategory = this.categorySelectTarget.value.trim();
+    const hasCategory = this.categorySelectTarget.value.trim() || this.protectiveFactorSelected();
     const hasICD = this.icd10CodeTarget.value.trim() && this.icd10DescTarget.value.trim();
     const hasSNOMED = this.snomedCodeTarget.value.trim() && this.snomedDescTarget.value.trim();
     if( !hasCategory ){
       e.preventDefault();
       errorDiv.style.display = "block";
-      errorDiv.textContent = "Select a Category";
+      errorDiv.textContent = "Select a Category or mark this as a protective factor";
     }
     else if( !hasICD && !hasSNOMED ){
       e.preventDefault();
@@ -33,10 +39,28 @@ export default class extends Controller {
     }
   }
 
-  handleCategoryChange(e) {
-    const selectedCategory = e.target.value;
+  protectiveFactorSelected() {
+    return this.hasProtectiveFactorTarget && this.protectiveFactorTarget.checked;
+  }
+
+  handleCategoryChange() {
+    this.populateCodeOptions();
+  }
+
+  handleProtectiveFactorChange() {
+    // category[SDOHCC] is 0..*, so a protective factor may stand on its own.
+    this.categorySelectTarget.required = !this.protectiveFactorSelected();
+    this.populateCodeOptions();
+  }
+
+  populateCodeOptions() {
+    const selectedCategory = this.protectiveFactorSelected()
+      ? this.constructor.PROTECTIVE_FACTOR
+      : this.categorySelectTarget.value;
+
     if (!selectedCategory || selectedCategory === 'default') {
       this.disableOptions(true);
+      this.items = [];
       return;
     }
     this.disableOptions(false);
@@ -72,7 +96,7 @@ export default class extends Controller {
   handleCodeChange(e){
     const target = e.target;
     const code = target.value;
-    const match = this.items.find(i=>i[1] === code);
+    const match = (this.items || []).find(i=>i[1] === code);
 
     if(target === this.icd10CodeTarget){
       this.icd10DescTarget.value=match ? match[0]: "";
@@ -85,7 +109,7 @@ export default class extends Controller {
   handleDescriptionChange(e){
     const target = e.target;
     const display = target.value;
-    const match = this.items.find(i=>i[0] === display);
+    const match = (this.items || []).find(i=>i[0] === display);
 
     if(target === this.icd10DescTarget){
       this.icd10CodeTarget.value=match ? match[1]: "";

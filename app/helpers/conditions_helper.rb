@@ -414,6 +414,15 @@ def description_options_condition
           ["Unemployment, unspecified", "Z56.0"],
           ["Encounter for counseling for socioeconomic factors", "Z71.88"],
       ],
+      # Condition.code for a protective factor is bound (extensible) to VSAC
+      # "Protective Factors Findings", OID 2.16.840.1.113762.1.4.1247.311, via the
+      # Additional Bindings on SDOHCC-Condition (cond-5). Source: the
+      # ProtectiveFactorsConditonCodes spreadsheet attached to CFRID-938,
+      # reconciled against the v20250702 expansion (36 concepts).
+      # Three entries below are not in that expansion and are carried under the
+      # extensible binding: 460821000124100, 611221000124108 (the IG's own
+      # Protective Factors narrative gives "Stably housed" as an example) and
+      # 671271000124101.
       "protective-factor" => [
           ["Spiritual strength (finding)", "105572002"],
           ["Food security (finding)", "1078229009"],

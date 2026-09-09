@@ -15,6 +15,11 @@
             <%= f.label :category, "Category", class: "form-label" %>
             <%= f.select :category, options_for_select([["Select category", ""]] + ConditionDefinitionsHelper::CONDITION_CATEGORY.map { |type| [type[:display], type[:code]] }, ""), {}, { class: "form-select", id: "type-select", required: true , data: { conditions_target: "categorySelect" , action: "change->conditions#handleCategoryChange" } } %>
           </div>
+          <div class="mb-3 form-check">
+            <%= f.check_box :protective_factor, class: "form-check-input", id: "protective-factor", data: { conditions_target: "protectiveFactor", action: "change->conditions#handleProtectiveFactorChange" } %>
+            <%= f.label :protective_factor, "Protective factor", class: "form-check-label", for: "protective-factor" %>
+            <div class="form-text">Records this as a strength in addition to the SDOH category above. The code list switches to protective factor findings.</div>
+          </div>
           <div class="mb-3">
             <%= f.label :icd_code, "ICD-10", class: "form-label" %>
             <%= f.select :icd_code,options_for_select([["Select a ICD-10 Code", ""]]), {}, { id: "icd10_code", class: "form-select", disabled: "true", data: { conditions_target: "icd10Code" , action: "change->conditions#handleCodeChange" } } %>

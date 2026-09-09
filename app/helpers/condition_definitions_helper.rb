@@ -6,6 +6,22 @@ module ConditionDefinitionsHelper
   SNOMED_CODE_SYSTEM = "http://snomed.info/sct".freeze
   ICD_10_CODE_SYSTEM = "http://hl7.org/fhir/sid/icd-10-cm".freeze
 
+  # SDOHCC-Condition slices Condition.category into problem-or-health-concern,
+  # screening-assessment and SDOHCC (0..*). SDOH-Con-3 requires at least one
+  # category to be the US Core "sdoh" screening-assessment code.
+  CATEGORY_SCREENING_ASSESSMENT_CODE_SYSTEM = "http://hl7.org/fhir/us/core/CodeSystem/us-core-category".freeze
+  CATEGORY_SDOH = "sdoh".freeze
+
+  # protective-factor is a member of SDOHCC ValueSet SDOH Category, bound to the
+  # same repeating category[SDOHCC] slice as the SDOH domains, so it is additive
+  # to a domain rather than an alternative to one (SDOHCC Condition, cond-4).
+  CATEGORY_PROTECTIVE_FACTOR = "protective-factor".freeze
+
+  # Extensible additional binding on Condition.code that applies when
+  # Condition.category includes protective-factor (SDOHCC Condition, cond-5).
+  # VSAC "Protective Factors Findings", OID 2.16.840.1.113762.1.4.1247.311.
+  PROTECTIVE_FACTORS_VALUE_SET = "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1247.311".freeze
+
   CONDITION_CATEGORY = [
     {
       code: "sdoh-category-unspecified",
@@ -98,10 +114,6 @@ module ConditionDefinitionsHelper
     {
       code: "language-access",
       display: "Language Access"
-    },
-    {
-      code: "protective-factor",
-      display: "Protective Factor"
     }
   ]
 
