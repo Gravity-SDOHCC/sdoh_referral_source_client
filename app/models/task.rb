@@ -35,6 +35,21 @@ class Task
     inputs.select(&:additional_content?)
   end
 
+  # The Enrollment Status Observation this referral was closed with, if there
+  # is one.
+  #
+  # enrollment.html, referral-triggered workflow: "To close the loop on the
+  # referral, the CBO updates the Task, pointing to the Enrollment Status
+  # Observation in Task.output." It arrives in the AdditionalContent slice,
+  # which is shared with assessments, goals and conditions, so the Observation's
+  # own category is what identifies it.
+  def enrollment_status
+    additional_content_outputs
+      .map(&:resource)
+      .compact
+      .find { |resource| resource.is_a?(Observation) && resource.program_enrollment? }
+  end
+
   # The first resulting-activity output. Kept so callers written against the
   # single-outcome API keep working while they move to #outputs.
   def outcome
