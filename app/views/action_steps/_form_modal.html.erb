@@ -59,6 +59,22 @@
             <%= f.label :consent, "Consent", class: "form-label" %>
             <%= f.collection_select :consent, consents, :id, :code, { prompt: 'Select Consent' }, { class: "form-select", data: { taskform_target: "consent" } } %>
           </div>
+          <%# Task.input:AdditionalContent - "the provider may attach additional %>
+          <%# content relevant for the care of the individual through the SDOHCC %>
+          <%# Task resource" (referral_workflow.html). value[x] is %>
+          <%# Reference(Resource) with no targetProfile, so each option carries %>
+          <%# "<ResourceType>/<id>" and not a bare id. %>
+          <div class="mb-3">
+            <%= f.label :additional_content_ids, "Additional Content", class: "form-label" %>
+            <%= f.select :additional_content_ids,
+                  grouped_options_for_select(additional_content_options),
+                  {},
+                  { multiple: true, size: 8, class: "form-select", data: { taskform_target: "supportingResources" } } %>
+            <div class="form-text">
+              Optional. Ctrl-click (Cmd-click on a Mac) to attach more than one. Whatever you attach
+              is sent to the referral target as Task additional content.
+            </div>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
